@@ -1,0 +1,19 @@
+{
+  "go.useLanguageServer": true,
+  "go.gopath": "",
+  "go.goroot": "",
+  "go.toolsManagement.checkForUpdates": "local",
+  "go.testFlags": ["-v"],
+  "files.exclude": {
+    "**/.git": true,
+    "**/node_modules": true
+  },
+  "editor.formatOnSave": true,
+  "[go]": {
+    "editor.defaultFormatter": "golang.go",
+    "editor.formatOnSave": true,
+    "editor.codeActionsOnSave": {
+      "source.organizeImports": "explicit"
+    }
+  }
+}

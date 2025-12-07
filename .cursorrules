@@ -1,0 +1,40 @@
+# devwisdom-go Development Rules
+
+## Language & Framework
+- **Language**: Go 1.21+
+- **Framework**: Standard library + MCP protocol (JSON-RPC 2.0)
+- **Build Tool**: Make
+- **Testing**: Go testing package
+
+## Code Style
+- Follow Go conventions (gofmt, golint)
+- Use meaningful variable names
+- Keep functions focused and small
+- Document all public APIs with godoc comments
+
+## Project Structure
+- `cmd/server/` - MCP server entry point
+- `internal/wisdom/` - Wisdom engine (quotes, sources, advisors)
+- `internal/mcp/` - MCP protocol handler
+- `internal/config/` - Configuration management
+
+## MCP Protocol
+- Implement JSON-RPC 2.0 handler
+- Register 5 tools: consult_advisor, get_wisdom, get_daily_briefing, get_consultation_log, export_for_podcast
+- Register 4 resources: wisdom://sources, wisdom://advisors, wisdom://advisor/{id}, wisdom://consultations/{days}
+- Use stdio transport
+
+## Testing
+- Write unit tests for all public functions
+- Aim for >80% test coverage
+- Use table-driven tests where appropriate
+
+## Dependencies
+- Prefer standard library
+- Only add external deps when necessary
+- Document why each dependency is needed
+
+## Task Management
+- Tasks tracked in agentic-tools MCP (Project ID: 039bb05a-6f78-492b-88b5-28fdfa3ebce7)
+- Use PROJECT_GOALS.md for phase alignment
+- Follow TODO.md for task breakdown
