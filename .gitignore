@@ -1,19 +1,22 @@
 # Binaries
-devwisdom
 *.exe
 *.exe~
 *.dll
 *.so
 *.dylib
-
-# Test binary
 *.test
-
-# Output
 *.out
+/bin/
+/dist/
 
 # Go workspace file
 go.work
+
+# Go test binary, built with `go test -c`
+*.test
+
+# Dependency directories
+vendor/
 
 # IDE
 .idea/
@@ -21,17 +24,30 @@ go.work
 *.swp
 *.swo
 *~
-
-# OS
 .DS_Store
-Thumbs.db
-
-# Build artifacts
-dist/
-build/
 
 # Logs
 *.log
+*.jsonl
 
-# Config (user-specific)
-.exarp_wisdom_config
+# Config (may contain secrets)
+config.json
+.env
+.env.local
+
+# Build artifacts
+/devwisdom-go
+
+# Coverage
+*.coverprofile
+coverage.html
+
+# MCP client config (local)
+.mcp-config.json
+
+# Planning results (generated)
+exarp_planning_results.json
+discovered_tasks.json
+task_analysis_workaround.json
+misaligned_tasks_detailed.json
+alignment_report.md
