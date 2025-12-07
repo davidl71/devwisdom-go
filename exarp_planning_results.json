@@ -1,0 +1,67 @@
+{
+  "prd": {
+    "success": true,
+    "data": {
+      "output_path": "/Users/davidl/Projects/project-management-automation/devwisdom-go/PRD.md",
+      "project_name": "devwisdom-go",
+      "stats": {
+        "user_stories": 129,
+        "features": 30,
+        "risks": 2,
+        "metrics": 4,
+        "personas": 8
+      },
+      "sections_generated": [
+        "overview",
+        "problem_statement",
+        "target_users (8)",
+        "user_stories (129)",
+        "key_features (30)",
+        "technical_requirements",
+        "success_metrics (4)",
+        "risks_dependencies (2)",
+        "timeline"
+      ],
+      "tip": "Use analyze_todo2_alignment to verify tasks align with this PRD"
+    },
+    "timestamp": 1765144752.011302
+  },
+  "task_discovery": {
+    "action": "markdown",
+    "discoveries": [],
+    "summary": {
+      "total": 0,
+      "by_source": {},
+      "by_type": {}
+    }
+  },
+  "task_analysis": {
+    "error": "unsupported operand type(s) for |: 'type' and 'NoneType'"
+  },
+  "alignment": {
+    "success": true,
+    "data": {
+      "total_tasks_analyzed": 72,
+      "misaligned_count": 3,
+      "infrastructure_count": 0,
+      "stale_count": 0,
+      "average_alignment_score": 93.2,
+      "by_priority": {
+        "high": 31,
+        "medium": 35,
+        "low": 3,
+        "critical": 3
+      },
+      "by_status": {
+        "todo": 0,
+        "in_progress": 0,
+        "review": 0,
+        "done": 16
+      },
+      "report_path": "/Users/davidl/Projects/project-management-automation/devwisdom-go/alignment_report.md",
+      "tasks_created": 0,
+      "status": "success"
+    },
+    "timestamp": "2025-12-07T23:59:12.127136"
+  }
+}
