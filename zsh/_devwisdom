@@ -1,0 +1,62 @@
+#compdef devwisdom
+
+# Zsh completion for devwisdom command
+
+_devwisdom() {
+    local -a commands subcommands
+    
+    commands=(
+        'quote:Get a wisdom quote'
+        'consult:Consult an advisor'
+        'sources:List available wisdom sources'
+        'advisors:List available advisors'
+        'briefing:Get daily briefing'
+        'version:Show version'
+        'help:Show help message'
+    )
+    
+    _arguments -C \
+        "1: :->command" \
+        "*::arg:->args"
+    
+    case $state in
+        command)
+            _describe 'command' commands
+            ;;
+        args)
+            case $words[1] in
+                quote)
+                    _arguments \
+                        '--source[Wisdom source name]:source:()' \
+                        '--score[Project score (0-100)]:score:' \
+                        '--json[Output in JSON format]' \
+                        '--quiet[Output only the quote text]'
+                    ;;
+                consult)
+                    _arguments \
+                        '--metric[Metric name]:metric:()' \
+                        '--tool[Tool name]:tool:()' \
+                        '--stage[Stage name]:stage:()' \
+                        '--score[Project score (0-100)]:score:' \
+                        '--json[Output in JSON format]' \
+                        '--quiet[Output only the quote text]'
+                    ;;
+                sources)
+                    _arguments \
+                        '--json[Output in JSON format]'
+                    ;;
+                advisors)
+                    _arguments \
+                        '--json[Output in JSON format]'
+                    ;;
+                briefing)
+                    _arguments \
+                        '--days[Number of days]:days:' \
+                        '--json[Output in JSON format]'
+                    ;;
+            esac
+            ;;
+    esac
+}
+
+_devwisdom "$@"

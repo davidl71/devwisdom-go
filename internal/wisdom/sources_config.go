@@ -135,16 +135,16 @@ func (sl *SourceLoader) Load() error {
 	// 1. Load embedded default sources (if available)
 	if sl.embeddedFS != nil && sl.embeddedPath != "" {
 		if err := sl.loadFromEmbedded(); err != nil {
-			// Log but don't fail - embedded sources are optional
-			fmt.Printf("Warning: Failed to load embedded sources: %v\n", err)
+			// Silently fail - embedded sources are optional
+			// Don't output to stdout/stderr in MCP server mode (breaks stdio protocol)
 		}
 	}
 
 	// 2. Load from explicit config paths (in order, later files override earlier)
 	for _, path := range sl.configPaths {
 		if err := sl.loadFromFile(path); err != nil {
-			// Log but continue - config files are optional
-			fmt.Printf("Warning: Failed to load sources from %s: %v\n", path, err)
+			// Silently continue - config files are optional
+			// Don't output to stdout/stderr in MCP server mode (breaks stdio protocol)
 		}
 	}
 
