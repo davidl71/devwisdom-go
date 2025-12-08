@@ -1,8 +1,12 @@
 .PHONY: build run test clean install
 
-# Build binary
+# Build binary (MCP server)
 build:
 	go build -o devwisdom ./cmd/server
+
+# Build CLI binary
+build-cli:
+	go build -o devwisdom-cli ./cmd/cli
 
 # Run server
 run: build
@@ -10,7 +14,12 @@ run: build
 
 # Run tests
 test:
-	go test ./... -v
+	go test ./...
+
+# Run tests with coverage
+test-coverage:
+	go test -coverprofile=coverage.out ./...
+	go tool cover -html=coverage.out -o coverage.html -v
 
 test-coverage:
 	go test ./... -cover -coverprofile=coverage.out

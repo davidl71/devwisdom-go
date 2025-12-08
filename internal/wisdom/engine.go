@@ -9,12 +9,12 @@ import (
 
 // Engine is the main wisdom engine managing sources, advisors, and consultations
 type Engine struct {
-	sources      map[string]*Source
-	loader       *SourceLoader
-	advisors     *AdvisorRegistry
-	config       *config.Config
-	initialized  bool
-	mu           sync.RWMutex
+	sources     map[string]*Source
+	loader      *SourceLoader
+	advisors    *AdvisorRegistry
+	config      *config.Config
+	initialized bool
+	mu          sync.RWMutex
 }
 
 // NewEngine creates a new wisdom engine instance
@@ -134,6 +134,13 @@ func (e *Engine) GetLoader() *SourceLoader {
 	e.mu.RLock()
 	defer e.mu.RUnlock()
 	return e.loader
+}
+
+// GetAdvisors returns the advisor registry
+func (e *Engine) GetAdvisors() *AdvisorRegistry {
+	e.mu.RLock()
+	defer e.mu.RUnlock()
+	return e.advisors
 }
 
 // AddProjectSource adds a source and saves it to the project directory
