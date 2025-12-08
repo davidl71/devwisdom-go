@@ -1,0 +1,130 @@
+{
+  "version": "1.0",
+  "last_updated": "2025-01-26",
+  "author": "devwisdom-go",
+  "sources": {
+    "pistis_sophia": {
+      "id": "pistis_sophia",
+      "name": "Pistis Sophia (Gnostic Text)",
+      "icon": "📜",
+      "description": "Gnostic wisdom from the Pistis Sophia text, with journey from chaos to enlightenment",
+      "quotes": {
+        "chaos": [
+          {
+            "quote": "I am become as a demon apart, who dwelleth in matter and in whom is no light.",
+            "source": "Chapter 32",
+            "encouragement": "Even in darkness, the path to Light exists.",
+            "context": "When the project feels overwhelming",
+            "chapter": "Chapter 32"
+          },
+          {
+            "quote": "I looked to the height to the Light in which I had trusted, and they gave me over to the chaos.",
+            "source": "Chapter 33",
+            "encouragement": "Trust the process. Sophia ascended through 13 repentances.",
+            "context": "When things aren't going as planned",
+            "chapter": "Chapter 33"
+          },
+          {
+            "quote": "Save me out of the chaos and the darkness.",
+            "source": "Chapter 36",
+            "encouragement": "Every cleanup sprint is a step toward the Light.",
+            "context": "When you need to start fresh",
+            "chapter": "Chapter 36"
+          }
+        ],
+        "lower_aeons": [
+          {
+            "quote": "I have turned to the Light, and it hath known my affliction.",
+            "source": "Chapter 39",
+            "encouragement": "Recognition is the first step to resolution.",
+            "context": "When you've identified the problems",
+            "chapter": "Chapter 39"
+          },
+          {
+            "quote": "Let not the chaos submerge me, and let not the deep swallow me.",
+            "source": "Chapter 40",
+            "encouragement": "Keep iterating. Small wins compound.",
+            "context": "When maintaining momentum is hard",
+            "chapter": "Chapter 40"
+          },
+          {
+            "quote": "I cried unto thee, O Light of lights, in my affliction and thou didst hearken unto me.",
+            "source": "Chapter 41",
+            "encouragement": "Your work is being recognized.",
+            "context": "When tests finally pass",
+            "chapter": "Chapter 41"
+          }
+        ],
+        "middle_aeons": [
+          {
+            "quote": "The Light hath become my salvation.",
+            "source": "Chapter 50",
+            "encouragement": "You're past the hardest part.",
+            "context": "When the project is stabilizing",
+            "chapter": "Chapter 50"
+          },
+          {
+            "quote": "I will sing praises unto the Light, for it hath sent me its light from the height.",
+            "source": "Chapter 53",
+            "encouragement": "Celebrate your progress.",
+            "context": "When documentation is complete",
+            "chapter": "Chapter 53"
+          },
+          {
+            "quote": "The Light hath heard me and saved me from all my afflictions.",
+            "source": "Chapter 55",
+            "encouragement": "Clear skies ahead.",
+            "context": "When blockers are resolved",
+            "chapter": "Chapter 55"
+          }
+        ],
+        "upper_aeons": [
+          {
+            "quote": "I will praise the name of the Light, and I will sing unto it in hymns.",
+            "source": "Chapter 58",
+            "encouragement": "Your diligence is paying off.",
+            "context": "When the project is healthy",
+            "chapter": "Chapter 58"
+          },
+          {
+            "quote": "The Light hath power in its mystery.",
+            "source": "Chapter 60",
+            "encouragement": "Good foundations enable great things.",
+            "context": "When architecture is solid",
+            "chapter": "Chapter 60"
+          },
+          {
+            "quote": "I have become as a man who is freed.",
+            "source": "Chapter 62",
+            "encouragement": "Freedom to build, not just maintain.",
+            "context": "When technical debt is low",
+            "chapter": "Chapter 62"
+          }
+        ],
+        "treasury": [
+          {
+            "quote": "Sophia is raised to her original place in the Thirteenth Aeon.",
+            "source": "Chapter 64",
+            "encouragement": "You've reached enlightenment. Maintain the Light.",
+            "context": "When production-ready",
+            "chapter": "Chapter 64"
+          },
+          {
+            "quote": "The mystery of the ineffable is completed.",
+            "source": "Chapter 136",
+            "encouragement": "The journey continues. New mysteries await.",
+            "context": "When all goals are met",
+            "chapter": "Chapter 136"
+          },
+          {
+            "quote": "Enter into the Light and become Light.",
+            "source": "Chapter 140",
+            "encouragement": "Your Light illuminates the path for others.",
+            "context": "When sharing your work with others",
+            "chapter": "Chapter 140"
+          }
+        ]
+      }
+    }
+  }
+}

@@ -1,0 +1,531 @@
+{
+  "projects": [
+    {
+      "id": "bfec727f-93a6-42e5-bfe6-66e01b495ddf",
+      "name": "devwisdom-go",
+      "description": "Wisdom Module Extraction (Go Proof of Concept) - A standalone Go MCP server providing wisdom quotes, trusted advisors, and inspirational guidance for developers. Extracted from the exarp project as a proof of concept for using compiled languages (Go) for exarp modules.",
+      "createdAt": "2025-12-07T22:42:01.866Z",
+      "updatedAt": "2025-12-07T22:42:01.866Z"
+    }
+  ],
+  "tasks": [
+    {
+      "id": "f6949e6d-6542-41db-b629-9947f108bde0",
+      "name": "Phase 1: Core Structure",
+      "details": "Complete core project structure including Go project setup, basic types (Quote, Source, Consultation), engine skeleton, config management, advisor registry skeleton, and MCP server structure.",
+      "projectId": "bfec727f-93a6-42e5-bfe6-66e01b495ddf",
+      "completed": false,
+      "createdAt": "2025-12-07T22:42:16.568Z",
+      "updatedAt": "2025-12-07T22:42:16.568Z",
+      "dependsOn": [],
+      "priority": 10,
+      "complexity": 3,
+      "status": "done",
+      "tags": [
+        "phase-1",
+        "foundation",
+        "complete"
+      ],
+      "level": 0
+    },
+    {
+      "id": "ff1cd0b5-a378-4428-aae6-64d4ece7aca6",
+      "name": "Phase 2: Implement Configurable Sources System",
+      "details": "Implement configurable source loading from JSON files instead of hard-coded structs. Includes SourceLoader, project root detection, multiple config file locations, and hot-reloading capability.",
+      "projectId": "bfec727f-93a6-42e5-bfe6-66e01b495ddf",
+      "completed": false,
+      "createdAt": "2025-12-07T22:42:21.824Z",
+      "updatedAt": "2025-12-07T22:42:21.824Z",
+      "dependsOn": [],
+      "priority": 9,
+      "complexity": 5,
+      "status": "done",
+      "tags": [
+        "phase-2",
+        "configurable-sources",
+        "architecture"
+      ],
+      "level": 0
+    },
+    {
+      "id": "b01b8294-6ff1-42d1-a5f2-ba248678268c",
+      "name": "Phase 2: Add Caching and Timeout Support",
+      "details": "Implement local caching for source configurations with TTL, file modification tracking, and automatic invalidation. Add HTTP client timeout support for API-based sources with retry logic.",
+      "projectId": "bfec727f-93a6-42e5-bfe6-66e01b495ddf",
+      "completed": false,
+      "createdAt": "2025-12-07T22:42:27.234Z",
+      "updatedAt": "2025-12-07T22:42:27.234Z",
+      "dependsOn": [],
+      "priority": 8,
+      "complexity": 4,
+      "status": "done",
+      "tags": [
+        "phase-2",
+        "caching",
+        "timeout",
+        "performance"
+      ],
+      "level": 0
+    },
+    {
+      "id": "ed19147e-8765-48a8-b94d-7b5ab83c1bdf",
+      "name": "Phase 2: Port Wisdom Sources from Python to JSON",
+      "details": "Port all 21+ wisdom sources from Python sources.py to JSON format. Sources include: pistis_sophia, stoic, tao, art_of_war, bible, confucius, bofh, tao_of_programming, murphy, shakespeare, kybalion, gracian, enochian, and Hebrew sources (rebbe, tzaddik, chacham, pirkei_avot, proverbs, ecclesiastes, psalms). Also implement random source selector.",
+      "projectId": "bfec727f-93a6-42e5-bfe6-66e01b495ddf",
+      "completed": false,
+      "createdAt": "2025-12-07T22:42:32.487Z",
+      "updatedAt": "2025-12-07T22:42:32.487Z",
+      "dependsOn": [],
+      "priority": 9,
+      "complexity": 7,
+      "status": "in-progress",
+      "tags": [
+        "phase-2",
+        "data-porting",
+        "wisdom-sources"
+      ],
+      "estimatedHours": 8,
+      "level": 0
+    },
+    {
+      "id": "3a7d1940-004c-4079-aad2-f39517d87e3f",
+      "name": "Phase 3: Advisor System",
+      "details": "Complete advisor system including metric → advisor mappings, tool → advisor mappings, stage → advisor mappings, score-based consultation frequency, and mode-aware advisor selection (AGENT/ASK/MANUAL).",
+      "projectId": "bfec727f-93a6-42e5-bfe6-66e01b495ddf",
+      "completed": false,
+      "createdAt": "2025-12-07T22:42:37.775Z",
+      "updatedAt": "2025-12-07T22:42:37.775Z",
+      "dependsOn": [],
+      "priority": 8,
+      "complexity": 6,
+      "status": "pending",
+      "tags": [
+        "phase-3",
+        "advisors",
+        "mappings"
+      ],
+      "estimatedHours": 6,
+      "level": 0
+    },
+    {
+      "id": "60ba564e-51bf-4703-948d-68e805e0eb73",
+      "name": "Phase 4: MCP Protocol Implementation",
+      "details": "Implement JSON-RPC 2.0 handler, register 5 tools (consult_advisor, get_wisdom, get_daily_briefing, get_consultation_log, export_for_podcast), register 4 resources (wisdom://sources, wisdom://advisors, wisdom://advisor/{id}, wisdom://consultations/{days}), handle stdio transport, and error handling/logging.",
+      "projectId": "bfec727f-93a6-42e5-bfe6-66e01b495ddf",
+      "completed": false,
+      "createdAt": "2025-12-07T22:42:47.170Z",
+      "updatedAt": "2025-12-07T22:42:47.170Z",
+      "dependsOn": [],
+      "priority": 10,
+      "complexity": 8,
+      "status": "pending",
+      "tags": [
+        "phase-4",
+        "mcp",
+        "json-rpc",
+        "critical"
+      ],
+      "estimatedHours": 12,
+      "level": 0
+    },
+    {
+      "id": "f2431b94-550e-4f2e-a215-5e0c8d15f026",
+      "name": "Phase 5: Consultation Logging",
+      "details": "Implement consultation logging system with JSONL log file format, consultation tracking, log retrieval and filtering, and date-based log rotation.",
+      "projectId": "bfec727f-93a6-42e5-bfe6-66e01b495ddf",
+      "completed": false,
+      "createdAt": "2025-12-07T22:43:45.487Z",
+      "updatedAt": "2025-12-07T22:43:45.487Z",
+      "dependsOn": [
+        "60ba564e-51bf-4703-948d-68e805e0eb73"
+      ],
+      "priority": 6,
+      "complexity": 4,
+      "status": "pending",
+      "tags": [
+        "phase-5",
+        "logging",
+        "persistence"
+      ],
+      "estimatedHours": 4,
+      "level": 0
+    },
+    {
+      "id": "47123564-9012-4aad-8a6c-ef6d42133535",
+      "name": "Phase 6: Daily Random Source Selection",
+      "details": "Implement date-seeded random selection for daily source rotation. Ensure consistent daily source (same date = same source) and random source rotation functionality.",
+      "projectId": "bfec727f-93a6-42e5-bfe6-66e01b495ddf",
+      "completed": false,
+      "createdAt": "2025-12-07T22:43:50.444Z",
+      "updatedAt": "2025-12-07T22:43:50.444Z",
+      "dependsOn": [
+        "ed19147e-8765-48a8-b94d-7b5ab83c1bdf"
+      ],
+      "priority": 6,
+      "complexity": 3,
+      "status": "pending",
+      "tags": [
+        "phase-6",
+        "random",
+        "daily-selection"
+      ],
+      "estimatedHours": 2,
+      "level": 0
+    },
+    {
+      "id": "fea3902e-97d1-41c7-bddb-d6cc0f11b26a",
+      "name": "Phase 7: Optional Features",
+      "details": "Implement optional features including Sefaria API integration for Hebrew texts, Voice/TTS support (Go equivalent of edge-tts), and podcast export formatting.",
+      "projectId": "bfec727f-93a6-42e5-bfe6-66e01b495ddf",
+      "completed": false,
+      "createdAt": "2025-12-07T22:43:59.831Z",
+      "updatedAt": "2025-12-07T22:43:59.831Z",
+      "dependsOn": [
+        "ed19147e-8765-48a8-b94d-7b5ab83c1bdf"
+      ],
+      "priority": 4,
+      "complexity": 7,
+      "status": "pending",
+      "tags": [
+        "phase-7",
+        "optional",
+        "sefaria",
+        "tts",
+        "podcast"
+      ],
+      "estimatedHours": 8,
+      "level": 0
+    },
+    {
+      "id": "1ccebc0f-d5e2-4a92-9b17-dca128e83cc5",
+      "name": "Phase 8: Testing",
+      "details": "Write comprehensive tests including unit tests for wisdom engine, unit tests for advisors, integration tests for MCP server, and testing with Cursor MCP client.",
+      "projectId": "bfec727f-93a6-42e5-bfe6-66e01b495ddf",
+      "completed": false,
+      "createdAt": "2025-12-07T22:44:11.354Z",
+      "updatedAt": "2025-12-08T07:42:59.176Z",
+      "dependsOn": [
+        "60ba564e-51bf-4703-948d-68e805e0eb73"
+      ],
+      "priority": 8,
+      "complexity": 6,
+      "status": "in-progress",
+      "tags": [
+        "phase-8",
+        "testing",
+        "quality"
+      ],
+      "estimatedHours": 10,
+      "level": 0
+    },
+    {
+      "id": "1570c43d-9a5f-49d5-b2ba-6ed1c5e135a3",
+      "name": "Phase 9: Documentation",
+      "details": "Complete documentation including API documentation (godoc), usage examples, migration guide from Python version, and performance benchmarks comparing Go vs Python.",
+      "projectId": "bfec727f-93a6-42e5-bfe6-66e01b495ddf",
+      "completed": false,
+      "createdAt": "2025-12-07T22:44:16.348Z",
+      "updatedAt": "2025-12-07T22:44:16.348Z",
+      "dependsOn": [],
+      "priority": 6,
+      "complexity": 4,
+      "status": "pending",
+      "tags": [
+        "phase-9",
+        "documentation",
+        "godoc"
+      ],
+      "estimatedHours": 6,
+      "level": 0
+    },
+    {
+      "id": "05e852ab-2670-4214-a97f-202e6d663643",
+      "name": "Phase 10: Polish & Deployment",
+      "details": "Final polish including error message improvements, logging improvements, performance optimization, cross-compilation (Windows, Linux, macOS), and CI/CD setup.",
+      "projectId": "bfec727f-93a6-42e5-bfe6-66e01b495ddf",
+      "completed": false,
+      "createdAt": "2025-12-07T22:44:26.778Z",
+      "updatedAt": "2025-12-07T22:44:26.778Z",
+      "dependsOn": [
+        "60ba564e-51bf-4703-948d-68e805e0eb73",
+        "3a7d1940-004c-4079-aad2-f39517d87e3f"
+      ],
+      "priority": 6,
+      "complexity": 5,
+      "status": "pending",
+      "tags": [
+        "phase-10",
+        "polish",
+        "deployment",
+        "ci-cd"
+      ],
+      "estimatedHours": 8,
+      "level": 0
+    },
+    {
+      "id": "edbaf317-60b1-4013-b137-79168238f1d7",
+      "name": "Port Simple Sources (stoic, tao, bofh, tao_of_programming, murphy)",
+      "details": "Port the 5 simplest wisdom sources from Python to JSON format: stoic, tao, bofh, tao_of_programming, and murphy. These have straightforward structures with no special handling needed.",
+      "projectId": "bfec727f-93a6-42e5-bfe6-66e01b495ddf",
+      "parentId": "ed19147e-8765-48a8-b94d-7b5ab83c1bdf",
+      "completed": true,
+      "createdAt": "2025-12-07T22:44:32.009Z",
+      "updatedAt": "2025-12-08T07:35:59.312Z",
+      "dependsOn": [],
+      "priority": 8,
+      "complexity": 3,
+      "status": "done",
+      "tags": [
+        "phase-2",
+        "porting",
+        "simple-sources"
+      ],
+      "estimatedHours": 2,
+      "level": 1
+    },
+    {
+      "id": "c89f5f4f-c0b5-4568-bcbd-77dffab49770",
+      "name": "Port Pistis Sophia (separate module with extra metadata)",
+      "details": "Port pistis_sophia source which is in a separate Python module (pistis_sophia.py) with additional metadata including chapter, context, and aeon_number fields.",
+      "projectId": "bfec727f-93a6-42e5-bfe6-66e01b495ddf",
+      "parentId": "ed19147e-8765-48a8-b94d-7b5ab83c1bdf",
+      "completed": true,
+      "createdAt": "2025-12-07T22:44:44.100Z",
+      "updatedAt": "2025-12-08T07:36:25.603Z",
+      "dependsOn": [],
+      "priority": 7,
+      "complexity": 5,
+      "status": "done",
+      "tags": [
+        "phase-2",
+        "porting",
+        "pistis-sophia",
+        "complex"
+      ],
+      "estimatedHours": 2,
+      "level": 1
+    },
+    {
+      "id": "e6cd8792-5dfe-4062-9851-f3e000b22dd2",
+      "name": "Port Hebrew Sources (rebbe, tzaddik, chacham) with bilingual support",
+      "details": "Port 3 Hebrew sources (rebbe, tzaddik, chacham) with bilingual Hebrew/English support. These require special handling for Hebrew text and language metadata.",
+      "projectId": "bfec727f-93a6-42e5-bfe6-66e01b495ddf",
+      "parentId": "ed19147e-8765-48a8-b94d-7b5ab83c1bdf",
+      "completed": false,
+      "createdAt": "2025-12-07T22:44:53.894Z",
+      "updatedAt": "2025-12-07T22:44:53.894Z",
+      "dependsOn": [],
+      "priority": 7,
+      "complexity": 6,
+      "status": "pending",
+      "tags": [
+        "phase-2",
+        "porting",
+        "hebrew",
+        "bilingual"
+      ],
+      "estimatedHours": 3,
+      "level": 1
+    },
+    {
+      "id": "fb24d139-cc6b-4f13-a029-5087c9810b73",
+      "name": "Implement Random Source Selector",
+      "details": "Implement daily random source selector with date-seeded random selection. Same date should return same source (consistent daily source), with random source rotation across days.",
+      "projectId": "bfec727f-93a6-42e5-bfe6-66e01b495ddf",
+      "parentId": "ed19147e-8765-48a8-b94d-7b5ab83c1bdf",
+      "completed": false,
+      "createdAt": "2025-12-07T22:44:59.261Z",
+      "updatedAt": "2025-12-07T22:44:59.261Z",
+      "dependsOn": [],
+      "priority": 6,
+      "complexity": 4,
+      "status": "pending",
+      "tags": [
+        "phase-2",
+        "random",
+        "selector"
+      ],
+      "estimatedHours": 2,
+      "level": 1
+    },
+    {
+      "id": "8f8c7298-800c-4004-a6db-d2c7942d5de6",
+      "name": "Port Medium Sources (7 sources)",
+      "details": "Port 7 medium complexity sources: art_of_war, bible, shakespeare, confucius, kybalion, gracian, and enochian. These have more quotes but standard structure.",
+      "projectId": "bfec727f-93a6-42e5-bfe6-66e01b495ddf",
+      "parentId": "ed19147e-8765-48a8-b94d-7b5ab83c1bdf",
+      "completed": true,
+      "createdAt": "2025-12-08T07:32:50.671Z",
+      "updatedAt": "2025-12-08T07:36:11.804Z",
+      "dependsOn": [],
+      "priority": 7,
+      "complexity": 4,
+      "status": "done",
+      "tags": [
+        "phase-2",
+        "porting",
+        "medium-sources"
+      ],
+      "estimatedHours": 3,
+      "level": 1
+    },
+    {
+      "id": "1d2050ca-63f9-4153-a032-ea7679ab6176",
+      "name": "Create zsh plugin structure",
+      "details": "Create zsh/ directory with devwisdom.plugin.zsh main file. Implement helper functions: devwisdom-daily, devwisdom-quote, devwisdom-consult. Add auto-completion support.",
+      "projectId": "bfec727f-93a6-42e5-bfe6-66e01b495ddf",
+      "completed": false,
+      "createdAt": "2025-12-08T07:42:45.825Z",
+      "updatedAt": "2025-12-08T07:42:45.825Z",
+      "dependsOn": [],
+      "priority": 7,
+      "complexity": 4,
+      "status": "pending",
+      "tags": [
+        "zsh-plugin",
+        "integration"
+      ],
+      "estimatedHours": 4,
+      "level": 0
+    },
+    {
+      "id": "132bc9ab-e5b5-4678-b0b0-33c8c8502a8b",
+      "name": "Implement CLI briefing command",
+      "details": "Implement 'devwisdom briefing [--days DAYS]' command to get daily briefing. Support JSON output format.",
+      "projectId": "bfec727f-93a6-42e5-bfe6-66e01b495ddf",
+      "completed": false,
+      "createdAt": "2025-12-08T07:42:46.410Z",
+      "updatedAt": "2025-12-08T07:42:46.410Z",
+      "dependsOn": [],
+      "priority": 7,
+      "complexity": 3,
+      "status": "pending",
+      "tags": [
+        "cli",
+        "commands"
+      ],
+      "estimatedHours": 2,
+      "level": 0
+    },
+    {
+      "id": "9ff270b9-9e4a-49ba-bed1-1e5b4bf4a4b0",
+      "name": "Create zsh plugin installation script",
+      "details": "Create installation script for zsh plugin. Support both oh-my-zsh and standard zsh plugin directories. Add documentation for installation.",
+      "projectId": "bfec727f-93a6-42e5-bfe6-66e01b495ddf",
+      "completed": false,
+      "createdAt": "2025-12-08T07:42:47.662Z",
+      "updatedAt": "2025-12-08T07:42:47.662Z",
+      "dependsOn": [],
+      "priority": 6,
+      "complexity": 2,
+      "status": "pending",
+      "tags": [
+        "zsh-plugin",
+        "documentation"
+      ],
+      "estimatedHours": 1,
+      "level": 0
+    },
+    {
+      "id": "e8826b08-cfce-4c10-90c4-a8294a37c189",
+      "name": "Implement CLI sources and advisors commands",
+      "details": "Implement 'devwisdom sources' and 'devwisdom advisors' commands to list available sources and advisors. Support JSON output format.",
+      "projectId": "bfec727f-93a6-42e5-bfe6-66e01b495ddf",
+      "completed": false,
+      "createdAt": "2025-12-08T07:42:47.751Z",
+      "updatedAt": "2025-12-08T07:42:47.751Z",
+      "dependsOn": [],
+      "priority": 7,
+      "complexity": 2,
+      "status": "pending",
+      "tags": [
+        "cli",
+        "commands"
+      ],
+      "estimatedHours": 1,
+      "level": 0
+    },
+    {
+      "id": "3d9bd991-baf6-4981-bf9f-61fc5ec3ada1",
+      "name": "Implement CLI consult command",
+      "details": "Implement 'devwisdom consult [--metric METRIC] [--tool TOOL] [--stage STAGE] [--score SCORE]' command. Support all consultation parameters and output formats.",
+      "projectId": "bfec727f-93a6-42e5-bfe6-66e01b495ddf",
+      "completed": false,
+      "createdAt": "2025-12-08T07:42:48.503Z",
+      "updatedAt": "2025-12-08T07:42:48.503Z",
+      "dependsOn": [],
+      "priority": 8,
+      "complexity": 4,
+      "status": "pending",
+      "tags": [
+        "cli",
+        "commands"
+      ],
+      "estimatedHours": 3,
+      "level": 0
+    },
+    {
+      "id": "7123c57d-272b-4554-842c-7a9b4d9be537",
+      "name": "Implement CLI quote command",
+      "details": "Implement 'devwisdom quote [--source SOURCE] [--score SCORE]' command. Support human-readable and JSON output formats. Add quiet mode option.",
+      "projectId": "bfec727f-93a6-42e5-bfe6-66e01b495ddf",
+      "completed": false,
+      "createdAt": "2025-12-08T07:42:48.843Z",
+      "updatedAt": "2025-12-08T07:42:48.843Z",
+      "dependsOn": [],
+      "priority": 8,
+      "complexity": 3,
+      "status": "pending",
+      "tags": [
+        "cli",
+        "commands"
+      ],
+      "estimatedHours": 2,
+      "level": 0
+    },
+    {
+      "id": "e815d0b2-81b5-411a-b53f-0f2976f63fb5",
+      "name": "Phase: Standalone CLI and Zsh Plugin - Foundation",
+      "details": "Create CLI structure and entry point. Add cmd/cli/main.go with mode detection (CLI vs MCP server). Implement basic command structure using standard library flag package. Add output formatting utilities.",
+      "projectId": "bfec727f-93a6-42e5-bfe6-66e01b495ddf",
+      "completed": false,
+      "createdAt": "2025-12-08T07:42:49.334Z",
+      "updatedAt": "2025-12-08T07:42:49.334Z",
+      "dependsOn": [],
+      "priority": 8,
+      "complexity": 4,
+      "status": "pending",
+      "tags": [
+        "cli",
+        "zsh-plugin",
+        "phase-new",
+        "foundation"
+      ],
+      "estimatedHours": 3,
+      "level": 0
+    },
+    {
+      "id": "9b288e9d-6d95-410c-b3a6-f9fa18234631",
+      "name": "Update Makefile and documentation",
+      "details": "Update Makefile with CLI build targets. Update README with CLI usage examples and zsh plugin installation instructions. Add examples and use cases.",
+      "projectId": "bfec727f-93a6-42e5-bfe6-66e01b495ddf",
+      "completed": false,
+      "createdAt": "2025-12-08T07:44:49.846Z",
+      "updatedAt": "2025-12-08T07:44:49.846Z",
+      "dependsOn": [],
+      "priority": 6,
+      "complexity": 2,
+      "status": "pending",
+      "tags": [
+        "documentation",
+        "build"
+      ],
+      "estimatedHours": 2,
+      "level": 0
+    }
+  ],
+  "subtasks": [],
+  "migration": {
+    "version": "1.8.1"
+  }
+}

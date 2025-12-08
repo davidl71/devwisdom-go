@@ -1,0 +1,651 @@
+{
+  "version": "1.0",
+  "last_updated": "2025-01-26",
+  "author": "devwisdom-go",
+  "sources": {
+    "art_of_war": {
+      "id": "art_of_war",
+      "name": "The Art of War (Sun Tzu)",
+      "icon": "⚔️",
+      "quotes": {
+        "chaos": [
+          {
+            "quote": "In the midst of chaos, there is also opportunity.",
+            "source": "Chapter 3",
+            "encouragement": "Find the opening."
+          },
+          {
+            "quote": "If you know the enemy and know yourself, you need not fear the result of a hundred battles.",
+            "source": "Chapter 3",
+            "encouragement": "Understand the problem space."
+          },
+          {
+            "quote": "Appear weak when you are strong, and strong when you are weak.",
+            "source": "Chapter 1",
+            "encouragement": "Manage expectations."
+          }
+        ],
+        "lower_aeons": [
+          {
+            "quote": "The supreme art of war is to subdue the enemy without fighting.",
+            "source": "Chapter 3",
+            "encouragement": "Prevention beats remediation."
+          },
+          {
+            "quote": "Opportunities multiply as they are seized.",
+            "source": "Chapter 5",
+            "encouragement": "Momentum builds momentum."
+          },
+          {
+            "quote": "Let your plans be dark and impenetrable as night.",
+            "source": "Chapter 7",
+            "encouragement": "Keep competitive advantages close."
+          }
+        ],
+        "middle_aeons": [
+          {
+            "quote": "Strategy without tactics is the slowest route to victory.",
+            "source": "Chapter 6",
+            "encouragement": "Plan and execute."
+          },
+          {
+            "quote": "The quality of decision is like the well-timed swoop of a falcon.",
+            "source": "Chapter 5",
+            "encouragement": "Act decisively."
+          },
+          {
+            "quote": "Move swift as the Wind and closely-formed as the Wood.",
+            "source": "Chapter 7",
+            "encouragement": "Balance speed and stability."
+          }
+        ],
+        "upper_aeons": [
+          {
+            "quote": "To know your Enemy, you must become your Enemy.",
+            "source": "Chapter 3",
+            "encouragement": "Think like your users."
+          },
+          {
+            "quote": "The greatest victory is that which requires no battle.",
+            "source": "Chapter 3",
+            "encouragement": "Design prevents bugs."
+          },
+          {
+            "quote": "He will win who knows when to fight and when not to fight.",
+            "source": "Chapter 3",
+            "encouragement": "Pick your battles."
+          }
+        ],
+        "treasury": [
+          {
+            "quote": "Victorious warriors win first and then go to war.",
+            "source": "Chapter 4",
+            "encouragement": "Plan before you code."
+          },
+          {
+            "quote": "There are not more than five musical notes, yet their combinations give rise to more melodies than can ever be heard.",
+            "source": "Chapter 5",
+            "encouragement": "Simple primitives, infinite possibilities."
+          },
+          {
+            "quote": "The whole secret lies in confusing the enemy.",
+            "source": "Chapter 6",
+            "encouragement": "Complexity is the enemy of security."
+          }
+        ]
+      }
+    },
+    "bible": {
+      "id": "bible",
+      "name": "Bible (Proverbs & Ecclesiastes)",
+      "icon": "📖",
+      "quotes": {
+        "chaos": [
+          {
+            "quote": "For everything there is a season, and a time for every matter under heaven.",
+            "source": "Ecclesiastes 3:1",
+            "encouragement": "This too shall pass."
+          },
+          {
+            "quote": "Pride goes before destruction, and a haughty spirit before a fall.",
+            "source": "Proverbs 16:18",
+            "encouragement": "Stay humble in debugging."
+          },
+          {
+            "quote": "Where there is no vision, the people perish.",
+            "source": "Proverbs 29:18",
+            "encouragement": "Define your goals."
+          }
+        ],
+        "lower_aeons": [
+          {
+            "quote": "The beginning of wisdom is this: Get wisdom, and whatever you get, get insight.",
+            "source": "Proverbs 4:7",
+            "encouragement": "Learn from the error logs."
+          },
+          {
+            "quote": "A soft answer turns away wrath, but a harsh word stirs up anger.",
+            "source": "Proverbs 15:1",
+            "encouragement": "Be gentle in code reviews."
+          },
+          {
+            "quote": "Commit your work to the Lord, and your plans will be established.",
+            "source": "Proverbs 16:3",
+            "encouragement": "Do good work, trust the process."
+          }
+        ],
+        "middle_aeons": [
+          {
+            "quote": "The hand of the diligent will rule, while the slothful will be put to forced labor.",
+            "source": "Proverbs 12:24",
+            "encouragement": "Consistency wins."
+          },
+          {
+            "quote": "Better is a little with righteousness than great revenues with injustice.",
+            "source": "Proverbs 16:8",
+            "encouragement": "Quality over quantity."
+          },
+          {
+            "quote": "The heart of the discerning acquires knowledge; the ears of the wise seek it out.",
+            "source": "Proverbs 18:15",
+            "encouragement": "Keep learning."
+          }
+        ],
+        "upper_aeons": [
+          {
+            "quote": "Whatever your hand finds to do, do it with all your might.",
+            "source": "Ecclesiastes 9:10",
+            "encouragement": "Give full effort."
+          },
+          {
+            "quote": "Two are better than one, because they have a good reward for their toil.",
+            "source": "Ecclesiastes 4:9",
+            "encouragement": "Collaborate."
+          },
+          {
+            "quote": "A good name is to be chosen rather than great riches.",
+            "source": "Proverbs 22:1",
+            "encouragement": "Reputation matters."
+          }
+        ],
+        "treasury": [
+          {
+            "quote": "She looks well to the ways of her household and does not eat the bread of idleness.",
+            "source": "Proverbs 31:27",
+            "encouragement": "Maintain vigilance."
+          },
+          {
+            "quote": "Let another praise you, and not your own mouth; a stranger, and not your own lips.",
+            "source": "Proverbs 27:2",
+            "encouragement": "Let your work speak."
+          },
+          {
+            "quote": "The end of a matter is better than its beginning, and patience is better than pride.",
+            "source": "Ecclesiastes 7:8",
+            "encouragement": "You've earned this."
+          }
+        ]
+      }
+    },
+    "shakespeare": {
+      "id": "shakespeare",
+      "name": "William Shakespeare",
+      "icon": "🎭",
+      "quotes": {
+        "chaos": [
+          {
+            "quote": "Hell is empty and all the devils are here.",
+            "source": "The Tempest, Act 1",
+            "encouragement": "Face the chaos."
+          },
+          {
+            "quote": "When sorrows come, they come not single spies, but in battalions.",
+            "source": "Hamlet, Act 4",
+            "encouragement": "Problems cluster."
+          },
+          {
+            "quote": "The fault, dear Brutus, is not in our stars, but in ourselves.",
+            "source": "Julius Caesar, Act 1",
+            "encouragement": "Take ownership."
+          }
+        ],
+        "lower_aeons": [
+          {
+            "quote": "There is nothing either good or bad, but thinking makes it so.",
+            "source": "Hamlet, Act 2",
+            "encouragement": "Perspective is everything."
+          },
+          {
+            "quote": "All things are ready, if our minds be so.",
+            "source": "Henry V, Act 4",
+            "encouragement": "Mindset determines outcome."
+          },
+          {
+            "quote": "What's past is prologue.",
+            "source": "The Tempest, Act 2",
+            "encouragement": "Learn and move forward."
+          }
+        ],
+        "middle_aeons": [
+          {
+            "quote": "Though she be but little, she is fierce.",
+            "source": "A Midsummer Night's Dream, Act 3",
+            "encouragement": "Small teams can be powerful."
+          },
+          {
+            "quote": "Love all, trust a few, do wrong to none.",
+            "source": "All's Well That Ends Well, Act 1",
+            "encouragement": "Build trust carefully."
+          },
+          {
+            "quote": "The better part of valour is discretion.",
+            "source": "Henry IV Part 1, Act 5",
+            "encouragement": "Know when to retreat."
+          }
+        ],
+        "upper_aeons": [
+          {
+            "quote": "Some are born great, some achieve greatness, and some have greatness thrust upon them.",
+            "source": "Twelfth Night, Act 2",
+            "encouragement": "Rise to the occasion."
+          },
+          {
+            "quote": "We know what we are, but know not what we may be.",
+            "source": "Hamlet, Act 4",
+            "encouragement": "Potential exceeds perception."
+          },
+          {
+            "quote": "To thine own self be true.",
+            "source": "Hamlet, Act 1",
+            "encouragement": "Maintain your principles."
+          }
+        ],
+        "treasury": [
+          {
+            "quote": "All's well that ends well.",
+            "source": "All's Well That Ends Well",
+            "encouragement": "Outcomes matter."
+          },
+          {
+            "quote": "Our doubts are traitors, and make us lose the good we oft might win, by fearing to attempt.",
+            "source": "Measure for Measure, Act 1",
+            "encouragement": "Ship it."
+          },
+          {
+            "quote": "The web of our life is of a mingled yarn, good and ill together.",
+            "source": "All's Well That Ends Well, Act 4",
+            "encouragement": "Embrace complexity."
+          }
+        ]
+      }
+    },
+    "confucius": {
+      "id": "confucius",
+      "name": "Confucius (The Analects)",
+      "icon": "🎓",
+      "quotes": {
+        "chaos": [
+          {
+            "quote": "Our greatest glory is not in never falling, but in rising every time we fall.",
+            "source": "Analects",
+            "encouragement": "Get back up."
+          },
+          {
+            "quote": "The man who moves a mountain begins by carrying away small stones.",
+            "source": "Analects",
+            "encouragement": "Start small."
+          },
+          {
+            "quote": "When it is obvious that the goals cannot be reached, don't adjust the goals, adjust the action steps.",
+            "source": "Analects",
+            "encouragement": "Iterate on approach."
+          }
+        ],
+        "lower_aeons": [
+          {
+            "quote": "It does not matter how slowly you go as long as you do not stop.",
+            "source": "Analects",
+            "encouragement": "Persistence wins."
+          },
+          {
+            "quote": "I hear and I forget. I see and I remember. I do and I understand.",
+            "source": "Analects",
+            "encouragement": "Learn by doing."
+          },
+          {
+            "quote": "Real knowledge is to know the extent of one's ignorance.",
+            "source": "Analects",
+            "encouragement": "Acknowledge gaps."
+          }
+        ],
+        "middle_aeons": [
+          {
+            "quote": "The superior man is modest in his speech, but exceeds in his actions.",
+            "source": "Analects",
+            "encouragement": "Let work speak."
+          },
+          {
+            "quote": "By three methods we may learn wisdom: by reflection, which is noblest; by imitation, which is easiest; and by experience, which is the bitterest.",
+            "source": "Analects",
+            "encouragement": "All learning is valid."
+          },
+          {
+            "quote": "Choose a job you love, and you will never have to work a day in your life.",
+            "source": "Analects",
+            "encouragement": "Passion sustains."
+          }
+        ],
+        "upper_aeons": [
+          {
+            "quote": "The man of virtue makes the difficulty to be overcome his first interest; success only comes later.",
+            "source": "Analects",
+            "encouragement": "Process over outcome."
+          },
+          {
+            "quote": "If you think in terms of a year, plant a seed; if in terms of ten years, plant trees; if in terms of 100 years, teach the people.",
+            "source": "Analects",
+            "encouragement": "Invest in documentation."
+          },
+          {
+            "quote": "The more man meditates upon good thoughts, the better will be his world and the world at large.",
+            "source": "Analects",
+            "encouragement": "Positive thinking matters."
+          }
+        ],
+        "treasury": [
+          {
+            "quote": "What you do not want done to yourself, do not do to others.",
+            "source": "Analects",
+            "encouragement": "Write code you'd want to maintain."
+          },
+          {
+            "quote": "Only the wisest and stupidest of men never change.",
+            "source": "Analects",
+            "encouragement": "Stay adaptable."
+          },
+          {
+            "quote": "When you see a worthy person, endeavor to emulate them.",
+            "source": "Analects",
+            "encouragement": "Learn from the best."
+          }
+        ]
+      }
+    },
+    "kybalion": {
+      "id": "kybalion",
+      "name": "The Kybalion (Hermetic Philosophy)",
+      "icon": "⚗️",
+      "quotes": {
+        "chaos": [
+          {
+            "quote": "THE ALL is MIND; The Universe is Mental.",
+            "source": "Principle of Mentalism",
+            "encouragement": "Your mental model shapes your code."
+          },
+          {
+            "quote": "As above, so below; as below, so above.",
+            "source": "Principle of Correspondence",
+            "encouragement": "Patterns repeat at every scale."
+          },
+          {
+            "quote": "Nothing rests; everything moves; everything vibrates.",
+            "source": "Principle of Vibration",
+            "encouragement": "Change is the only constant."
+          }
+        ],
+        "lower_aeons": [
+          {
+            "quote": "Everything is Dual; everything has poles; everything has its pair of opposites.",
+            "source": "Principle of Polarity",
+            "encouragement": "Bugs and features are matters of degree."
+          },
+          {
+            "quote": "Everything flows, out and in; everything has its tides.",
+            "source": "Principle of Rhythm",
+            "encouragement": "Sprints have natural rhythms."
+          },
+          {
+            "quote": "The Principles of Truth are Seven; he who knows these, understandingly, possesses the Magic Key.",
+            "source": "The Kybalion",
+            "encouragement": "Master the fundamentals."
+          }
+        ],
+        "middle_aeons": [
+          {
+            "quote": "Every Cause has its Effect; every Effect has its Cause.",
+            "source": "Principle of Cause and Effect",
+            "encouragement": "Debug systematically."
+          },
+          {
+            "quote": "Gender is in everything; everything has its Masculine and Feminine Principles.",
+            "source": "Principle of Gender",
+            "encouragement": "Balance creation and refinement."
+          },
+          {
+            "quote": "The half-wise, recognizing the unreality of the Universe, imagine that they may defy its Laws. Such are vain and presumptuous fools.",
+            "source": "The Kybalion",
+            "encouragement": "Respect the constraints."
+          }
+        ],
+        "upper_aeons": [
+          {
+            "quote": "Mind may be transmuted, from state to state; degree to degree; pole to pole; vibration to vibration.",
+            "source": "The Kybalion",
+            "encouragement": "Refactoring transforms understanding."
+          },
+          {
+            "quote": "The wise ones serve on the higher planes, but rule on the lower.",
+            "source": "The Kybalion",
+            "encouragement": "Lead by example, delegate wisely."
+          },
+          {
+            "quote": "Nothing escapes the Principle of Cause and Effect, but there are many Planes of Causation.",
+            "source": "The Kybalion",
+            "encouragement": "Look for root causes."
+          }
+        ],
+        "treasury": [
+          {
+            "quote": "The lips of Wisdom are closed, except to the ears of Understanding.",
+            "source": "The Kybalion",
+            "encouragement": "Documentation for those who seek."
+          },
+          {
+            "quote": "Where falls the footsteps of the Master, the ears of those ready for his Teaching open wide.",
+            "source": "The Kybalion",
+            "encouragement": "Teach those who are ready."
+          },
+          {
+            "quote": "When the ears of the student are ready to hear, then cometh the lips to fill them with Wisdom.",
+            "source": "The Kybalion",
+            "encouragement": "The learner appears when ready."
+          }
+        ]
+      }
+    },
+    "gracian": {
+      "id": "gracian",
+      "name": "Art of Worldly Wisdom (Gracián)",
+      "icon": "🎭",
+      "quotes": {
+        "chaos": [
+          {
+            "quote": "Never open the door to a lesser evil, for other and greater ones invariably slink in after it.",
+            "source": "Maxim 76",
+            "encouragement": "Fix the bug now, not later."
+          },
+          {
+            "quote": "Know how to ask. There is nothing more difficult for some, nothing easier for others.",
+            "source": "Maxim 213",
+            "encouragement": "Ask for help early."
+          },
+          {
+            "quote": "Begin with another's to end with your own.",
+            "source": "Maxim 144",
+            "encouragement": "Understand requirements first."
+          }
+        ],
+        "lower_aeons": [
+          {
+            "quote": "A single lie destroys a whole reputation for integrity.",
+            "source": "Maxim 181",
+            "encouragement": "Honesty in commit messages."
+          },
+          {
+            "quote": "Know how to make use of stupidity: The wisest man plays this card at times.",
+            "source": "Maxim 240",
+            "encouragement": "Rubber duck debugging works."
+          },
+          {
+            "quote": "Never contend with a man who has nothing to lose.",
+            "source": "Maxim 172",
+            "encouragement": "Pick your battles."
+          }
+        ],
+        "middle_aeons": [
+          {
+            "quote": "Think with the few and speak with the many.",
+            "source": "Maxim 43",
+            "encouragement": "Design privately, communicate widely."
+          },
+          {
+            "quote": "The things we remember best are those better forgotten.",
+            "source": "Maxim 262",
+            "encouragement": "Document the weird edge cases."
+          },
+          {
+            "quote": "Do not wait till you are a sinking sun.",
+            "source": "Maxim 110",
+            "encouragement": "Know when to refactor."
+          }
+        ],
+        "upper_aeons": [
+          {
+            "quote": "Have knowledge and courage, they make for greatness.",
+            "source": "Maxim 185",
+            "encouragement": "Learn continuously, ship boldly."
+          },
+          {
+            "quote": "Know how to withdraw. If it is a great lesson in life to know how to deny, it is a still greater to know how to deny oneself.",
+            "source": "Maxim 33",
+            "encouragement": "Say no to scope creep."
+          },
+          {
+            "quote": "The sole advantage of power is that you can do more good.",
+            "source": "Maxim 286",
+            "encouragement": "Use your influence wisely."
+          }
+        ],
+        "treasury": [
+          {
+            "quote": "Attempt easy tasks as if they were difficult, and difficult as if they were easy.",
+            "source": "Maxim 204",
+            "encouragement": "Respect all code equally."
+          },
+          {
+            "quote": "Fortune pays you sometimes for the intensity of her favors by the shortness of their duration.",
+            "source": "Maxim 38",
+            "encouragement": "Enjoy the wins, prepare for challenges."
+          },
+          {
+            "quote": "Leave off hungry. One ought to remove even from the nectar of pleasure the cup from the lips.",
+            "source": "Maxim 60",
+            "encouragement": "Ship before perfect."
+          }
+        ]
+      }
+    },
+    "enochian": {
+      "id": "enochian",
+      "name": "Enochian Mysticism (John Dee)",
+      "icon": "🔮",
+      "quotes": {
+        "chaos": [
+          {
+            "quote": "I reign over you, saith the God of Justice, in power exalted above the firmaments of wrath.",
+            "source": "First Call",
+            "encouragement": "Take command of the chaos."
+          },
+          {
+            "quote": "Can the wings of the winds understand your voices of wonder?",
+            "source": "First Call",
+            "encouragement": "Communicate with precision."
+          },
+          {
+            "quote": "Move and show yourselves! Open the mysteries of your creation!",
+            "source": "First Call",
+            "encouragement": "Debug with intention."
+          }
+        ],
+        "lower_aeons": [
+          {
+            "quote": "The spirits of the fourth angle are nine, mighty in the firmament of waters.",
+            "source": "Fourth Call",
+            "encouragement": "Structure brings power."
+          },
+          {
+            "quote": "Arise! Move! and appear before the covenant of his mouth.",
+            "source": "Second Call",
+            "encouragement": "Honor your commitments."
+          },
+          {
+            "quote": "Visit us in peace and comfort. Conclude us receivers of your mysteries.",
+            "source": "Calls",
+            "encouragement": "Seek understanding calmly."
+          }
+        ],
+        "middle_aeons": [
+          {
+            "quote": "Behold the face of your God, the beginning of comfort.",
+            "source": "Third Call",
+            "encouragement": "Find joy in the work."
+          },
+          {
+            "quote": "Whose works shall be a song of honor.",
+            "source": "Calls",
+            "encouragement": "Take pride in clean code."
+          },
+          {
+            "quote": "Move therefore, and show yourselves!",
+            "source": "Calls",
+            "encouragement": "Make your intentions visible."
+          }
+        ],
+        "upper_aeons": [
+          {
+            "quote": "Gather up your garments, and harken unto my voice.",
+            "source": "Calls",
+            "encouragement": "Prepare for deployment."
+          },
+          {
+            "quote": "In power and presence come to us.",
+            "source": "Calls",
+            "encouragement": "Bring your full attention."
+          },
+          {
+            "quote": "Whose voices the winged creatures speak.",
+            "source": "Calls",
+            "encouragement": "Let your work speak for itself."
+          }
+        ],
+        "treasury": [
+          {
+            "quote": "I am your God, that hath created the world.",
+            "source": "Calls",
+            "encouragement": "You are the creator of your domain."
+          },
+          {
+            "quote": "Arise, saith the First. Move therefore unto his servants.",
+            "source": "Calls",
+            "encouragement": "Lead by action."
+          },
+          {
+            "quote": "The work is finished.",
+            "source": "Calls",
+            "encouragement": "Ship it."
+          }
+        ]
+      }
+    }
+  }
+}

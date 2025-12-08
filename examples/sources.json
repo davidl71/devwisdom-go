@@ -1,0 +1,287 @@
+{
+  "version": "1.0",
+  "last_updated": "2025-01-26",
+  "author": "devwisdom-go",
+  "sources": {
+    "bofh": {
+      "id": "bofh",
+      "name": "BOFH (Bastard Operator From Hell)",
+      "icon": "😈",
+      "description": "Tech humor for debugging sessions and outages",
+      "quotes": {
+        "chaos": [
+          {
+            "quote": "It's not a bug, it's a feature.",
+            "source": "BOFH Excuse Calendar",
+            "encouragement": "Document it and ship it."
+          },
+          {
+            "quote": "Have you tried turning it off and on again?",
+            "source": "BOFH Classic",
+            "encouragement": "Sometimes the classics work."
+          },
+          {
+            "quote": "The problem exists between keyboard and chair.",
+            "source": "BOFH Wisdom",
+            "encouragement": "Check your assumptions."
+          }
+        ],
+        "lower_aeons": [
+          {
+            "quote": "Strstrstrrstrstrstrtstrstrst",
+            "source": "BOFH on Serial Cables",
+            "encouragement": "Check your connections."
+          },
+          {
+            "quote": "We don't support that. We never have. We never will.",
+            "source": "BOFH Helpdesk",
+            "encouragement": "Set clear boundaries."
+          },
+          {
+            "quote": "The backup system is working perfectly. Unfortunately, the restore system isn't.",
+            "source": "BOFH on Backups",
+            "encouragement": "Test your recovery procedures."
+          }
+        ],
+        "middle_aeons": [
+          {
+            "quote": "Users are like cattle. Sometimes you have to thin the herd.",
+            "source": "BOFH on User Management",
+            "encouragement": "Prioritize your support queue."
+          },
+          {
+            "quote": "Whose fault is it? The network's, obviously.",
+            "source": "BOFH Troubleshooting",
+            "encouragement": "It's always DNS."
+          },
+          {
+            "quote": "The system isn't slow, it's just contemplating.",
+            "source": "BOFH on Performance",
+            "encouragement": "Perception is reality."
+          }
+        ],
+        "upper_aeons": [
+          {
+            "quote": "I don't have a solution, but I do admire the problem.",
+            "source": "BOFH Philosophy",
+            "encouragement": "Some problems are worth appreciating."
+          },
+          {
+            "quote": "The nice thing about standards is there are so many to choose from.",
+            "source": "BOFH on Standards",
+            "encouragement": "Pick one and stick with it."
+          },
+          {
+            "quote": "A user's cry for help is just noise. A server's cry for help is a priority one incident.",
+            "source": "BOFH Priorities",
+            "encouragement": "Know what matters."
+          }
+        ],
+        "treasury": [
+          {
+            "quote": "It's not the logs that lie, it's the users.",
+            "source": "BOFH Truth",
+            "encouragement": "Trust but verify."
+          },
+          {
+            "quote": "In the land of the blind, the one-eyed sysadmin is king.",
+            "source": "BOFH Power",
+            "encouragement": "Your expertise matters."
+          },
+          {
+            "quote": "The server room is my happy place. No users allowed.",
+            "source": "BOFH Zen",
+            "encouragement": "Protect your focus time."
+          }
+        ]
+      }
+    },
+    "stoic": {
+      "id": "stoic",
+      "name": "Stoic Philosophers",
+      "icon": "🏛️",
+      "description": "Marcus Aurelius, Epictetus, and Seneca on resilience and focus",
+      "quotes": {
+        "chaos": [
+          {
+            "quote": "The impediment to action advances action. What stands in the way becomes the way.",
+            "source": "Marcus Aurelius, Meditations",
+            "encouragement": "Obstacles are opportunities."
+          },
+          {
+            "quote": "It is not things that disturb us, but our judgments about things.",
+            "source": "Epictetus, Enchiridion",
+            "encouragement": "Change your perspective."
+          },
+          {
+            "quote": "You have power over your mind, not outside events. Realize this, and you will find strength.",
+            "source": "Marcus Aurelius, Meditations",
+            "encouragement": "Focus on what you control."
+          }
+        ],
+        "lower_aeons": [
+          {
+            "quote": "First say to yourself what you would be; and then do what you have to do.",
+            "source": "Epictetus, Discourses",
+            "encouragement": "Define then execute."
+          },
+          {
+            "quote": "No man is free who is not master of himself.",
+            "source": "Epictetus, Discourses",
+            "encouragement": "Discipline equals freedom."
+          },
+          {
+            "quote": "Waste no more time arguing what a good man should be. Be one.",
+            "source": "Marcus Aurelius, Meditations",
+            "encouragement": "Ship the code."
+          }
+        ],
+        "middle_aeons": [
+          {
+            "quote": "The best revenge is not to be like your enemy.",
+            "source": "Marcus Aurelius, Meditations",
+            "encouragement": "Rise above."
+          },
+          {
+            "quote": "He suffers more than necessary, who suffers before it is necessary.",
+            "source": "Seneca, Letters",
+            "encouragement": "Don't pre-worry."
+          },
+          {
+            "quote": "If it is not right, do not do it; if it is not true, do not say it.",
+            "source": "Marcus Aurelius, Meditations",
+            "encouragement": "Maintain integrity."
+          }
+        ],
+        "upper_aeons": [
+          {
+            "quote": "The happiness of your life depends upon the quality of your thoughts.",
+            "source": "Marcus Aurelius, Meditations",
+            "encouragement": "Think clearly."
+          },
+          {
+            "quote": "We suffer more in imagination than in reality.",
+            "source": "Seneca, Letters",
+            "encouragement": "Most fears never materialize."
+          },
+          {
+            "quote": "Difficulties strengthen the mind, as labor does the body.",
+            "source": "Seneca, Letters",
+            "encouragement": "Challenges build skill."
+          }
+        ],
+        "treasury": [
+          {
+            "quote": "Very little is needed to make a happy life.",
+            "source": "Marcus Aurelius, Meditations",
+            "encouragement": "Simplicity is power."
+          },
+          {
+            "quote": "How much time he gains who does not look to see what his neighbor says or does.",
+            "source": "Marcus Aurelius, Meditations",
+            "encouragement": "Focus on your work."
+          },
+          {
+            "quote": "Accept the things to which fate binds you, and love the people with whom fate brings you together.",
+            "source": "Marcus Aurelius, Meditations",
+            "encouragement": "Embrace your team."
+          }
+        ]
+      }
+    },
+    "tao": {
+      "id": "tao",
+      "name": "Tao Te Ching (Lao Tzu)",
+      "icon": "☯️",
+      "description": "Balance, flow, and simplicity",
+      "quotes": {
+        "chaos": [
+          {
+            "quote": "The journey of a thousand miles begins with a single step.",
+            "source": "Chapter 64",
+            "encouragement": "Start where you are."
+          },
+          {
+            "quote": "When I let go of what I am, I become what I might be.",
+            "source": "Chapter 22",
+            "encouragement": "Release attachment to the old code."
+          },
+          {
+            "quote": "Nature does not hurry, yet everything is accomplished.",
+            "source": "Chapter 15",
+            "encouragement": "Patience brings clarity."
+          }
+        ],
+        "lower_aeons": [
+          {
+            "quote": "The soft overcomes the hard. The slow overcomes the fast.",
+            "source": "Chapter 36",
+            "encouragement": "Incremental progress wins."
+          },
+          {
+            "quote": "To attain knowledge, add things every day. To attain wisdom, remove things every day.",
+            "source": "Chapter 48",
+            "encouragement": "Simplify."
+          },
+          {
+            "quote": "He who knows others is wise. He who knows himself is enlightened.",
+            "source": "Chapter 33",
+            "encouragement": "Understand your codebase."
+          }
+        ],
+        "middle_aeons": [
+          {
+            "quote": "Act without expectation.",
+            "source": "Chapter 2",
+            "encouragement": "Do the work for its own sake."
+          },
+          {
+            "quote": "The Tao that can be told is not the eternal Tao.",
+            "source": "Chapter 1",
+            "encouragement": "Some things must be experienced."
+          },
+          {
+            "quote": "Knowing others is intelligence; knowing yourself is true wisdom.",
+            "source": "Chapter 33",
+            "encouragement": "Know your strengths and limits."
+          }
+        ],
+        "upper_aeons": [
+          {
+            "quote": "The Master does nothing, yet leaves nothing undone.",
+            "source": "Chapter 48",
+            "encouragement": "Automation is the way."
+          },
+          {
+            "quote": "In dwelling, live close to the ground. In thinking, keep to the simple.",
+            "source": "Chapter 8",
+            "encouragement": "Keep it simple."
+          },
+          {
+            "quote": "When you are content to be simply yourself, everyone will respect you.",
+            "source": "Chapter 8",
+            "encouragement": "Your work speaks for itself."
+          }
+        ],
+        "treasury": [
+          {
+            "quote": "The Tao nourishes all things.",
+            "source": "Chapter 51",
+            "encouragement": "Good architecture sustains itself."
+          },
+          {
+            "quote": "Success is as dangerous as failure. Hope is as hollow as fear.",
+            "source": "Chapter 13",
+            "encouragement": "Stay humble in victory."
+          },
+          {
+            "quote": "Retire when the work is done; this is the way of heaven.",
+            "source": "Chapter 9",
+            "encouragement": "Know when to ship."
+          }
+        ]
+      }
+    }
+  }
+}
+

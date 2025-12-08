@@ -10,7 +10,18 @@ run: build
 
 # Run tests
 test:
-	go test ./...
+	go test ./... -v
+
+test-coverage:
+	go test ./... -cover -coverprofile=coverage.out
+	go tool cover -func=coverage.out
+
+test-html:
+	go test ./... -coverprofile=coverage.out
+	go tool cover -html=coverage.out -o coverage.html
+
+test-wisdom:
+	go test ./internal/wisdom/... -v -cover
 
 # Clean build artifacts
 clean:
