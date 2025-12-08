@@ -46,7 +46,7 @@ func TestAPISourceLoader_LoadSource_Success(t *testing.T) {
 
 	loader := NewAPISourceLoader(server.URL, 5*time.Second)
 	ctx := context.Background()
-	
+
 	config, err := loader.LoadSource(ctx, "test")
 	if err != nil {
 		t.Fatalf("LoadSource failed: %v", err)
@@ -70,7 +70,7 @@ func TestAPISourceLoader_LoadSource_NotFound(t *testing.T) {
 
 	loader := NewAPISourceLoader(server.URL, 5*time.Second)
 	ctx := context.Background()
-	
+
 	_, err := loader.LoadSource(ctx, "test")
 	if err == nil {
 		t.Error("LoadSource should fail for 404 response")
@@ -87,7 +87,7 @@ func TestAPISourceLoader_LoadSource_Timeout(t *testing.T) {
 
 	loader := NewAPISourceLoader(server.URL, 100*time.Millisecond)
 	ctx := context.Background()
-	
+
 	_, err := loader.LoadSource(ctx, "test")
 	if err == nil {
 		t.Error("LoadSource should fail on timeout")
@@ -117,7 +117,7 @@ func TestAPISourceLoader_LoadSourceWithRetry(t *testing.T) {
 
 	loader := NewAPISourceLoader(server.URL, 5*time.Second)
 	ctx := context.Background()
-	
+
 	config, err := loader.LoadSourceWithRetry(ctx, "test", 3)
 	if err != nil {
 		t.Fatalf("LoadSourceWithRetry failed: %v", err)
@@ -146,7 +146,7 @@ func TestAPISourceLoader_LoadSourceWithTimeout(t *testing.T) {
 	defer server.Close()
 
 	loader := NewAPISourceLoader(server.URL, 10*time.Second)
-	
+
 	config, err := loader.LoadSourceWithTimeout("test", 5*time.Second)
 	if err != nil {
 		t.Fatalf("LoadSourceWithTimeout failed: %v", err)
@@ -155,4 +155,3 @@ func TestAPISourceLoader_LoadSourceWithTimeout(t *testing.T) {
 		t.Fatal("LoadSourceWithTimeout returned nil config")
 	}
 }
-

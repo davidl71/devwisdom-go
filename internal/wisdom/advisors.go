@@ -27,10 +27,10 @@ func (r *AdvisorRegistry) Initialize() {
 
 	// Load metric advisors
 	r.loadMetricAdvisors()
-	
+
 	// Load tool advisors
 	r.loadToolAdvisors()
-	
+
 	// Load stage advisors
 	r.loadStageAdvisors()
 

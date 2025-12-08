@@ -17,9 +17,9 @@ type JSONRPCRequest struct {
 
 // JSONRPCResponse represents a JSON-RPC 2.0 response
 type JSONRPCResponse struct {
-	JSONRPC string      `json:"jsonrpc"`
-	ID      interface{} `json:"id"` // No omitempty - null is valid for parse errors
-	Result  interface{} `json:"result,omitempty"`
+	JSONRPC string        `json:"jsonrpc"`
+	ID      interface{}   `json:"id"` // No omitempty - null is valid for parse errors
+	Result  interface{}   `json:"result,omitempty"`
 	Error   *JSONRPCError `json:"error,omitempty"`
 }
 
@@ -41,9 +41,9 @@ const (
 
 // InitializeParams represents the initialize request parameters
 type InitializeParams struct {
-	ProtocolVersion string                 `json:"protocolVersion"`
-	Capabilities    ClientCapabilities     `json:"capabilities"`
-	ClientInfo      ClientInfo             `json:"clientInfo"`
+	ProtocolVersion string             `json:"protocolVersion"`
+	Capabilities    ClientCapabilities `json:"capabilities"`
+	ClientInfo      ClientInfo         `json:"clientInfo"`
 }
 
 // ClientCapabilities represents client capabilities
@@ -59,9 +59,9 @@ type ClientInfo struct {
 
 // InitializeResult represents the initialize response
 type InitializeResult struct {
-	ProtocolVersion string                 `json:"protocolVersion"`
-	Capabilities    ServerCapabilities    `json:"capabilities"`
-	ServerInfo      ServerInfo             `json:"serverInfo"`
+	ProtocolVersion string             `json:"protocolVersion"`
+	Capabilities    ServerCapabilities `json:"capabilities"`
+	ServerInfo      ServerInfo         `json:"serverInfo"`
 }
 
 // ServerCapabilities represents server capabilities
@@ -146,4 +146,3 @@ func NewInvalidParamsError(id interface{}, message string) *JSONRPCResponse {
 func NewInternalError(id interface{}, message string) *JSONRPCResponse {
 	return NewErrorResponse(id, ErrCodeInternalError, message, nil)
 }
-

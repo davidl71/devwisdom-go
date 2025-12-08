@@ -23,41 +23,41 @@ func main() {
 		Quotes: map[string][]wisdom.Quote{
 			"chaos": {
 				{
-					Quote:        "When everything breaks, remember: you built this.",
-					Source:       "Project Wisdom",
+					Quote:         "When everything breaks, remember: you built this.",
+					Source:        "Project Wisdom",
 					Encouragement: "You can fix it.",
 				},
 				{
-					Quote:        "The best debugging happens at 2 AM.",
-					Source:       "Project Wisdom",
+					Quote:         "The best debugging happens at 2 AM.",
+					Source:        "Project Wisdom",
 					Encouragement: "Take a break, come back fresh.",
 				},
 			},
 			"lower_aeons": {
 				{
-					Quote:        "Progress is progress, even if it's slow.",
-					Source:       "Project Wisdom",
+					Quote:         "Progress is progress, even if it's slow.",
+					Source:        "Project Wisdom",
 					Encouragement: "Keep moving forward.",
 				},
 			},
 			"middle_aeons": {
 				{
-					Quote:        "We're getting there, one commit at a time.",
-					Source:       "Project Wisdom",
+					Quote:         "We're getting there, one commit at a time.",
+					Source:        "Project Wisdom",
 					Encouragement: "Consistency wins.",
 				},
 			},
 			"upper_aeons": {
 				{
-					Quote:        "The architecture is solid, the tests are passing.",
-					Source:       "Project Wisdom",
+					Quote:         "The architecture is solid, the tests are passing.",
+					Source:        "Project Wisdom",
 					Encouragement: "You've built something good.",
 				},
 			},
 			"treasury": {
 				{
-					Quote:        "Everything is working perfectly!",
-					Source:       "Project Wisdom",
+					Quote:         "Everything is working perfectly!",
+					Source:        "Project Wisdom",
 					Encouragement: "Enjoy the moment.",
 				},
 			},
@@ -83,4 +83,3 @@ func main() {
 	fmt.Printf("   — %s\n", quote.Source)
 	fmt.Printf("   💡 %s\n", quote.Encouragement)
 }
-

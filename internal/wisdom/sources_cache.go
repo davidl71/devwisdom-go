@@ -17,11 +17,11 @@ type CacheEntry struct {
 
 // SourceCache manages caching of source configurations
 type SourceCache struct {
-	mu          sync.RWMutex
-	entries     map[string]*CacheEntry
-	defaultTTL  time.Duration
-	maxAge      time.Duration
-	enabled     bool
+	mu         sync.RWMutex
+	entries    map[string]*CacheEntry
+	defaultTTL time.Duration
+	maxAge     time.Duration
+	enabled    bool
 }
 
 // NewSourceCache creates a new source cache
@@ -182,4 +182,3 @@ func (sc *SourceCache) StartCleanup(interval time.Duration) {
 		}
 	}()
 }
-

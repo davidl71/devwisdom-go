@@ -74,7 +74,7 @@ func (s *WisdomServer) Run(ctx context.Context, stdin io.Reader, stdout io.Write
 			// Notifications don't get responses, just continue
 			continue
 		}
-		
+
 		resp := s.handleRequest(&req)
 		if resp != nil {
 			if err := encoder.Encode(resp); err != nil {
@@ -119,17 +119,17 @@ func (s *WisdomServer) handleInitialize(req *JSONRPCRequest) *JSONRPCResponse {
 
 	s.initialized = true
 
-		result := InitializeResult{
-			ProtocolVersion: "2024-11-05", // MCP protocol version
-			Capabilities: ServerCapabilities{
-				Tools:     &ToolsCapability{},
-				Resources: &ResourcesCapability{},
-			},
-			ServerInfo: ServerInfo{
-				Name:    "devwisdom",
-				Version: Version,
-			},
-		}
+	result := InitializeResult{
+		ProtocolVersion: "2024-11-05", // MCP protocol version
+		Capabilities: ServerCapabilities{
+			Tools:     &ToolsCapability{},
+			Resources: &ResourcesCapability{},
+		},
+		ServerInfo: ServerInfo{
+			Name:    "devwisdom",
+			Version: Version,
+		},
+	}
 
 	return NewSuccessResponse(req.ID, result)
 }
@@ -250,6 +250,12 @@ func (s *WisdomServer) handleToolCall(req *JSONRPCRequest) *JSONRPCResponse {
 func (s *WisdomServer) handleResourcesList(req *JSONRPCRequest) *JSONRPCResponse {
 	resources := []Resource{
 		{
+			URI:         "wisdom://tools",
+			Name:        "Available Tools",
+			Description: "List all available MCP tools with descriptions and parameters",
+			MimeType:    "application/json",
+		},
+		{
 			URI:         "wisdom://sources",
 			Name:        "Wisdom Sources",
 			Description: "List all available wisdom sources",
@@ -289,7 +295,9 @@ func (s *WisdomServer) handleResourceRead(req *JSONRPCRequest) *JSONRPCResponse 
 
 	// Parse resource URI
 	uri := params.URI
-	if strings.HasPrefix(uri, "wisdom://sources") {
+	if uri == "wisdom://tools" {
+		return s.handleToolsResource(req)
+	} else if strings.HasPrefix(uri, "wisdom://sources") {
 		return s.handleSourcesResource(req)
 	} else if strings.HasPrefix(uri, "wisdom://advisors") {
 		if uri == "wisdom://advisors" {
@@ -399,8 +407,8 @@ func (s *WisdomServer) handleConsultAdvisor(params map[string]interface{}) (inte
 	if err != nil {
 		// Fallback quote
 		quote = &wisdom.Quote{
-			Quote:        "Wisdom comes from experience.",
-			Source:       "Unknown",
+			Quote:         "Wisdom comes from experience.",
+			Source:        "Unknown",
 			Encouragement: "Keep learning and growing.",
 		}
 	}
@@ -545,6 +553,62 @@ func (s *WisdomServer) handleExportForPodcast(params map[string]interface{}) (in
 }
 
 // Resource handlers
+
+// handleToolsResource returns all available tools
+func (s *WisdomServer) handleToolsResource(req *JSONRPCRequest) *JSONRPCResponse {
+	tools := []map[string]interface{}{
+		{
+			"name":        "consult_advisor",
+			"description": "Consult a wisdom advisor based on metric, tool, or stage",
+			"parameters": map[string]interface{}{
+				"metric":  "Metric name (e.g., 'security', 'testing')",
+				"tool":    "Tool name (e.g., 'project_scorecard')",
+				"stage":   "Stage name (e.g., 'daily_checkin')",
+				"score":   "Project health score (0-100)",
+				"context": "Additional context for the consultation",
+			},
+		},
+		{
+			"name":        "get_wisdom",
+			"description": "Get a wisdom quote based on project health score and source",
+			"parameters": map[string]interface{}{
+				"score":  "Project health score (0-100) - required",
+				"source": "Wisdom source ID (e.g., 'pistis_sophia', 'stoic') - optional",
+			},
+		},
+		{
+			"name":        "get_daily_briefing",
+			"description": "Get a daily wisdom briefing with quotes and guidance",
+			"parameters": map[string]interface{}{
+				"score": "Project health score (0-100) - optional",
+			},
+		},
+		{
+			"name":        "get_consultation_log",
+			"description": "Retrieve consultation log entries",
+			"parameters": map[string]interface{}{
+				"days": "Number of days to retrieve (default: 7)",
+			},
+		},
+		{
+			"name":        "export_for_podcast",
+			"description": "Export consultations as podcast episodes",
+			"parameters": map[string]interface{}{
+				"days": "Number of days to export (default: 7)",
+			},
+		},
+	}
+
+	return NewSuccessResponse(req.ID, map[string]interface{}{
+		"contents": []map[string]interface{}{
+			{
+				"uri":      "wisdom://tools",
+				"mimeType": "application/json",
+				"text":     string(mustMarshalJSONCompact(tools)),
+			},
+		},
+	})
+}
 
 // handleSourcesResource returns all wisdom sources
 func (s *WisdomServer) handleSourcesResource(req *JSONRPCRequest) *JSONRPCResponse {

@@ -28,7 +28,7 @@ func TestSourceCache_SetAndGet(t *testing.T) {
 	}
 
 	cache.Set("test_key", config, "")
-	
+
 	retrieved, found := cache.Get("test_key")
 	if !found {
 		t.Fatal("Get returned false for just-set key")
@@ -53,7 +53,7 @@ func TestSourceCache_Expiration(t *testing.T) {
 	}
 
 	cache.Set("test_key", config, "")
-	
+
 	// Should be found immediately
 	_, found := cache.Get("test_key")
 	if !found {
@@ -62,7 +62,7 @@ func TestSourceCache_Expiration(t *testing.T) {
 
 	// Wait for expiration
 	time.Sleep(150 * time.Millisecond)
-	
+
 	// Should not be found after expiration
 	_, found = cache.Get("test_key")
 	if found {
@@ -83,7 +83,7 @@ func TestSourceCache_Invalidate(t *testing.T) {
 
 	cache.Set("test_key", config, "")
 	cache.Invalidate("test_key")
-	
+
 	_, found := cache.Get("test_key")
 	if found {
 		t.Error("Get returned true for invalidated entry")
@@ -104,13 +104,13 @@ func TestSourceCache_InvalidateAll(t *testing.T) {
 	cache.Set("key1", config, "")
 	cache.Set("key2", config, "")
 	cache.Set("key3", config, "")
-	
+
 	if cache.Size() != 3 {
 		t.Errorf("Cache size = %d, want 3", cache.Size())
 	}
 
 	cache.InvalidateAll()
-	
+
 	if cache.Size() != 0 {
 		t.Errorf("Cache size after InvalidateAll = %d, want 0", cache.Size())
 	}
@@ -136,7 +136,7 @@ func TestSourceCache_FileModificationTracking(t *testing.T) {
 	}
 
 	cache.Set("test_key", config, tmpFile.Name())
-	
+
 	// Should be found
 	_, found := cache.Get("test_key")
 	if !found {
@@ -169,10 +169,10 @@ func TestSourceCache_ClearExpired(t *testing.T) {
 
 	cache.Set("key1", config, "")
 	cache.Set("key2", config, "")
-	
+
 	// Wait for expiration
 	time.Sleep(100 * time.Millisecond)
-	
+
 	cleared := cache.ClearExpired()
 	if cleared != 2 {
 		t.Errorf("ClearExpired cleared %d entries, want 2", cleared)
@@ -194,10 +194,9 @@ func TestSourceCache_Disable(t *testing.T) {
 	}
 
 	cache.Set("test_key", config, "")
-	
+
 	_, found := cache.Get("test_key")
 	if found {
 		t.Error("Get returned true when cache is disabled")
 	}
 }
-

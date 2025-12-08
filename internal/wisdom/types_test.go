@@ -37,10 +37,10 @@ func TestGetAeonLevel(t *testing.T) {
 
 func TestSource_GetQuote(t *testing.T) {
 	tests := []struct {
-		name          string
-		source        *Source
-		aeonLevel     string
-		expectedQuote string
+		name           string
+		source         *Source
+		aeonLevel      string
+		expectedQuote  string
 		expectFallback bool
 	}{
 		{
@@ -54,8 +54,8 @@ func TestSource_GetQuote(t *testing.T) {
 					},
 				},
 			},
-			aeonLevel:     "chaos",
-			expectedQuote: "Test quote",
+			aeonLevel:      "chaos",
+			expectedQuote:  "Test quote",
 			expectFallback: false,
 		},
 		{
@@ -69,19 +69,19 @@ func TestSource_GetQuote(t *testing.T) {
 					},
 				},
 			},
-			aeonLevel:     "chaos",
-			expectedQuote: "Fallback quote",
+			aeonLevel:      "chaos",
+			expectedQuote:  "Fallback quote",
 			expectFallback: true,
 		},
 		{
 			name: "empty quotes - default fallback",
 			source: &Source{
-				Name:  "Test Source",
-				Icon:  "📜",
+				Name:   "Test Source",
+				Icon:   "📜",
 				Quotes: map[string][]Quote{},
 			},
-			aeonLevel:     "chaos",
-			expectedQuote: "Silence is also wisdom.",
+			aeonLevel:      "chaos",
+			expectedQuote:  "Silence is also wisdom.",
 			expectFallback: true,
 		},
 		{
@@ -95,8 +95,8 @@ func TestSource_GetQuote(t *testing.T) {
 					},
 				},
 			},
-			aeonLevel:     "chaos",
-			expectedQuote: "Any quote",
+			aeonLevel:      "chaos",
+			expectedQuote:  "Any quote",
 			expectFallback: true,
 		},
 	}
@@ -131,4 +131,3 @@ func TestAeonLevelConstants(t *testing.T) {
 		t.Errorf("AeonTreasury = %q, want %q", AeonTreasury, "treasury")
 	}
 }
-

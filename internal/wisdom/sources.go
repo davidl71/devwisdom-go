@@ -6,7 +6,7 @@ package wisdom
 func GetBuiltInSources() map[string]*Source {
 	// Create a loader with default configuration
 	loader := NewSourceLoader()
-	
+
 	// Try to load from default locations
 	if err := loader.Load(); err == nil {
 		return loader.GetAllSources()
@@ -19,11 +19,11 @@ func GetBuiltInSources() map[string]*Source {
 		Icon:   "😈",
 		Quotes: make(map[string][]Quote),
 	}
-	
+
 	sources["bofh"].Quotes["chaos"] = []Quote{
 		{
-			Quote:        "It's not a bug, it's a feature.",
-			Source:       "BOFH Excuse Calendar",
+			Quote:         "It's not a bug, it's a feature.",
+			Source:        "BOFH Excuse Calendar",
 			Encouragement: "Document it and ship it.",
 		},
 	}

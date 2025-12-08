@@ -9,11 +9,11 @@ import (
 
 // Config holds wisdom configuration
 type Config struct {
-	Source       string `json:"source"`
-	HebrewEnabled bool  `json:"hebrew_enabled"`
-	HebrewOnly   bool   `json:"hebrew_only"`
-	Disabled     bool   `json:"disabled"`
-	configPath   string
+	Source        string `json:"source"`
+	HebrewEnabled bool   `json:"hebrew_enabled"`
+	HebrewOnly    bool   `json:"hebrew_only"`
+	Disabled      bool   `json:"disabled"`
+	configPath    string
 }
 
 // NewConfig creates a new config with defaults

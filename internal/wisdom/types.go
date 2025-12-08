@@ -2,19 +2,19 @@ package wisdom
 
 // Quote represents a wisdom quote with metadata
 type Quote struct {
-	Quote        string `json:"quote"`
-	Source       string `json:"source"`
+	Quote         string `json:"quote"`
+	Source        string `json:"source"`
 	Encouragement string `json:"encouragement"`
-	WisdomSource string `json:"wisdom_source,omitempty"`
-	WisdomIcon   string `json:"wisdom_icon,omitempty"`
+	WisdomSource  string `json:"wisdom_source,omitempty"`
+	WisdomIcon    string `json:"wisdom_icon,omitempty"`
 }
 
 // Source represents a wisdom source with quotes by aeon level
 type Source struct {
-	Name        string            `json:"name"`
-	Icon        string            `json:"icon"`
+	Name        string             `json:"name"`
+	Icon        string             `json:"icon"`
 	Quotes      map[string][]Quote `json:"quotes"` // Key: aeon level (chaos, lower_aeons, etc.)
-	Description string            `json:"description,omitempty"`
+	Description string             `json:"description,omitempty"`
 }
 
 // GetQuote retrieves a quote for the given aeon level
@@ -32,8 +32,8 @@ func (s *Source) GetQuote(aeonLevel string) *Quote {
 
 	if len(quotes) == 0 {
 		return &Quote{
-			Quote:        "Silence is also wisdom.",
-			Source:       "Unknown",
+			Quote:         "Silence is also wisdom.",
+			Source:        "Unknown",
 			Encouragement: "Sometimes reflection is the answer.",
 		}
 	}
@@ -79,11 +79,11 @@ type AdvisorInfo struct {
 type AeonLevel string
 
 const (
-	AeonChaos       AeonLevel = "chaos"        // < 30%
-	AeonLower       AeonLevel = "lower_aeons"  // 30-50%
-	AeonMiddle      AeonLevel = "middle_aeons" // 50-70%
-	AeonUpper       AeonLevel = "upper_aeons"  // 70-85%
-	AeonTreasury    AeonLevel = "treasury"     // > 85%
+	AeonChaos    AeonLevel = "chaos"        // < 30%
+	AeonLower    AeonLevel = "lower_aeons"  // 30-50%
+	AeonMiddle   AeonLevel = "middle_aeons" // 50-70%
+	AeonUpper    AeonLevel = "upper_aeons"  // 70-85%
+	AeonTreasury AeonLevel = "treasury"     // > 85%
 )
 
 // GetAeonLevel returns the aeon level based on score

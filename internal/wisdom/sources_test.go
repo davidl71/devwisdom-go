@@ -10,7 +10,7 @@ func TestGetBuiltInSources(t *testing.T) {
 	if len(sources) == 0 {
 		t.Error("GetBuiltInSources returned empty map")
 	}
-	
+
 	// Check that at least bofh exists (our fallback)
 	bofh, exists := sources["bofh"]
 	if !exists {
@@ -26,7 +26,7 @@ func TestGetBuiltInSources(t *testing.T) {
 
 func TestGetBuiltInSources_Structure(t *testing.T) {
 	sources := GetBuiltInSources()
-	
+
 	for id, source := range sources {
 		if id == "" {
 			t.Error("Source has empty ID")
@@ -45,7 +45,7 @@ func TestGetBuiltInSources_Structure(t *testing.T) {
 			t.Errorf("Source %q has nil quotes map", id)
 			continue
 		}
-		
+
 		// Check that quotes exist for at least one aeon level
 		hasQuotes := false
 		for level, quotes := range source.Quotes {
@@ -70,4 +70,3 @@ func TestGetBuiltInSources_Structure(t *testing.T) {
 		}
 	}
 }
-

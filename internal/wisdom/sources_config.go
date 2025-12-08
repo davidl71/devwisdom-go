@@ -13,12 +13,12 @@ import (
 
 // SourceConfig represents a configurable wisdom source
 type SourceConfig struct {
-	ID          string            `json:"id"`
-	Name        string            `json:"name"`
-	Icon        string            `json:"icon"`
-	Description string            `json:"description,omitempty"`
-	Language    string            `json:"language,omitempty"` // "hebrew", "english", etc.
-	Quotes      map[string][]Quote `json:"quotes"`            // Key: aeon level
+	ID          string             `json:"id"`
+	Name        string             `json:"name"`
+	Icon        string             `json:"icon"`
+	Description string             `json:"description,omitempty"`
+	Language    string             `json:"language,omitempty"` // "hebrew", "english", etc.
+	Quotes      map[string][]Quote `json:"quotes"`             // Key: aeon level
 	// Optional fields for API-based sources
 	SefariaSource string `json:"sefaria_source,omitempty"` // For Sefaria API sources
 	APIEndpoint   string `json:"api_endpoint,omitempty"`   // For future API sources
@@ -26,8 +26,8 @@ type SourceConfig struct {
 
 // SourcesConfig represents the complete sources configuration
 type SourcesConfig struct {
-	Version string                    `json:"version"`
-	Sources map[string]*SourceConfig  `json:"sources"`
+	Version string                   `json:"version"`
+	Sources map[string]*SourceConfig `json:"sources"`
 	// Metadata
 	LastUpdated string `json:"last_updated,omitempty"`
 	Author      string `json:"author,omitempty"`
@@ -126,7 +126,7 @@ func (sl *SourceLoader) Load() error {
 
 	// Start with empty sources
 	sl.sources = make(map[string]*Source)
-	
+
 	// Clear existing configs
 	configsMu.Lock()
 	configs = make(map[string]*SourceConfig)
@@ -184,7 +184,7 @@ func (sl *SourceLoader) GetSource(id string) (*Source, bool) {
 func (sl *SourceLoader) GetAllSources() map[string]*Source {
 	sl.mu.RLock()
 	defer sl.mu.RUnlock()
-	
+
 	// Return a copy to prevent external modification
 	result := make(map[string]*Source)
 	for id, source := range sl.sources {
@@ -197,7 +197,7 @@ func (sl *SourceLoader) GetAllSources() map[string]*Source {
 func (sl *SourceLoader) ListSourceIDs() []string {
 	sl.mu.RLock()
 	defer sl.mu.RUnlock()
-	
+
 	ids := make([]string, 0, len(sl.sources))
 	for id := range sl.sources {
 		ids = append(ids, id)
@@ -260,7 +260,7 @@ var (
 func (sl *SourceLoader) getConfigs() map[string]*SourceConfig {
 	configsMu.Lock()
 	defer configsMu.Unlock()
-	
+
 	result := make(map[string]*SourceConfig)
 	for id, config := range configs {
 		result[id] = config
@@ -359,11 +359,11 @@ func (sl *SourceLoader) loadFromFile(path string) error {
 	// Add/override sources from file
 	for id, config := range sourcesConfig.Sources {
 		config.ID = id // Ensure ID is set
-		
+
 		// Cache individual source configs
 		sourceCacheKey := fmt.Sprintf("source:%s:%s", path, id)
 		sl.cache.Set(sourceCacheKey, config, path)
-		
+
 		sl.addConfig(config)
 	}
 

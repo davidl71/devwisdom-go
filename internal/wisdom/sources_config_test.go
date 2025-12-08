@@ -24,7 +24,7 @@ func TestNewSourceLoader(t *testing.T) {
 func TestSourceLoader_WithConfigPaths(t *testing.T) {
 	loader := NewSourceLoader()
 	loader.WithConfigPaths("path1.json", "path2.json")
-	
+
 	if len(loader.configPaths) != 2 {
 		t.Errorf("configPaths length = %d, want 2", len(loader.configPaths))
 	}
@@ -34,7 +34,7 @@ func TestSourceLoader_WithCacheTTL(t *testing.T) {
 	loader := NewSourceLoader()
 	ttl := 30 * time.Minute
 	loader.WithCacheTTL(ttl)
-	
+
 	// Verify TTL was set by checking cache behavior
 	config := &SourceConfig{
 		ID:   "test",
@@ -44,7 +44,7 @@ func TestSourceLoader_WithCacheTTL(t *testing.T) {
 			"chaos": {{Quote: "Test", Source: "Test", Encouragement: "Test"}},
 		},
 	}
-	
+
 	loader.cache.Set("test", config, "")
 	// Should still be valid with longer TTL
 	time.Sleep(100 * time.Millisecond)
@@ -58,7 +58,7 @@ func TestSourceLoader_LoadFromFile(t *testing.T) {
 	// Create a temporary JSON file
 	tmpDir := t.TempDir()
 	configFile := filepath.Join(tmpDir, "test_sources.json")
-	
+
 	config := SourcesConfig{
 		Version: "1.0",
 		Sources: map[string]*SourceConfig{
@@ -74,12 +74,12 @@ func TestSourceLoader_LoadFromFile(t *testing.T) {
 			},
 		},
 	}
-	
+
 	data, err := json.MarshalIndent(config, "", "  ")
 	if err != nil {
 		t.Fatalf("Failed to marshal config: %v", err)
 	}
-	
+
 	if err := os.WriteFile(configFile, data, 0644); err != nil {
 		t.Fatalf("Failed to write config file: %v", err)
 	}
@@ -167,7 +167,7 @@ func TestSourceLoader_ListSourceIDs(t *testing.T) {
 	if len(ids) != 2 {
 		t.Errorf("ListSourceIDs returned %d IDs, want 2", len(ids))
 	}
-	
+
 	// Check that both IDs are present
 	idMap := make(map[string]bool)
 	for _, id := range ids {
@@ -264,7 +264,7 @@ func TestSourceLoader_Reload(t *testing.T) {
 	}
 
 	loader.AddSource(config)
-	
+
 	// Verify source exists before reload
 	_, found := loader.GetSource("test")
 	if !found {
@@ -312,4 +312,3 @@ func TestSourceLoader_GetAllSources(t *testing.T) {
 		t.Errorf("GetAllSources returned %d sources, want 2", len(allSources))
 	}
 }
-

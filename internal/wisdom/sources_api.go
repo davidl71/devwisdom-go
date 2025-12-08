@@ -101,4 +101,3 @@ func (al *APISourceLoader) LoadSourceWithTimeout(endpoint string, timeout time.D
 
 	return al.LoadSource(ctx, endpoint)
 }
-

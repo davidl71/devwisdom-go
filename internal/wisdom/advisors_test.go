@@ -21,7 +21,7 @@ func TestNewAdvisorRegistry(t *testing.T) {
 func TestAdvisorRegistry_Initialize(t *testing.T) {
 	registry := NewAdvisorRegistry()
 	registry.Initialize()
-	
+
 	if !registry.initialized {
 		t.Error("Registry not marked as initialized")
 	}
@@ -30,7 +30,7 @@ func TestAdvisorRegistry_Initialize(t *testing.T) {
 func TestAdvisorRegistry_Initialize_Twice(t *testing.T) {
 	registry := NewAdvisorRegistry()
 	registry.Initialize()
-	
+
 	// Second initialize should not error
 	registry.Initialize()
 	if !registry.initialized {
@@ -43,9 +43,9 @@ func TestAdvisorRegistry_GetAdvisorForMetric(t *testing.T) {
 	registry.Initialize()
 
 	tests := []struct {
-		metric   string
-		wantErr  bool
-		checkID  string
+		metric  string
+		wantErr bool
+		checkID string
 	}{
 		{"security", false, "bofh"},
 		{"testing", false, "stoic"},
@@ -76,9 +76,9 @@ func TestAdvisorRegistry_GetAdvisorForTool(t *testing.T) {
 	registry.Initialize()
 
 	tests := []struct {
-		tool     string
-		wantErr  bool
-		checkID  string
+		tool    string
+		wantErr bool
+		checkID string
 	}{
 		{"project_scorecard", false, "pistis_sophia"},
 		{"nonexistent", true, ""},
@@ -108,9 +108,9 @@ func TestAdvisorRegistry_GetAdvisorForStage(t *testing.T) {
 	registry.Initialize()
 
 	tests := []struct {
-		stage    string
-		wantErr  bool
-		checkID  string
+		stage   string
+		wantErr bool
+		checkID string
 	}{
 		{"daily_checkin", false, "pistis_sophia"},
 		{"nonexistent", true, ""},
@@ -134,4 +134,3 @@ func TestAdvisorRegistry_GetAdvisorForStage(t *testing.T) {
 		})
 	}
 }
-

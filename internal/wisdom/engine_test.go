@@ -63,7 +63,7 @@ func TestEngine_GetWisdom_UnknownSource(t *testing.T) {
 
 func TestEngine_GetWisdom_Success(t *testing.T) {
 	engine := NewEngine()
-	
+
 	// Add a test source directly
 	testSource := &Source{
 		Name: "Test Source",
@@ -91,7 +91,7 @@ func TestEngine_GetWisdom_Success(t *testing.T) {
 
 func TestEngine_ListSources(t *testing.T) {
 	engine := NewEngine()
-	
+
 	// Add sources directly
 	engine.sources["source1"] = &Source{Name: "Source 1", Icon: "📜", Quotes: make(map[string][]Quote)}
 	engine.sources["source2"] = &Source{Name: "Source 2", Icon: "📜", Quotes: make(map[string][]Quote)}
@@ -107,8 +107,8 @@ func TestEngine_ListSources(t *testing.T) {
 func TestEngine_GetSource(t *testing.T) {
 	engine := NewEngine()
 	testSource := &Source{
-		Name: "Test Source",
-		Icon: "📜",
+		Name:   "Test Source",
+		Icon:   "📜",
 		Quotes: make(map[string][]Quote),
 	}
 	engine.sources["test"] = testSource
@@ -155,7 +155,7 @@ func TestEngine_GetLoader(t *testing.T) {
 
 func TestEngine_GetWisdom_AeonLevels(t *testing.T) {
 	engine := NewEngine()
-	
+
 	// Create source with quotes for all aeon levels
 	testSource := &Source{
 		Name: "Test Source",
@@ -194,4 +194,3 @@ func TestEngine_GetWisdom_AeonLevels(t *testing.T) {
 		})
 	}
 }
-
