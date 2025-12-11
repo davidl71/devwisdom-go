@@ -416,3 +416,39 @@ func AdjustAdvisorForMode(sessionMode SessionMode, consultationType string, avai
 
 	return "", ""
 }
+
+// GetAllMetricAdvisors returns all metric → advisor mappings
+func (r *AdvisorRegistry) GetAllMetricAdvisors() map[string]*AdvisorInfo {
+	if !r.initialized {
+		r.Initialize()
+	}
+	result := make(map[string]*AdvisorInfo)
+	for k, v := range r.metricAdvisors {
+		result[k] = v
+	}
+	return result
+}
+
+// GetAllToolAdvisors returns all tool → advisor mappings
+func (r *AdvisorRegistry) GetAllToolAdvisors() map[string]*AdvisorInfo {
+	if !r.initialized {
+		r.Initialize()
+	}
+	result := make(map[string]*AdvisorInfo)
+	for k, v := range r.toolAdvisors {
+		result[k] = v
+	}
+	return result
+}
+
+// GetAllStageAdvisors returns all stage → advisor mappings
+func (r *AdvisorRegistry) GetAllStageAdvisors() map[string]*AdvisorInfo {
+	if !r.initialized {
+		r.Initialize()
+	}
+	result := make(map[string]*AdvisorInfo)
+	for k, v := range r.stageAdvisors {
+		result[k] = v
+	}
+	return result
+}

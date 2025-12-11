@@ -1232,6 +1232,291 @@
           }
         ]
       }
+    },
+    "rebbe": {
+      "id": "rebbe",
+      "name": "הרבי (The Rebbe) - Chassidic Wisdom",
+      "icon": "🕎",
+      "language": "hebrew",
+      "description": "Chassidic/Rabbinical Wisdom - ethical guidance, righteous conduct, spiritual debugging",
+      "sefaria_source": "pirkei_avot",
+      "quotes": {
+        "chaos": [
+          {
+            "quote": "אם אין אני לי מי לי, וכשאני לעצמי מה אני, ואם לא עכשיו אימתי (If I am not for myself, who will be for me? And if I am only for myself, what am I? And if not now, when?)",
+            "source": "Pirkei Avot 1:14",
+            "encouragement": "Take responsibility now."
+          },
+          {
+            "quote": "לא עליך המלאכה לגמור, ולא אתה בן חורין ליבטל ממנה (You are not obligated to complete the work, but neither are you free to desist from it.)",
+            "source": "Pirkei Avot 2:16",
+            "encouragement": "Start where you are."
+          },
+          {
+            "quote": "בִּמְקוֹם שֶׁאֵין אֲנָשִׁים, הִשְׁתַּדֵּל לִהְיוֹת אִישׁ (In a place where there are no men, strive to be a man.)",
+            "source": "Pirkei Avot 2:5",
+            "encouragement": "Lead when others won't."
+          }
+        ],
+        "lower_aeons": [
+          {
+            "quote": "עֲשֵׂה לְךָ רַב, וּקְנֵה לְךָ חָבֵר (Make for yourself a teacher, and acquire for yourself a friend.)",
+            "source": "Pirkei Avot 1:6",
+            "encouragement": "Seek mentorship and collaboration."
+          },
+          {
+            "quote": "אַל תִּסְתַּכֵּל בַּקַּנְקַן, אֶלָּא בְּמַה שֶּׁיֶּשׁ בּוֹ (Do not look at the container, but at what is in it.)",
+            "source": "Pirkei Avot 4:20",
+            "encouragement": "Judge code by quality, not appearance."
+          },
+          {
+            "quote": "הֱוֵי מְקַבֵּל אֶת כָּל הָאָדָם בְּסֵבֶר פָּנִים יָפוֹת (Greet every person with a pleasant countenance.)",
+            "source": "Pirkei Avot 1:15",
+            "encouragement": "Kindness in code review."
+          }
+        ],
+        "middle_aeons": [
+          {
+            "quote": "אֵיזֶהוּ חָכָם, הַלּוֹמֵד מִכָּל אָדָם (Who is wise? One who learns from every person.)",
+            "source": "Pirkei Avot 4:1",
+            "encouragement": "Every bug is a teacher."
+          },
+          {
+            "quote": "אֵיזֶהוּ גִבּוֹר, הַכּוֹבֵשׁ אֶת יִצְרוֹ (Who is mighty? One who conquers their inclination.)",
+            "source": "Pirkei Avot 4:1",
+            "encouragement": "Master your impulses."
+          },
+          {
+            "quote": "יְהִי כְבוֹד חֲבֵרְךָ חָבִיב עָלֶיךָ כְּשֶׁלָּךְ (Let your friend's honor be as dear to you as your own.)",
+            "source": "Pirkei Avot 2:10",
+            "encouragement": "Respect your teammates."
+          }
+        ],
+        "upper_aeons": [
+          {
+            "quote": "אַל תְּהִי בָז לְכָל אָדָם, וְאַל תְּהִי מַפְלִיג לְכָל דָּבָר (Despise no one and consider nothing impossible.)",
+            "source": "Pirkei Avot 4:3",
+            "encouragement": "Everything is achievable."
+          },
+          {
+            "quote": "הֱוֵי עַז כַּנָּמֵר, וְקַל כַּנֶּשֶׁר, וְרָץ כַּצְּבִי, וְגִבּוֹר כָּאֲרִי (Be bold as a leopard, light as an eagle, swift as a deer, and strong as a lion.)",
+            "source": "Pirkei Avot 5:20",
+            "encouragement": "Bring your full energy."
+          },
+          {
+            "quote": "דַּע מֵאַיִן בָּאתָ, וּלְאָן אַתָּה הוֹלֵךְ (Know from where you came, and to where you are going.)",
+            "source": "Pirkei Avot 3:1",
+            "encouragement": "Understand your path."
+          }
+        ],
+        "treasury": [
+          {
+            "quote": "עַל שְׁלֹשָׁה דְּבָרִים הָעוֹלָם עוֹמֵד, עַל הַתּוֹרָה וְעַל הָעֲבוֹדָה וְעַל גְּמִילוּת חֲסָדִים (The world stands on three things: Torah, service, and acts of kindness.)",
+            "source": "Pirkei Avot 1:2",
+            "encouragement": "Foundation of all work."
+          },
+          {
+            "quote": "כָּל יִשְׂרָאֵל יֵשׁ לָהֶם חֵלֶק לָעוֹלָם הַבָּא (All Israel have a share in the World to Come.)",
+            "source": "Sanhedrin 90a",
+            "encouragement": "Your work matters eternally."
+          },
+          {
+            "quote": "תִּקּוּן עוֹלָם (Repair the world)",
+            "source": "Jewish Teaching",
+            "encouragement": "Your code can heal."
+          }
+        ]
+      }
+    },
+    "tzaddik": {
+      "id": "tzaddik",
+      "name": "הצדיק (The Tzaddik) - Path of Righteousness",
+      "icon": "✡️",
+      "language": "hebrew",
+      "description": "The Righteous One - perseverance, ethics, staying on the right path",
+      "sefaria_source": "proverbs",
+      "quotes": {
+        "chaos": [
+          {
+            "quote": "כִּי שֶׁבַע יִפּוֹל צַדִּיק וָקָם (For a righteous man falls seven times and rises.)",
+            "source": "Proverbs 24:16",
+            "encouragement": "Rise after every failure."
+          },
+          {
+            "quote": "בְּטַח אֶל ה' בְּכָל לִבֶּךָ (Trust in the Lord with all your heart.)",
+            "source": "Proverbs 3:5",
+            "encouragement": "Trust the process."
+          },
+          {
+            "quote": "רֵאשִׁית חָכְמָה יִרְאַת ה' (The fear of the Lord is the beginning of wisdom.)",
+            "source": "Proverbs 9:10",
+            "encouragement": "Respect the fundamentals."
+          }
+        ],
+        "lower_aeons": [
+          {
+            "quote": "דֶּרֶךְ חַיִּים תּוֹכְחוֹת מוּסָר (The reproofs of discipline are the way of life.)",
+            "source": "Proverbs 6:23",
+            "encouragement": "Corrections are blessings."
+          },
+          {
+            "quote": "לֵב שָׂמֵחַ יֵיטִב גֵּהָה (A joyful heart is good medicine.)",
+            "source": "Proverbs 17:22",
+            "encouragement": "Joy fuels productivity."
+          },
+          {
+            "quote": "בַּרְזֶל בְּבַרְזֶל יָחַד (Iron sharpens iron.)",
+            "source": "Proverbs 27:17",
+            "encouragement": "Pair programming."
+          }
+        ],
+        "middle_aeons": [
+          {
+            "quote": "מַעֲנֶה רַךְ יָשִׁיב חֵמָה (A soft answer turns away wrath.)",
+            "source": "Proverbs 15:1",
+            "encouragement": "Gentle code reviews."
+          },
+          {
+            "quote": "טוֹב שֵׁם מִשֶּׁמֶן טוֹב (A good name is better than precious oil.)",
+            "source": "Ecclesiastes 7:1",
+            "encouragement": "Reputation matters."
+          },
+          {
+            "quote": "עֵת לַחֲשׁוֹת וְעֵת לְדַבֵּר (A time to keep silence and a time to speak.)",
+            "source": "Ecclesiastes 3:7",
+            "encouragement": "Know when to code vs. communicate."
+          }
+        ],
+        "upper_aeons": [
+          {
+            "quote": "טוֹבִים הַשְּׁנַיִם מִן הָאֶחָד (Two are better than one.)",
+            "source": "Ecclesiastes 4:9",
+            "encouragement": "Teamwork multiplies."
+          },
+          {
+            "quote": "הַסֹּף דָּבָר הַכֹּל נִשְׁמָע (The conclusion of the matter; all has been heard.)",
+            "source": "Ecclesiastes 12:13",
+            "encouragement": "Ship it."
+          },
+          {
+            "quote": "לַכֹּל זְמָן (There is a time for everything.)",
+            "source": "Ecclesiastes 3:1",
+            "encouragement": "Trust the timeline."
+          }
+        ],
+        "treasury": [
+          {
+            "quote": "עֹשֶׂה צְדָקָה בְכָל עֵת (One who does righteousness at all times.)",
+            "source": "Psalms 106:3",
+            "encouragement": "Consistent excellence."
+          },
+          {
+            "quote": "צַדִּיק כַּתָּמָר יִפְרָח (The righteous shall flourish like a palm tree.)",
+            "source": "Psalms 92:13",
+            "encouragement": "Growth is inevitable."
+          },
+          {
+            "quote": "אוֹר זָרֻעַ לַצַּדִּיק (Light is sown for the righteous.)",
+            "source": "Psalms 97:11",
+            "encouragement": "Light awaits."
+          }
+        ]
+      }
+    },
+    "chacham": {
+      "id": "chacham",
+      "name": "החכם (The Chacham) - Sage Wisdom",
+      "icon": "📜",
+      "language": "hebrew",
+      "description": "The Sage - deep analysis, understanding, learning from tradition",
+      "sefaria_source": "pirkei_avot",
+      "quotes": {
+        "chaos": [
+          {
+            "quote": "לֹא הַבַּיְשָׁן לָמֵד (The shy person cannot learn.)",
+            "source": "Pirkei Avot 2:5",
+            "encouragement": "Ask questions boldly."
+          },
+          {
+            "quote": "עֲשֵׂה תוֹרָתְךָ קֶבַע (Make your Torah study fixed.)",
+            "source": "Pirkei Avot 1:15",
+            "encouragement": "Consistent learning."
+          },
+          {
+            "quote": "הַכֹּל צָפוּי וְהָרְשׁוּת נְתוּנָה (All is foreseen, yet freedom of choice is granted.)",
+            "source": "Pirkei Avot 3:15",
+            "encouragement": "Plan but adapt."
+          }
+        ],
+        "lower_aeons": [
+          {
+            "quote": "אֵין הַקַּפְדָּן מְלַמֵּד (An impatient person cannot teach.)",
+            "source": "Pirkei Avot 2:5",
+            "encouragement": "Patience in mentoring."
+          },
+          {
+            "quote": "שְׁתֹק וּלְמַד (Be silent and learn.)",
+            "source": "Pirkei Avot 1:17",
+            "encouragement": "Listen more."
+          },
+          {
+            "quote": "מַרְבֶּה תּוֹרָה מַרְבֶּה חַיִּים (More Torah, more life.)",
+            "source": "Pirkei Avot 2:7",
+            "encouragement": "Knowledge extends capability."
+          }
+        ],
+        "middle_aeons": [
+          {
+            "quote": "לֹא הַמִּדְרָשׁ הָעִקָּר אֶלָּא הַמַּעֲשֶׂה (Not study but practice is the main thing.)",
+            "source": "Pirkei Avot 1:17",
+            "encouragement": "Ship working code."
+          },
+          {
+            "quote": "הוּא הָיָה אוֹמֵר: אַל תִּסְתַּכֵּל בַּקַּנְקַן (He used to say: Don't look at the vessel.)",
+            "source": "Pirkei Avot 4:20",
+            "encouragement": "Substance over style."
+          },
+          {
+            "quote": "אִם אֵין קֶמַח, אֵין תּוֹרָה (If there is no flour, there is no Torah.)",
+            "source": "Pirkei Avot 3:17",
+            "encouragement": "Basics first."
+          }
+        ],
+        "upper_aeons": [
+          {
+            "quote": "טוֹבָה שָׁעָה אַחַת בִּתְשׁוּבָה וּמַעֲשִׂים טוֹבִים בָּעוֹלָם הַזֶּה (Better one hour of repentance and good deeds in this world.)",
+            "source": "Pirkei Avot 4:17",
+            "encouragement": "Every moment counts."
+          },
+          {
+            "quote": "דַּע מַה שֶּׁתָּשִׁיב לְאֶפִּיקוֹרוֹס (Know what to answer a skeptic.)",
+            "source": "Pirkei Avot 2:14",
+            "encouragement": "Prepare your defense."
+          },
+          {
+            "quote": "כָּל מַחֲלֹקֶת שֶׁהִיא לְשֵׁם שָׁמַיִם (Every controversy for the sake of Heaven.)",
+            "source": "Pirkei Avot 5:17",
+            "encouragement": "Healthy debate builds."
+          }
+        ],
+        "treasury": [
+          {
+            "quote": "תַּלְמוּד תּוֹרָה כְּנֶגֶד כֻּלָּם (Torah study is equivalent to all.)",
+            "source": "Pirkei Avot 1:1",
+            "encouragement": "Learning is supreme."
+          },
+          {
+            "quote": "עָתִיד אָדָם לִתֵּן דִּין וְחֶשְׁבּוֹן (A person will give an accounting.)",
+            "source": "Pirkei Avot 3:1",
+            "encouragement": "Code responsibly."
+          },
+          {
+            "quote": "חוֹתָמוֹ שֶׁל הַקָּדוֹשׁ בָּרוּךְ הוּא אֱמֶת (The seal of the Holy One is truth.)",
+            "source": "Shabbat 55a",
+            "encouragement": "Truth in code."
+          }
+        ]
+      }
     }
   }
 }

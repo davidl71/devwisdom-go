@@ -36,24 +36,27 @@
 
 ## 📊 Combined Results
 
-**Total Sources Ported**: 13 sources  
-**Total Quotes**: 195 quotes  
-**Combined File**: `sources.json` (46KB, 1,236 lines)
+**Total Sources Ported**: 16 sources (13 original + 3 Hebrew)  
+**Total Quotes**: 240 quotes (195 original + 45 Hebrew)  
+**Combined File**: `sources.json` (updated with Hebrew sources)
 
 ### Sources in `sources.json`:
 1. art_of_war
 2. bible
 3. bofh
-4. confucius
-5. enochian
-6. gracian
-7. kybalion
-8. murphy
-9. pistis_sophia
-10. shakespeare
-11. stoic
-12. tao
-13. tao_of_programming
+4. chacham (Hebrew - The Sage)
+5. confucius
+6. enochian
+7. gracian
+8. kybalion
+9. murphy
+10. pistis_sophia
+11. rebbe (Hebrew - Chassidic Wisdom)
+12. shakespeare
+13. stoic
+14. tao
+15. tao_of_programming
+16. tzaddik (Hebrew - The Righteous One)
 
 ---
 
@@ -81,15 +84,17 @@
 ## 🎯 Next Steps
 
 ### Remaining Phase 2 Work:
-- ⏳ Port Hebrew Sources (rebbe, tzaddik, chacham) - 3 sources
-- ⏳ Implement Random Source Selector
+- ✅ Port Hebrew Sources (rebbe, tzaddik, chacham) - 3 sources **COMPLETE**
+- ✅ Implement Random Source Selector **COMPLETE**
 - ⏳ Port Sefaria API sources (Phase 7 - optional)
 
 ### Progress:
-- ✅ **13/21 sources ported** (62%)
-- ✅ **195 quotes** across all aeon levels
+- ✅ **16/21 local sources ported** (76%)
+- ✅ **240 quotes** across all aeon levels (195 + 45 from Hebrew sources)
 - ✅ **All simple and medium sources complete**
 - ✅ **Pistis Sophia with metadata complete**
+- ✅ **Hebrew advisor sources complete** (rebbe, tzaddik, chacham)
+- ✅ **Random source selector implemented**
 
 ---
 
@@ -102,6 +107,49 @@
 
 ---
 
+---
+
+## ✅ Task 4: Port Hebrew Advisor Sources (COMPLETE)
+
+**Date**: 2025-12-09  
+**Sources**: 3 Hebrew advisor sources, 45 quotes total
+- ✅ rebbe (15 quotes) - Chassidic/Rabbinical Wisdom
+- ✅ tzaddik (15 quotes) - The Righteous One
+- ✅ chacham (15 quotes) - The Sage
+
+**Features**:
+- Hebrew text with English translations
+- `language: "hebrew"` field for language identification
+- `sefaria_source` field for future API integration
+- All 5 aeon levels populated (3 quotes per level)
+
+---
+
+## ✅ Task 5: Implement Random Source Selector (COMPLETE)
+
+**Date**: 2025-12-09  
+**Implementation**: `internal/wisdom/engine.go`
+
+**Features**:
+- Date-seeded random selection (same source all day)
+- Format: `YYYYMMDD` + hash offset (matching Python implementation)
+- Excludes Sefaria API sources (requires Phase 7 API integration)
+- Integrated into `GetWisdom()` method - supports "random" source parameter
+- Public API: `GetRandomSource(seedDate bool)`
+
+**Usage**:
+```go
+// Get random source for today
+source, err := engine.GetRandomSource(true)
+
+// Get wisdom with random source
+quote, err := engine.GetWisdom(score, "random")
+```
+
+---
+
 **Generated**: 2025-01-26  
-**Tasks**: 1-3 Complete ✅
+**Updated**: 2025-12-09  
+**Tasks**: 1-5 Complete ✅  
+**Phase 2 Status**: Local sources complete (16/21), Sefaria API sources deferred to Phase 7
 

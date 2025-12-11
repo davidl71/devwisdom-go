@@ -640,29 +640,74 @@ func (s *WisdomServer) handleSourcesResource(req *JSONRPCRequest) *JSONRPCRespon
 
 // handleAdvisorsResource returns all advisors
 func (s *WisdomServer) handleAdvisorsResource(req *JSONRPCRequest) *JSONRPCResponse {
-	// TODO: Implement advisor listing
-	// For now, return placeholder
-	advisors := []map[string]interface{}{
-		{
-			"id":        "pistis_sophia",
-			"name":      "Pistis Sophia",
-			"icon":      "📜",
-			"rationale": "Journey through aeons mirrors project health stages",
-		},
-		{
-			"id":        "stoic",
-			"name":      "Stoic Philosophers",
-			"icon":      "🏛️",
-			"rationale": "Stoics teach discipline through adversity",
-		},
+	advisorRegistry := s.wisdom.GetAdvisors()
+
+	// Build comprehensive advisor listing
+	advisorList := map[string]interface{}{
+		"metric_advisors": make([]map[string]interface{}, 0),
+		"tool_advisors":   make([]map[string]interface{}, 0),
+		"stage_advisors":  make([]map[string]interface{}, 0),
 	}
+
+	// Get all metric advisors
+	metricAdvisors := advisorRegistry.GetAllMetricAdvisors()
+	metricList := make([]map[string]interface{}, 0, len(metricAdvisors))
+	for metric, info := range metricAdvisors {
+		item := map[string]interface{}{
+			"metric":    metric,
+			"advisor":   info.Advisor,
+			"icon":      info.Icon,
+			"rationale": info.Rationale,
+		}
+		if info.HelpsWith != "" {
+			item["helps_with"] = info.HelpsWith
+		}
+		if info.Language != "" {
+			item["language"] = info.Language
+		}
+		metricList = append(metricList, item)
+	}
+	advisorList["metric_advisors"] = metricList
+
+	// Get all tool advisors
+	toolAdvisors := advisorRegistry.GetAllToolAdvisors()
+	toolList := make([]map[string]interface{}, 0, len(toolAdvisors))
+	for tool, info := range toolAdvisors {
+		item := map[string]interface{}{
+			"tool":      tool,
+			"advisor":   info.Advisor,
+			"rationale": info.Rationale,
+		}
+		if info.Language != "" {
+			item["language"] = info.Language
+		}
+		toolList = append(toolList, item)
+	}
+	advisorList["tool_advisors"] = toolList
+
+	// Get all stage advisors
+	stageAdvisors := advisorRegistry.GetAllStageAdvisors()
+	stageList := make([]map[string]interface{}, 0, len(stageAdvisors))
+	for stage, info := range stageAdvisors {
+		item := map[string]interface{}{
+			"stage":     stage,
+			"advisor":   info.Advisor,
+			"icon":      info.Icon,
+			"rationale": info.Rationale,
+		}
+		if info.Language != "" {
+			item["language"] = info.Language
+		}
+		stageList = append(stageList, item)
+	}
+	advisorList["stage_advisors"] = stageList
 
 	return NewSuccessResponse(req.ID, map[string]interface{}{
 		"contents": []map[string]interface{}{
 			{
 				"uri":      "wisdom://advisors",
 				"mimeType": "application/json",
-				"text":     string(mustMarshalJSONCompact(advisors)),
+				"text":     string(mustMarshalJSONCompact(advisorList)),
 			},
 		},
 	})
@@ -670,12 +715,44 @@ func (s *WisdomServer) handleAdvisorsResource(req *JSONRPCRequest) *JSONRPCRespo
 
 // handleAdvisorResource returns a specific advisor
 func (s *WisdomServer) handleAdvisorResource(req *JSONRPCRequest, advisorID string) *JSONRPCResponse {
-	// TODO: Implement advisor retrieval
+	advisorRegistry := s.wisdom.GetAdvisors()
+
+	// Try to find advisor in metric, tool, or stage advisors
+	var advisorInfo *wisdom.AdvisorInfo
+	var advisorType string
+
+	// Try metric advisors first
+	if info, err := advisorRegistry.GetAdvisorForMetric(advisorID); err == nil {
+		advisorInfo = info
+		advisorType = "metric"
+	} else if info, err := advisorRegistry.GetAdvisorForTool(advisorID); err == nil {
+		// Try tool advisors
+		advisorInfo = info
+		advisorType = "tool"
+	} else if info, err := advisorRegistry.GetAdvisorForStage(advisorID); err == nil {
+		// Try stage advisors
+		advisorInfo = info
+		advisorType = "stage"
+	} else {
+		// Advisor not found
+		return NewErrorResponse(req.ID, ErrCodeInvalidParams, fmt.Sprintf("Advisor not found: %s", advisorID), nil)
+	}
+
+	// Build advisor response
 	advisor := map[string]interface{}{
 		"id":        advisorID,
-		"name":      advisorID,
-		"icon":      "📜",
-		"rationale": "Wisdom advisor",
+		"type":      advisorType,
+		"advisor":   advisorInfo.Advisor,
+		"rationale": advisorInfo.Rationale,
+	}
+	if advisorInfo.Icon != "" {
+		advisor["icon"] = advisorInfo.Icon
+	}
+	if advisorInfo.HelpsWith != "" {
+		advisor["helps_with"] = advisorInfo.HelpsWith
+	}
+	if advisorInfo.Language != "" {
+		advisor["language"] = advisorInfo.Language
 	}
 
 	return NewSuccessResponse(req.ID, map[string]interface{}{

@@ -30,13 +30,12 @@ func (a *App) runQuote(args []string) error {
 	// Determine source
 	selectedSource := *source
 	if selectedSource == "" {
-		// Use random source selector if available, or default to first source
-		sources := engine.ListSources()
-		if len(sources) == 0 {
-			return fmt.Errorf("no wisdom sources available")
+		// Use date-seeded random source selector for daily consistency
+		randomSource, err := engine.GetRandomSource(true)
+		if err != nil {
+			return fmt.Errorf("failed to get random source: %w", err)
 		}
-		// For now, use first source (TODO: implement random selector)
-		selectedSource = sources[0]
+		selectedSource = randomSource
 	}
 
 	// Get quote - if source is empty string, GetWisdom will fail, so we handle it above
