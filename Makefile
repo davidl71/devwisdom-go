@@ -12,19 +12,28 @@ build-cli:
 run: build
 	./devwisdom
 
+# Run server with watchdog (crash monitoring + file watching)
+watchdog:
+	./watchdog.sh --watch-files
+
+# Run server with watchdog (restart on file changes)
+watchdog-restart:
+	./watchdog.sh --watch-files --restart-on-change
+
+# Run server with watchdog (crash monitoring only)
+watchdog-monitor:
+	./watchdog.sh
+
 # Run tests
 test:
 	go test ./...
 
-# Run tests with coverage
-test-coverage:
-	go test -coverprofile=coverage.out ./...
-	go tool cover -html=coverage.out -o coverage.html -v
-
+# Run tests with coverage (text output)
 test-coverage:
 	go test ./... -cover -coverprofile=coverage.out
 	go tool cover -func=coverage.out
 
+# Run tests with coverage (HTML output)
 test-html:
 	go test ./... -coverprofile=coverage.out
 	go tool cover -html=coverage.out -o coverage.html
