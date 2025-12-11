@@ -101,3 +101,39 @@ func GetAeonLevel(score float64) string {
 		return string(AeonTreasury)
 	}
 }
+
+// ConsultationMode represents project health consultation modes
+type ConsultationMode string
+
+const (
+	ModeChaos    ConsultationMode = "chaos"    // < 30%
+	ModeBuilding ConsultationMode = "building" // 30-60%
+	ModeMaturing ConsultationMode = "maturing" // 60-80%
+	ModeMastery  ConsultationMode = "mastery"  // > 80%
+)
+
+// ConsultationModeConfig represents configuration for a consultation mode
+type ConsultationModeConfig struct {
+	Name        string  `json:"name"`
+	MinScore    float64 `json:"min_score"`
+	MaxScore    float64 `json:"max_score"`
+	Frequency   string  `json:"frequency"`
+	Description string  `json:"description"`
+	Icon        string  `json:"icon"`
+}
+
+// SessionMode represents different session interaction modes
+type SessionMode string
+
+const (
+	SessionModeAgent  SessionMode = "AGENT"
+	SessionModeAsk    SessionMode = "ASK"
+	SessionModeManual SessionMode = "MANUAL"
+)
+
+// ModeConfig represents configuration for session mode-aware advisor selection
+type ModeConfig struct {
+	PreferredAdvisors []string `json:"preferred_advisors"`
+	Tone              string   `json:"tone"`
+	Focus             string   `json:"focus"`
+}

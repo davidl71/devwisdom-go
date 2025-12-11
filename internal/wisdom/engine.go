@@ -2,7 +2,10 @@ package wisdom
 
 import (
 	"fmt"
+	"hash/fnv"
+	"math/rand"
 	"sync"
+	"time"
 
 	"github.com/davidl71/devwisdom-go/internal/config"
 )
@@ -87,6 +90,15 @@ func (e *Engine) GetWisdom(score float64, source string) (*Quote, error) {
 		return nil, fmt.Errorf("engine not initialized")
 	}
 
+	// Handle "random" source selection
+	if source == "random" {
+		randomSource, err := e.getRandomSourceLocked(true)
+		if err != nil {
+			return nil, fmt.Errorf("failed to get random source: %w", err)
+		}
+		source = randomSource
+	}
+
 	src, exists := e.sources[source]
 	if !exists {
 		return nil, fmt.Errorf("unknown source: %s", source)
@@ -98,6 +110,61 @@ func (e *Engine) GetWisdom(score float64, source string) (*Quote, error) {
 	// Get quote from source based on aeon level
 	quote := src.GetQuote(aeonLevel)
 	return quote, nil
+}
+
+// GetRandomSource returns a random wisdom source ID
+// If seedDate is true, the same source will be returned for the entire day
+func (e *Engine) GetRandomSource(seedDate bool) (string, error) {
+	e.mu.RLock()
+	defer e.mu.RUnlock()
+	return e.getRandomSourceLocked(seedDate)
+}
+
+// getRandomSourceLocked is the internal implementation (assumes RLock is held)
+func (e *Engine) getRandomSourceLocked(seedDate bool) (string, error) {
+	if !e.initialized {
+		return "", fmt.Errorf("engine not initialized")
+	}
+
+	// Get all available source IDs (excluding Sefaria API sources for now)
+	allSources := make([]string, 0, len(e.sources))
+	for id := range e.sources {
+		// Exclude Sefaria API sources (they require API integration)
+		if id != "pirkei_avot" && id != "proverbs" && id != "ecclesiastes" && id != "psalms" {
+			allSources = append(allSources, id)
+		}
+	}
+
+	if len(allSources) == 0 {
+		return "", fmt.Errorf("no sources available")
+	}
+
+	// Date-seeded random selection for consistency
+	var seed int64
+	if seedDate {
+		now := time.Now()
+		dateStr := now.Format("20060102") // YYYYMMDD format
+		
+		// Convert date string to int and add hash offset (matching Python implementation)
+		var dateInt int64
+		fmt.Sscanf(dateStr, "%d", &dateInt)
+		
+		// Hash "random_source" string for offset (matching Python hash("random_source"))
+		h := fnv.New32a()
+		h.Write([]byte("random_source"))
+		hashOffset := int64(h.Sum32())
+		
+		seed = dateInt + hashOffset
+	} else {
+		seed = time.Now().UnixNano()
+	}
+
+	// Create seeded random generator
+	rng := rand.New(rand.NewSource(seed))
+	
+	// Select random source
+	selectedIndex := rng.Intn(len(allSources))
+	return allSources[selectedIndex], nil
 }
 
 // ListSources returns all available wisdom sources

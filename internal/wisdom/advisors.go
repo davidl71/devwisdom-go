@@ -301,3 +301,118 @@ func (r *AdvisorRegistry) GetAdvisorForStage(stage string) (*AdvisorInfo, error)
 	}
 	return advisor, nil
 }
+
+// GetConsultationMode returns the consultation mode based on score
+func GetConsultationMode(score float64) ConsultationModeConfig {
+	modes := []ConsultationModeConfig{
+		{
+			Name:        string(ModeChaos),
+			MinScore:    0,
+			MaxScore:    30,
+			Frequency:   "every_action",
+			Description: "Chaos mode: Consult advisor before every significant action",
+			Icon:        "🔥",
+		},
+		{
+			Name:        string(ModeBuilding),
+			MinScore:    30,
+			MaxScore:    60,
+			Frequency:   "start_and_review",
+			Description: "Building mode: Consult at start of work and during review",
+			Icon:        "🏗️",
+		},
+		{
+			Name:        string(ModeMaturing),
+			MinScore:    60,
+			MaxScore:    80,
+			Frequency:   "milestones",
+			Description: "Maturing mode: Consult at planning and major milestones",
+			Icon:        "🌱",
+		},
+		{
+			Name:        string(ModeMastery),
+			MinScore:    80,
+			MaxScore:    100,
+			Frequency:   "weekly",
+			Description: "Mastery mode: Weekly reflection with advisor",
+			Icon:        "🎯",
+		},
+	}
+
+	for _, mode := range modes {
+		if mode.MinScore <= score && score < mode.MaxScore {
+			return mode
+		}
+	}
+
+	// Handle edge cases
+	if score < 0 {
+		// Negative scores default to chaos
+		return modes[0] // ModeChaos
+	}
+
+	// Default to mastery for scores >= 100
+	return modes[3] // ModeMastery
+}
+
+// GetModeConfig returns configuration for a session mode
+func GetModeConfig(mode SessionMode) *ModeConfig {
+	configs := map[SessionMode]*ModeConfig{
+		SessionModeAgent: {
+			PreferredAdvisors: []string{"art_of_war", "tao_of_programming", "kybalion"},
+			Tone:              "strategic",
+			Focus:             "progress tracking and checkpoints",
+		},
+		SessionModeAsk: {
+			PreferredAdvisors: []string{"confucius", "gracian", "stoic"},
+			Tone:              "direct",
+			Focus:             "quick answers and focused explanations",
+		},
+		SessionModeManual: {
+			PreferredAdvisors: []string{"tao_of_programming", "bible", "pistis_sophia"},
+			Tone:              "observational",
+			Focus:             "encouragement and reflection",
+		},
+	}
+
+	if config, exists := configs[mode]; exists {
+		return config
+	}
+
+	// Default config for unknown modes
+	return nil
+}
+
+// AdjustAdvisorForMode adjusts advisor selection based on session mode for random consultations
+// Returns the adjusted advisor ID and rationale if adjustment is made, otherwise returns empty strings
+func AdjustAdvisorForMode(sessionMode SessionMode, consultationType string, availableSources []string) (string, string) {
+	// Only adjust for random consultations
+	if consultationType != "random" {
+		return "", ""
+	}
+
+	modeConfig := GetModeConfig(sessionMode)
+	if modeConfig == nil {
+		return "", ""
+	}
+
+	// Find preferred advisors that are available
+	availablePreferred := []string{}
+	for _, preferred := range modeConfig.PreferredAdvisors {
+		for _, available := range availableSources {
+			if preferred == available {
+				availablePreferred = append(availablePreferred, preferred)
+				break
+			}
+		}
+	}
+
+	if len(availablePreferred) > 0 {
+		// Use first available preferred advisor (could be randomized later)
+		selected := availablePreferred[0]
+		rationale := fmt.Sprintf("Mode-aware selection for %s", sessionMode)
+		return selected, rationale
+	}
+
+	return "", ""
+}
