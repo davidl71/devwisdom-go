@@ -1,3 +1,6 @@
+//go:build example_add_source || ignore
+// +build example_add_source ignore
+
 package main
 
 import (
