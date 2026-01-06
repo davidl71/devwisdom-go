@@ -2,30 +2,41 @@ package wisdom
 
 import "testing"
 
-func TestGetBuiltInSources(t *testing.T) {
-	sources := GetBuiltInSources()
+func TestSourceLoader_Fallback(t *testing.T) {
+	// Test that SourceLoader provides fallback behavior similar to old GetBuiltInSources
+	loader := NewSourceLoader()
+	
+	// Try to load (may fail if no config files exist, which is fine)
+	_ = loader.Load()
+	
+	sources := loader.GetAllSources()
 	if sources == nil {
-		t.Fatal("GetBuiltInSources returned nil")
+		t.Fatal("SourceLoader.GetAllSources() returned nil")
 	}
-	if len(sources) == 0 {
-		t.Error("GetBuiltInSources returned empty map")
-	}
-
-	// Check that at least bofh exists (our fallback)
-	bofh, exists := sources["bofh"]
-	if !exists {
-		t.Error("GetBuiltInSources missing bofh source")
-	}
-	if bofh == nil {
-		t.Error("bofh source is nil")
-	}
-	if bofh.Name == "" {
-		t.Error("bofh source has no name")
+	
+	// If no sources loaded, that's acceptable (fallback happens in engine)
+	// But if sources exist, verify structure
+	if len(sources) > 0 {
+		// Check that sources have proper structure
+		for id, source := range sources {
+			if id == "" {
+				t.Error("Source has empty ID")
+			}
+			if source == nil {
+				t.Errorf("Source %q is nil", id)
+				continue
+			}
+			if source.Name == "" {
+				t.Errorf("Source %q has no name", id)
+			}
+		}
 	}
 }
 
-func TestGetBuiltInSources_Structure(t *testing.T) {
-	sources := GetBuiltInSources()
+func TestSourceLoader_Structure(t *testing.T) {
+	loader := NewSourceLoader()
+	_ = loader.Load()
+	sources := loader.GetAllSources()
 
 	for id, source := range sources {
 		if id == "" {

@@ -59,8 +59,20 @@ func (e *Engine) Initialize() error {
 
 	// Try to load from default locations
 	if err := e.loader.Load(); err != nil {
-		// Fallback to hard-coded sources if config loading fails
-		e.sources = GetBuiltInSources()
+		// Fallback to minimal hard-coded source if config loading fails
+		e.sources = make(map[string]*Source)
+		e.sources["bofh"] = &Source{
+			Name:   "BOFH (Bastard Operator From Hell)",
+			Icon:   "😈",
+			Quotes: make(map[string][]Quote),
+		}
+		e.sources["bofh"].Quotes["chaos"] = []Quote{
+			{
+				Quote:         "It's not a bug, it's a feature.",
+				Source:        "BOFH Excuse Calendar",
+				Encouragement: "Document it and ship it.",
+			},
+		}
 	} else {
 		// Use loaded sources
 		e.sources = e.loader.GetAllSources()
