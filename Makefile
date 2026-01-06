@@ -1,4 +1,4 @@
-.PHONY: build build-cli build-all run test clean install install-cli fmt lint docs
+.PHONY: build build-cli build-all run test clean install install-cli fmt lint docs bench bench-cpu bench-mem bench-profile pprof-cpu pprof-mem pprof-web-cpu pprof-web-mem
 
 # Build binary (MCP server)
 build:
@@ -71,3 +71,38 @@ lint:
 # Generate docs
 docs:
 	godoc -http=:6060
+
+# Run benchmarks
+bench:
+	go test -bench=. -benchmem -benchtime=3s ./internal/wisdom/...
+
+# Run benchmarks with CPU profiling
+bench-cpu:
+	go test -bench=. -benchmem -benchtime=3s -cpuprofile=cpu.prof ./internal/wisdom/...
+	@echo "CPU profile saved to cpu.prof"
+	@echo "Analyze with: go tool pprof cpu.prof"
+
+# Run benchmarks with memory profiling
+bench-mem:
+	go test -bench=. -benchmem -benchtime=3s -memprofile=mem.prof ./internal/wisdom/...
+	@echo "Memory profile saved to mem.prof"
+	@echo "Analyze with: go tool pprof mem.prof"
+
+# Run benchmarks with both CPU and memory profiling
+bench-profile: bench-cpu bench-mem
+
+# Analyze CPU profile (interactive)
+pprof-cpu:
+	go tool pprof cpu.prof
+
+# Analyze memory profile (interactive)
+pprof-mem:
+	go tool pprof mem.prof
+
+# Generate profile reports (web interface)
+pprof-web-cpu:
+	go tool pprof -http=:8080 cpu.prof
+
+# Generate profile reports (web interface)
+pprof-web-mem:
+	go tool pprof -http=:8080 mem.prof

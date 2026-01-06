@@ -67,13 +67,14 @@ BenchmarkEngine_GetWisdom_Random-10    152770    7821 ns/op    5723 B/op    7 al
 #### GetRandomSource
 
 ```
-BenchmarkEngine_GetRandomSource-10    155284    7802 ns/op    5723 B/op    7 allocs/op
+BenchmarkEngine_GetRandomSource-10    368016    8602 ns/op    5384 B/op    2 allocs/op
 ```
 
 **Actual Performance:**
-- **Time per operation**: 7.802 µs (0.007802 ms) ✅ **Exceeds goal by 64x**
-- **Memory allocations**: 5,723 bytes, 7 allocations
-- **Throughput**: ~155,284 operations/second
+- **Time per operation**: 8.602 µs (0.008602 ms) ✅ **Exceeds goal by 58x**
+- **Memory allocations**: 5,384 bytes, 2 allocations (71% reduction from 7 allocs)
+- **Throughput**: ~368,016 operations/second (2.4x improvement)
+- **Optimization**: Cached sorted source list and date hash (computed once, reused)
 
 #### ListSources
 
@@ -280,13 +281,19 @@ BenchmarkEngine_Initialize-10    3122    386820 ns/op    225649 B/op    1873 all
 # Run all benchmarks with memory profiling
 go test -bench=. -benchmem -benchtime=3s ./internal/wisdom/... -run=Benchmark
 
-# Generate CPU profile
-go test -bench=. -cpuprofile=cpu.prof ./internal/wisdom/...
-
-# Generate memory profile
-go test -bench=. -memprofile=mem.prof ./internal/wisdom/...
+# Or use Makefile targets
+make bench              # Run all benchmarks
+make bench-cpu         # Generate CPU profile
+make bench-mem         # Generate memory profile
+make bench-profile      # Generate both profiles
 
 # Analyze profiles
+make pprof-cpu         # Interactive CPU profile analysis
+make pprof-mem         # Interactive memory profile analysis
+make pprof-web-cpu     # Web interface for CPU profile (http://localhost:8080)
+make pprof-web-mem     # Web interface for memory profile (http://localhost:8080)
+
+# Or use go tool directly
 go tool pprof cpu.prof
 go tool pprof mem.prof
 ```

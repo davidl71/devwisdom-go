@@ -15,12 +15,19 @@ import (
 // It provides thread-safe access to wisdom sources and advisor consultations.
 // The engine must be initialized before use by calling Initialize().
 type Engine struct {
-	sources     map[string]*Source
-	loader      *SourceLoader
-	advisors    *AdvisorRegistry
-	config      *config.Config
-	initialized bool
-	mu          sync.RWMutex
+	sources         map[string]*Source
+	loader          *SourceLoader
+	advisors        *AdvisorRegistry
+	config          *config.Config
+	initialized     bool
+	mu              sync.RWMutex
+	// Performance optimization: cached sorted source list
+	sortedSources   []string
+	sortedSourcesMu sync.RWMutex
+	// Performance optimization: cached date hash for random source selection
+	cachedDateHash  int64
+	cachedDate      string // YYYYMMDD format
+	dateHashMu      sync.RWMutex
 }
 
 // NewEngine creates a new wisdom engine instance.
@@ -79,6 +86,9 @@ func (e *Engine) Initialize() error {
 		e.sources = e.loader.GetAllSources()
 	}
 
+	// Pre-compute sorted source list for performance optimization
+	e.updateSortedSources()
+
 	// Initialize advisors
 	e.advisors.Initialize()
 
@@ -105,6 +115,8 @@ func (e *Engine) ReloadSources() error {
 	}
 
 	e.sources = e.loader.GetAllSources()
+	// Update cached sorted source list
+	e.updateSortedSources()
 	return nil
 }
 
@@ -158,11 +170,11 @@ func (e *Engine) GetRandomSource(seedDate bool) (string, error) {
 	return e.getRandomSourceLocked(seedDate)
 }
 
-// getRandomSourceLocked is the internal implementation (assumes RLock is held)
-func (e *Engine) getRandomSourceLocked(seedDate bool) (string, error) {
-	if !e.initialized {
-		return "", fmt.Errorf("engine not initialized: call Initialize() before use")
-	}
+// updateSortedSources updates the cached sorted source list.
+// This should be called whenever sources are loaded or reloaded.
+func (e *Engine) updateSortedSources() {
+	e.sortedSourcesMu.Lock()
+	defer e.sortedSourcesMu.Unlock()
 
 	// Get all available source IDs
 	allSources := make([]string, 0, len(e.sources))
@@ -170,33 +182,84 @@ func (e *Engine) getRandomSourceLocked(seedDate bool) (string, error) {
 		allSources = append(allSources, id)
 	}
 
+	// Sort sources to ensure deterministic order (Go map iteration is non-deterministic)
+	sort.Strings(allSources)
+
+	e.sortedSources = allSources
+}
+
+// getDateHash computes and caches the date hash for random source selection.
+// The hash is cached per day to avoid recomputation.
+func (e *Engine) getDateHash() int64 {
+	now := time.Now()
+	dateStr := now.Format("20060102") // YYYYMMDD format
+
+	// Check if we have a cached hash for today
+	e.dateHashMu.RLock()
+	if e.cachedDate == dateStr && e.cachedDateHash != 0 {
+		hash := e.cachedDateHash
+		e.dateHashMu.RUnlock()
+		return hash
+	}
+	e.dateHashMu.RUnlock()
+
+	// Compute hash (need write lock)
+	e.dateHashMu.Lock()
+	defer e.dateHashMu.Unlock()
+
+	// Double-check after acquiring write lock (another goroutine might have computed it)
+	if e.cachedDate == dateStr && e.cachedDateHash != 0 {
+		return e.cachedDateHash
+	}
+
+	// Convert date string to int and add hash offset (matching Python implementation)
+	var dateInt int64
+	if _, err := fmt.Sscanf(dateStr, "%d", &dateInt); err != nil {
+		// This should never fail since we just formatted the date, but handle it gracefully
+		dateInt = int64(now.Unix())
+	}
+
+	// Hash "random_source" string for offset (matching Python hash("random_source"))
+	h := fnv.New32a()
+	h.Write([]byte("random_source"))
+	hashOffset := int64(h.Sum32())
+
+	seed := dateInt + hashOffset
+
+	// Cache the result
+	e.cachedDate = dateStr
+	e.cachedDateHash = seed
+
+	return seed
+}
+
+// getRandomSourceLocked is the internal implementation (assumes RLock is held)
+func (e *Engine) getRandomSourceLocked(seedDate bool) (string, error) {
+	if !e.initialized {
+		return "", fmt.Errorf("engine not initialized: call Initialize() before use")
+	}
+
+	// Use cached sorted source list (performance optimization)
+	e.sortedSourcesMu.RLock()
+	allSources := e.sortedSources
+	e.sortedSourcesMu.RUnlock()
+
+	// If cache is empty or out of sync, update it
+	if len(allSources) == 0 || len(allSources) != len(e.sources) {
+		e.updateSortedSources()
+		e.sortedSourcesMu.RLock()
+		allSources = e.sortedSources
+		e.sortedSourcesMu.RUnlock()
+	}
+
 	if len(allSources) == 0 {
 		return "", fmt.Errorf("no sources available: ensure sources.json exists and contains valid source definitions")
 	}
 
-	// Sort sources to ensure deterministic order (Go map iteration is non-deterministic)
-	// This ensures date-seeded randomness is consistent
-	sort.Strings(allSources)
-
 	// Date-seeded random selection for consistency
 	var seed int64
 	if seedDate {
-		now := time.Now()
-		dateStr := now.Format("20060102") // YYYYMMDD format
-
-		// Convert date string to int and add hash offset (matching Python implementation)
-		var dateInt int64
-		if _, err := fmt.Sscanf(dateStr, "%d", &dateInt); err != nil {
-			// This should never fail since we just formatted the date, but handle it gracefully
-			dateInt = int64(now.Unix())
-		}
-
-		// Hash "random_source" string for offset (matching Python hash("random_source"))
-		h := fnv.New32a()
-		h.Write([]byte("random_source"))
-		hashOffset := int64(h.Sum32())
-
-		seed = dateInt + hashOffset
+		seed = e.getDateHash()
 	} else {
 		seed = time.Now().UnixNano()
 	}
