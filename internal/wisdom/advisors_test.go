@@ -291,3 +291,60 @@ func TestAdjustAdvisorForMode(t *testing.T) {
 		})
 	}
 }
+
+func TestAdvisorRegistry_GetAllMetricAdvisors(t *testing.T) {
+	registry := NewAdvisorRegistry()
+	registry.Initialize()
+
+	advisors := registry.GetAllMetricAdvisors()
+	if advisors == nil {
+		t.Fatal("GetAllMetricAdvisors returned nil")
+	}
+	if len(advisors) == 0 {
+		t.Error("GetAllMetricAdvisors returned empty map")
+	}
+
+	// Check that known metrics exist
+	if _, exists := advisors["security"]; !exists {
+		t.Error("GetAllMetricAdvisors missing security advisor")
+	}
+	if _, exists := advisors["testing"]; !exists {
+		t.Error("GetAllMetricAdvisors missing testing advisor")
+	}
+}
+
+func TestAdvisorRegistry_GetAllToolAdvisors(t *testing.T) {
+	registry := NewAdvisorRegistry()
+	registry.Initialize()
+
+	advisors := registry.GetAllToolAdvisors()
+	if advisors == nil {
+		t.Fatal("GetAllToolAdvisors returned nil")
+	}
+	if len(advisors) == 0 {
+		t.Error("GetAllToolAdvisors returned empty map")
+	}
+
+	// Check that known tools exist
+	if _, exists := advisors["project_scorecard"]; !exists {
+		t.Error("GetAllToolAdvisors missing project_scorecard advisor")
+	}
+}
+
+func TestAdvisorRegistry_GetAllStageAdvisors(t *testing.T) {
+	registry := NewAdvisorRegistry()
+	registry.Initialize()
+
+	advisors := registry.GetAllStageAdvisors()
+	if advisors == nil {
+		t.Fatal("GetAllStageAdvisors returned nil")
+	}
+	if len(advisors) == 0 {
+		t.Error("GetAllStageAdvisors returned empty map")
+	}
+
+	// Check that known stages exist
+	if _, exists := advisors["daily_checkin"]; !exists {
+		t.Error("GetAllStageAdvisors missing daily_checkin advisor")
+	}
+}
