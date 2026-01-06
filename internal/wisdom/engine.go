@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"hash/fnv"
 	"math/rand"
+	"sort"
 	"sync"
 	"time"
 
@@ -91,6 +92,14 @@ func (e *Engine) ReloadSources() error {
 	e.mu.Lock()
 	defer e.mu.Unlock()
 
+	if !e.initialized {
+		return fmt.Errorf("engine not initialized")
+	}
+
+	if e.loader == nil {
+		return fmt.Errorf("loader not initialized")
+	}
+
 	if err := e.loader.Reload(); err != nil {
 		return fmt.Errorf("failed to reload sources: %w", err)
 	}
@@ -160,21 +169,28 @@ func (e *Engine) getRandomSourceLocked(seedDate bool) (string, error) {
 		return "", fmt.Errorf("no sources available")
 	}
 
+	// Sort sources to ensure deterministic order (Go map iteration is non-deterministic)
+	// This ensures date-seeded randomness is consistent
+	sort.Strings(allSources)
+
 	// Date-seeded random selection for consistency
 	var seed int64
 	if seedDate {
 		now := time.Now()
 		dateStr := now.Format("20060102") // YYYYMMDD format
-		
+
 		// Convert date string to int and add hash offset (matching Python implementation)
 		var dateInt int64
-		fmt.Sscanf(dateStr, "%d", &dateInt)
-		
+		if _, err := fmt.Sscanf(dateStr, "%d", &dateInt); err != nil {
+			// This should never fail since we just formatted the date, but handle it gracefully
+			dateInt = int64(now.Unix())
+		}
+
 		// Hash "random_source" string for offset (matching Python hash("random_source"))
 		h := fnv.New32a()
 		h.Write([]byte("random_source"))
 		hashOffset := int64(h.Sum32())
-		
+
 		seed = dateInt + hashOffset
 	} else {
 		seed = time.Now().UnixNano()
@@ -182,7 +198,7 @@ func (e *Engine) getRandomSourceLocked(seedDate bool) (string, error) {
 
 	// Create seeded random generator
 	rng := rand.New(rand.NewSource(seed))
-	
+
 	// Select random source
 	selectedIndex := rng.Intn(len(allSources))
 	return allSources[selectedIndex], nil
