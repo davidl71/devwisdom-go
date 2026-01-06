@@ -114,7 +114,7 @@ func BenchmarkAdvisorRegistry_GetAdvisorForStage(b *testing.B) {
 // BenchmarkGetAeonLevel benchmarks aeon level calculation
 func BenchmarkGetAeonLevel(b *testing.B) {
 	scores := []float64{25.0, 40.0, 60.0, 75.0, 90.0}
-	
+
 	b.ResetTimer()
 	for i := 0; i < b.N; i++ {
 		score := scores[i%len(scores)]
@@ -150,4 +150,3 @@ func BenchmarkEngine_Initialize(b *testing.B) {
 		_ = engine.Initialize()
 	}
 }
-

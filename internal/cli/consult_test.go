@@ -129,7 +129,10 @@ func TestRunConsult(t *testing.T) {
 			var buf bytes.Buffer
 			done := make(chan bool)
 			go func() {
-				buf.ReadFrom(r)
+				_, err := buf.ReadFrom(r)
+				if err != nil {
+					t.Errorf("buf.ReadFrom failed: %v", err)
+				}
 				done <- true
 			}()
 

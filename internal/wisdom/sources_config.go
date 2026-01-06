@@ -1,6 +1,7 @@
 package wisdom
 
 import (
+	"context"
 	"embed"
 	"encoding/json"
 	"fmt"
@@ -9,6 +10,8 @@ import (
 	"path/filepath"
 	"sync"
 	"time"
+
+	"github.com/davidl71/devwisdom-go/internal/wisdom/sefaria"
 )
 
 // SourceConfig represents a configurable wisdom source
@@ -44,19 +47,23 @@ type SourceLoader struct {
 	projectRoot   string // Project root directory for project-specific sources
 	cache         *SourceCache
 	httpClient    *http.Client // For API-based sources with timeout
+	sefariaClient *sefaria.Client // Sefaria API client
 }
 
 // NewSourceLoader creates a new source loader
 func NewSourceLoader() *SourceLoader {
+	httpClient := &http.Client{
+		Timeout: 10 * time.Second, // Default timeout for API calls
+	}
+
 	loader := &SourceLoader{
 		sources:       make(map[string]*Source),
 		configPaths:   []string{},
 		reloadEnabled: true,
 		projectRoot:   findProjectRoot(),
 		cache:         NewSourceCache(),
-		httpClient: &http.Client{
-			Timeout: 10 * time.Second, // Default timeout for API calls
-		},
+		httpClient:    httpClient,
+		sefariaClient: sefaria.NewClient(httpClient),
 	}
 
 	// Start cache cleanup every 5 minutes
@@ -137,6 +144,7 @@ func (sl *SourceLoader) Load() error {
 		if err := sl.loadFromEmbedded(); err != nil {
 			// Silently fail - embedded sources are optional
 			// Don't output to stdout/stderr in MCP server mode (breaks stdio protocol)
+			_ = err // Explicitly ignore error for graceful degradation
 		}
 	}
 
@@ -145,6 +153,7 @@ func (sl *SourceLoader) Load() error {
 		if err := sl.loadFromFile(path); err != nil {
 			// Silently continue - config files are optional
 			// Don't output to stdout/stderr in MCP server mode (breaks stdio protocol)
+			_ = err // Explicitly ignore error for graceful degradation
 		}
 	}
 
@@ -208,7 +217,7 @@ func (sl *SourceLoader) ListSourceIDs() []string {
 // AddSource adds a source programmatically (useful for runtime additions)
 func (sl *SourceLoader) AddSource(config *SourceConfig) error {
 	if err := ValidateConfig(config); err != nil {
-		return fmt.Errorf("invalid source config: %w", err)
+		return fmt.Errorf("invalid source configuration: %w", err)
 	}
 
 	sl.mu.Lock()
@@ -229,13 +238,13 @@ func (sl *SourceLoader) AddSource(config *SourceConfig) error {
 // SaveProjectSource saves a source configuration to the project directory
 func (sl *SourceLoader) SaveProjectSource(config *SourceConfig) error {
 	if sl.projectRoot == "" {
-		return fmt.Errorf("project root not found - cannot save project source")
+		return fmt.Errorf("project root not found - cannot save project source. Project root is required to save custom sources")
 	}
 
 	// Create .wisdom directory in project root if it doesn't exist
 	wisdomDir := filepath.Join(sl.projectRoot, ".wisdom")
 	if err := os.MkdirAll(wisdomDir, 0755); err != nil {
-		return fmt.Errorf("failed to create .wisdom directory: %w", err)
+		return fmt.Errorf("failed to create .wisdom directory at %q: %w", wisdomDir, err)
 	}
 
 	// Save to project-specific sources file
@@ -313,17 +322,17 @@ func findProjectRoot() string {
 // loadFromEmbedded loads sources from embedded filesystem
 func (sl *SourceLoader) loadFromEmbedded() error {
 	if sl.embeddedFS == nil {
-		return fmt.Errorf("no embedded filesystem configured")
+		return fmt.Errorf("no embedded filesystem configured: embedded sources not available in this build")
 	}
 
 	data, err := sl.embeddedFS.ReadFile(sl.embeddedPath)
 	if err != nil {
-		return fmt.Errorf("failed to read embedded file: %w", err)
+		return fmt.Errorf("failed to read embedded source file %q: %w", sl.embeddedPath, err)
 	}
 
 	var sourcesConfig SourcesConfig
 	if err := json.Unmarshal(data, &sourcesConfig); err != nil {
-		return fmt.Errorf("failed to parse embedded config: %w", err)
+		return fmt.Errorf("failed to parse embedded source config %q (invalid JSON): %w", sl.embeddedPath, err)
 	}
 
 	// Add all sources from embedded config
@@ -348,12 +357,12 @@ func (sl *SourceLoader) loadFromFile(path string) error {
 	// Read file
 	data, err := os.ReadFile(path)
 	if err != nil {
-		return fmt.Errorf("failed to read file: %w", err)
+		return fmt.Errorf("failed to read source config file %q: %w", path, err)
 	}
 
 	var sourcesConfig SourcesConfig
 	if err := json.Unmarshal(data, &sourcesConfig); err != nil {
-		return fmt.Errorf("failed to parse config: %w", err)
+		return fmt.Errorf("failed to parse source config file %q (invalid JSON): %w", path, err)
 	}
 
 	// Add/override sources from file
@@ -428,39 +437,123 @@ func (sl *SourceLoader) configToSource(id string, config *SourceConfig) *Source 
 		source.Description = config.Description
 	}
 
-	// Copy quotes by aeon level
-	for level, quotes := range config.Quotes {
-		source.Quotes[level] = make([]Quote, len(quotes))
-		copy(source.Quotes[level], quotes)
+	// Check if this is a Sefaria API source
+	if config.SefariaSource != "" {
+		// Load quotes from Sefaria API
+		quotes := sl.loadSefariaQuotes(id, config)
+		if len(quotes) > 0 {
+			// Distribute quotes across aeon levels
+			source.Quotes = sl.distributeQuotesByAeonLevel(quotes)
+		}
+	} else {
+		// Copy quotes by aeon level from config
+		for level, quotes := range config.Quotes {
+			source.Quotes[level] = make([]Quote, len(quotes))
+			copy(source.Quotes[level], quotes)
+		}
 	}
 
 	return source
 }
 
+// loadSefariaQuotes fetches quotes from Sefaria API
+func (sl *SourceLoader) loadSefariaQuotes(sourceID string, config *SourceConfig) []Quote {
+	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+	defer cancel()
+
+	// Fetch full book (chapter 0, verse 0 means full book)
+	textResp, err := sl.sefariaClient.GetTextBySourceID(ctx, config.SefariaSource, 0, 0)
+	if err != nil {
+		// Silently fail - API might be unavailable, use fallback if available
+		// Log error would go here in production, but we avoid stdout/stderr in MCP mode
+		return nil
+	}
+
+	// Convert Sefaria response to quotes
+	quotes := make([]Quote, 0)
+	sourceName := config.Name
+
+	// Use Hebrew text if available, otherwise English
+	texts := textResp.He
+	if len(texts) == 0 {
+		texts = textResp.Text
+	}
+
+	// Create quotes from verses
+	for i, verseText := range texts {
+		if verseText == "" {
+			continue
+		}
+
+		// Build source reference (e.g., "Pirkei Avot 1:1")
+		ref := textResp.Ref
+		if ref == "" {
+			ref = sourceName
+		}
+
+		// Generate a simple encouragement based on source
+		encouragement := "Reflect on this wisdom."
+		if config.Language == "hebrew" {
+			encouragement = "התבונן בחכמה זו." // "Reflect on this wisdom" in Hebrew
+		}
+
+		quote := Quote{
+			Quote:         verseText,
+			Source:        ref,
+			Encouragement: encouragement,
+			WisdomSource:  sourceID,
+			WisdomIcon:    config.Icon,
+		}
+
+		quotes = append(quotes, quote)
+		_ = i // Verse number could be used for more specific references
+	}
+
+	return quotes
+}
+
+// distributeQuotesByAeonLevel distributes quotes across aeon levels
+// Uses round-robin distribution to ensure all levels have quotes
+func (sl *SourceLoader) distributeQuotesByAeonLevel(quotes []Quote) map[string][]Quote {
+	levels := []string{"chaos", "lower_aeons", "middle_aeons", "upper_aeons", "treasury"}
+	distributed := make(map[string][]Quote)
+
+	// Initialize all levels
+	for _, level := range levels {
+		distributed[level] = make([]Quote, 0)
+	}
+
+	// Round-robin distribution
+	for i, quote := range quotes {
+		level := levels[i%len(levels)]
+		distributed[level] = append(distributed[level], quote)
+	}
+
+	return distributed
+}
+
 // ValidateConfig validates a source configuration
 func ValidateConfig(config *SourceConfig) error {
 	if config.ID == "" {
-		return fmt.Errorf("source ID is required")
+		return fmt.Errorf("source configuration validation failed: ID field is required")
 	}
 	if config.Name == "" {
-		return fmt.Errorf("source name is required")
+		return fmt.Errorf("source configuration validation failed: Name field is required for source %q", config.ID)
 	}
 	if len(config.Quotes) == 0 {
-		return fmt.Errorf("source must have at least one quote")
+		return fmt.Errorf("source configuration validation failed: source %q must have at least one quote", config.ID)
 	}
 
 	// Validate aeon levels
-	validLevels := map[string]bool{
-		"chaos":        true,
-		"lower_aeons":  true,
-		"middle_aeons": true,
-		"upper_aeons":  true,
-		"treasury":     true,
+	validLevels := []string{"chaos", "lower_aeons", "middle_aeons", "upper_aeons", "treasury"}
+	validLevelsMap := make(map[string]bool, len(validLevels))
+	for _, level := range validLevels {
+		validLevelsMap[level] = true
 	}
 
 	for level := range config.Quotes {
-		if !validLevels[level] {
-			return fmt.Errorf("invalid aeon level: %s", level)
+		if !validLevelsMap[level] {
+			return fmt.Errorf("source configuration validation failed: invalid aeon level %q for source %q (valid levels: %v)", level, config.ID, validLevels)
 		}
 	}
 
@@ -480,6 +573,7 @@ func SaveSourceConfig(path string, config *SourceConfig) error {
 	if data, err := os.ReadFile(path); err == nil {
 		if err := json.Unmarshal(data, &sourcesConfig); err == nil {
 			// Use existing config
+			_ = err // Explicitly acknowledge successful unmarshal
 		}
 	}
 
@@ -496,15 +590,16 @@ func SaveSourceConfig(path string, config *SourceConfig) error {
 
 	data, err := json.MarshalIndent(sourcesConfig, "", "  ")
 	if err != nil {
-		return fmt.Errorf("failed to marshal config: %w", err)
+		return fmt.Errorf("failed to marshal source config to JSON for file %q: %w", path, err)
 	}
 
-	if err := os.MkdirAll(filepath.Dir(path), 0755); err != nil {
-		return fmt.Errorf("failed to create directory: %w", err)
+	dir := filepath.Dir(path)
+	if err := os.MkdirAll(dir, 0755); err != nil {
+		return fmt.Errorf("failed to create directory %q for source config file: %w", dir, err)
 	}
 
 	if err := os.WriteFile(path, data, 0644); err != nil {
-		return fmt.Errorf("failed to write file: %w", err)
+		return fmt.Errorf("failed to write source config file %q: %w", path, err)
 	}
 
 	return nil

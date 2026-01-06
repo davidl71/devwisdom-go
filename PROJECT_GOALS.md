@@ -74,7 +74,7 @@ Extract the wisdom module from exarp into a standalone, compiled Go MCP server. 
 
 **Goals**:
 - Implement JSON-RPC 2.0 handler
-- Register 5 tools: consult_advisor, get_wisdom, get_daily_briefing, get_consultation_log, export_for_podcast
+- Register 4 tools: consult_advisor, get_wisdom, get_daily_briefing, get_consultation_log
 - Register 4 resources: wisdom://sources, wisdom://advisors, wisdom://advisor/{id}, wisdom://consultations/{days}
 - Handle stdio transport
 - Error handling and logging
@@ -116,10 +116,8 @@ Extract the wisdom module from exarp into a standalone, compiled Go MCP server. 
 
 **Goals**:
 - Sefaria API integration (Hebrew texts)
-- Voice/TTS support (Go equivalent of edge-tts)
-- Podcast export formatting
 
-**Keywords**: optional, sefaria, voice, tts, podcast, hebrew
+**Keywords**: optional, sefaria, hebrew
 
 ---
 

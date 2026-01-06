@@ -279,7 +279,11 @@ func (r *AdvisorRegistry) loadStageAdvisors() {
 func (r *AdvisorRegistry) GetAdvisorForMetric(metric string) (*AdvisorInfo, error) {
 	advisor, exists := r.metricAdvisors[metric]
 	if !exists {
-		return nil, fmt.Errorf("no advisor for metric: %s", metric)
+		availableMetrics := make([]string, 0, len(r.metricAdvisors))
+		for m := range r.metricAdvisors {
+			availableMetrics = append(availableMetrics, m)
+		}
+		return nil, fmt.Errorf("no advisor found for metric %q (available metrics: %v). Check metric name spelling", metric, availableMetrics)
 	}
 	return advisor, nil
 }
@@ -288,7 +292,11 @@ func (r *AdvisorRegistry) GetAdvisorForMetric(metric string) (*AdvisorInfo, erro
 func (r *AdvisorRegistry) GetAdvisorForTool(tool string) (*AdvisorInfo, error) {
 	advisor, exists := r.toolAdvisors[tool]
 	if !exists {
-		return nil, fmt.Errorf("no advisor for tool: %s", tool)
+		availableTools := make([]string, 0, len(r.toolAdvisors))
+		for t := range r.toolAdvisors {
+			availableTools = append(availableTools, t)
+		}
+		return nil, fmt.Errorf("no advisor found for tool %q (available tools: %v). Check tool name spelling", tool, availableTools)
 	}
 	return advisor, nil
 }
@@ -297,7 +305,11 @@ func (r *AdvisorRegistry) GetAdvisorForTool(tool string) (*AdvisorInfo, error) {
 func (r *AdvisorRegistry) GetAdvisorForStage(stage string) (*AdvisorInfo, error) {
 	advisor, exists := r.stageAdvisors[stage]
 	if !exists {
-		return nil, fmt.Errorf("no advisor for stage: %s", stage)
+		availableStages := make([]string, 0, len(r.stageAdvisors))
+		for s := range r.stageAdvisors {
+			availableStages = append(availableStages, s)
+		}
+		return nil, fmt.Errorf("no advisor found for stage %q (available stages: %v). Check stage name spelling", stage, availableStages)
 	}
 	return advisor, nil
 }

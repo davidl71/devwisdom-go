@@ -1,8 +1,13 @@
 # Cursor Extension for devwisdom-go
 
+> **⚠️ FUTURE GOAL - NOT CURRENTLY IMPLEMENTED**  
+> This document outlines a potential future enhancement. The cursor extension is not currently being developed. The MCP server works standalone and provides all core functionality through Cursor's built-in MCP integration.
+
 ## Overview
 
 This document outlines the architecture and implementation plan for a Cursor/VS Code extension to complement the devwisdom-go MCP server. The extension would provide visual UI, better discoverability, and enhanced user experience for accessing wisdom quotes and advisor consultations.
+
+**Status**: Future enhancement - not in active development
 
 ## Current State
 

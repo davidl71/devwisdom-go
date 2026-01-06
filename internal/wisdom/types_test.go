@@ -99,6 +99,23 @@ func TestSource_GetQuote(t *testing.T) {
 			expectedQuote:  "Any quote",
 			expectFallback: true,
 		},
+		{
+			name: "multiple quotes - random selection",
+			source: &Source{
+				Name: "Test Source",
+				Icon: "📜",
+				Quotes: map[string][]Quote{
+					"chaos": {
+						{Quote: "Quote 1", Source: "Test", Encouragement: "Test"},
+						{Quote: "Quote 2", Source: "Test", Encouragement: "Test"},
+						{Quote: "Quote 3", Source: "Test", Encouragement: "Test"},
+					},
+				},
+			},
+			aeonLevel:      "chaos",
+			expectedQuote:  "", // Will check that it's one of the quotes
+			expectFallback: false,
+		},
 	}
 
 	for _, tt := range tests {
@@ -107,10 +124,65 @@ func TestSource_GetQuote(t *testing.T) {
 			if quote == nil {
 				t.Fatal("GetQuote returned nil")
 			}
-			if quote.Quote != tt.expectedQuote {
+			if tt.expectedQuote == "" {
+				// For random selection test, verify it's one of the expected quotes
+				validQuotes := []string{"Quote 1", "Quote 2", "Quote 3"}
+				found := false
+				for _, vq := range validQuotes {
+					if quote.Quote == vq {
+						found = true
+						break
+					}
+				}
+				if !found {
+					t.Errorf("GetQuote() = %q, expected one of %v", quote.Quote, validQuotes)
+				}
+			} else if quote.Quote != tt.expectedQuote {
 				t.Errorf("GetQuote() = %q, want %q", quote.Quote, tt.expectedQuote)
 			}
 		})
+	}
+}
+
+func TestSource_GetQuote_RandomSelection(t *testing.T) {
+	// Test that random selection works and is date-seeded (consistent within same day)
+	source := &Source{
+		Name: "Test Source",
+		Icon: "📜",
+		Quotes: map[string][]Quote{
+			"chaos": {
+				{Quote: "Quote 1", Source: "Test", Encouragement: "Test"},
+				{Quote: "Quote 2", Source: "Test", Encouragement: "Test"},
+				{Quote: "Quote 3", Source: "Test", Encouragement: "Test"},
+			},
+		},
+	}
+
+	// Get quote multiple times - should return same quote (date-seeded)
+	quote1 := source.GetQuote("chaos")
+	quote2 := source.GetQuote("chaos")
+	quote3 := source.GetQuote("chaos")
+
+	if quote1 == nil || quote2 == nil || quote3 == nil {
+		t.Fatal("GetQuote returned nil")
+	}
+
+	// All quotes should be the same (date-seeded consistency)
+	if quote1.Quote != quote2.Quote || quote2.Quote != quote3.Quote {
+		t.Errorf("Date-seeded random selection not consistent: got %q, %q, %q", quote1.Quote, quote2.Quote, quote3.Quote)
+	}
+
+	// Verify it's one of the valid quotes
+	validQuotes := []string{"Quote 1", "Quote 2", "Quote 3"}
+	found := false
+	for _, vq := range validQuotes {
+		if quote1.Quote == vq {
+			found = true
+			break
+		}
+	}
+	if !found {
+		t.Errorf("GetQuote() = %q, expected one of %v", quote1.Quote, validQuotes)
 	}
 }
 

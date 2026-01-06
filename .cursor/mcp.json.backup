@@ -1,0 +1,91 @@
+{
+  "mcpServers": {
+    "tractatus_thinking": {
+      "command": "uvx",
+      "args": [
+        "mcpower-proxy==0.0.87",
+        "--wrapped-config",
+        "{\"command\": \"npx\", \"args\": [\"-y\", \"tractatus_thinking\"]}",
+        "--name",
+        "tractatus_thinking"
+      ],
+      "description": "Tractatus Thinking MCP server for structural analysis and logical decomposition"
+    },
+    "sequential_thinking": {
+      "command": "uvx",
+      "args": [
+        "mcpower-proxy==0.0.87",
+        "--wrapped-config",
+        "{\"command\": \"npx\", \"args\": [\"-y\", \"@modelcontextprotocol/server-sequential-thinking\"]}",
+        "--name",
+        "sequential_thinking"
+      ],
+      "description": "Sequential Thinking MCP server for implementation workflows"
+    },
+    "context7": {
+      "command": "uvx",
+      "args": [
+        "mcpower-proxy==0.0.87",
+        "--wrapped-config",
+        "{\"command\": \"npx\", \"args\": [\"-y\", \"@upstash/context7-mcp\"]}",
+        "--name",
+        "context7"
+      ],
+      "description": "Up-to-date documentation lookup for libraries and frameworks"
+    },
+    "filesystem": {
+      "command": "uvx",
+      "args": [
+        "mcpower-proxy==0.0.87",
+        "--wrapped-config",
+        "{\"command\": \"npx\", \"args\": [\"-y\", \"@modelcontextprotocol/server-filesystem\", \"/Users/davidl/Projects/devwisdom-go\"]}",
+        "--name",
+        "filesystem"
+      ],
+      "description": "File system operations for reading, writing, and managing project files"
+    },
+    "agentic-tools": {
+      "command": "uvx",
+      "args": [
+        "mcpower-proxy==0.0.87",
+        "--wrapped-config",
+        "{\"command\": \"npx\", \"args\": [\"-y\", \"@pimzino/agentic-tools-mcp\"]}",
+        "--name",
+        "agentic-tools"
+      ],
+      "description": "Task management and agent memories with JSON file storage for Todo2 integration"
+    },
+    "exarp_pma": {
+      "command": "/Users/davidl/Projects/project-management-automation/exarp-uvx-wrapper.sh",
+      "args": [
+        "--mcp"
+      ],
+      "env": {
+        "EXARP_DEV_MODE": "1",
+        "PROJECT_ROOT": "/Users/davidl/Projects/devwisdom-go"
+      },
+      "description": "Exarp for Project Management Automation - auto-detects uvx location across platforms (FastMCP mode)"
+    },
+    "mcp-generic-tools": {
+      "command": "/Users/davidl/Projects/mcp-generic-tools/run_server.sh",
+      "args": [],
+      "env": {
+        "PROJECT_ROOT": "/Users/davidl/Projects/devwisdom-go"
+      },
+      "description": "Generic MCP tools (context management, prompt tracking, recommendations) - migrated from exarp_pma"
+    },
+    "mcp-stdio-tools": {
+      "command": "/Users/davidl/Projects/mcp-stdio-tools/run_server.sh",
+      "args": [],
+      "env": {
+        "PROJECT_ROOT": "/Users/davidl/Projects/devwisdom-go"
+      },
+      "description": "Stdio-based MCP tools (broken in FastMCP) - 12 tools migrated from exarp_pma"
+    },
+    "devwisdom": {
+      "command": "/Users/davidl/Projects/devwisdom-go/devwisdom",
+      "args": [],
+      "description": "DevWisdom Go MCP Server - Wisdom quotes, trusted advisors, and inspirational guidance"
+    }
+  }
+}

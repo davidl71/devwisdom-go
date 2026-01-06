@@ -50,7 +50,7 @@ func (al *APISourceLoader) LoadSource(ctx context.Context, endpoint string) (*So
 
 	// Check status code
 	if resp.StatusCode != http.StatusOK {
-		return nil, fmt.Errorf("API returned status %d", resp.StatusCode)
+		return nil, fmt.Errorf("API request failed with status %d for source %q: check API endpoint and source ID", resp.StatusCode, endpoint)
 	}
 
 	// Read response
@@ -91,7 +91,7 @@ func (al *APISourceLoader) LoadSourceWithRetry(ctx context.Context, endpoint str
 		lastErr = err
 	}
 
-	return nil, fmt.Errorf("failed after %d retries: %w", maxRetries, lastErr)
+	return nil, fmt.Errorf("failed to load source %q after %d retries: %w", endpoint, maxRetries, lastErr)
 }
 
 // LoadSourceWithTimeout loads a source with a custom timeout

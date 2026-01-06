@@ -25,13 +25,13 @@ func (a *App) runConsult(args []string) error {
 
 	// Validate that at least one of metric, tool, or stage is provided
 	if *metric == "" && *tool == "" && *stage == "" {
-		return fmt.Errorf("must provide at least one of --metric, --tool, or --stage")
+		return fmt.Errorf("must provide at least one of --metric, --tool, or --stage: use 'devwisdom consult --help' for usage examples")
 	}
 
 	// Initialize wisdom engine
 	engine := wisdom.NewEngine()
 	if err := engine.Initialize(); err != nil {
-		return fmt.Errorf("failed to initialize wisdom engine: %w", err)
+		return fmt.Errorf("failed to initialize wisdom engine (check sources.json configuration): %w", err)
 	}
 
 	// Determine advisor
@@ -42,17 +42,17 @@ func (a *App) runConsult(args []string) error {
 	if *metric != "" {
 		advisorInfo, err = advisorRegistry.GetAdvisorForMetric(*metric)
 		if err != nil {
-			return fmt.Errorf("no advisor for metric %s: %w", *metric, err)
+			return fmt.Errorf("no advisor found for metric %q: %w. Use 'devwisdom advisors' to see available metrics", *metric, err)
 		}
 	} else if *tool != "" {
 		advisorInfo, err = advisorRegistry.GetAdvisorForTool(*tool)
 		if err != nil {
-			return fmt.Errorf("no advisor for tool %s: %w", *tool, err)
+			return fmt.Errorf("no advisor found for tool %q: %w. Use 'devwisdom advisors' to see available tools", *tool, err)
 		}
 	} else if *stage != "" {
 		advisorInfo, err = advisorRegistry.GetAdvisorForStage(*stage)
 		if err != nil {
-			return fmt.Errorf("no advisor for stage %s: %w", *stage, err)
+			return fmt.Errorf("no advisor found for stage %q: %w. Use 'devwisdom advisors' to see available stages", *stage, err)
 		}
 	}
 
@@ -65,12 +65,12 @@ func (a *App) runConsult(args []string) error {
 		// Fallback: try to get quote from any source
 		sources := engine.ListSources()
 		if len(sources) == 0 {
-			return fmt.Errorf("no wisdom sources available")
+			return fmt.Errorf("no wisdom sources available: ensure sources.json exists and contains valid source definitions. Use 'devwisdom sources' to verify")
 		}
 		var quote *wisdom.Quote
 		quote, err = engine.GetWisdom(*score, sources[0])
 		if err != nil {
-			return fmt.Errorf("failed to get wisdom: %w", err)
+			return fmt.Errorf("failed to get wisdom quote (source: %q, score: %.1f): %w", sources[0], *score, err)
 		}
 
 		// Output

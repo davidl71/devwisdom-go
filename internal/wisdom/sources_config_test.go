@@ -160,8 +160,12 @@ func TestSourceLoader_ListSourceIDs(t *testing.T) {
 		},
 	}
 
-	loader.AddSource(config1)
-	loader.AddSource(config2)
+	if err := loader.AddSource(config1); err != nil {
+		t.Fatalf("AddSource failed: %v", err)
+	}
+	if err := loader.AddSource(config2); err != nil {
+		t.Fatalf("AddSource failed: %v", err)
+	}
 
 	ids := loader.ListSourceIDs()
 	if len(ids) != 2 {
@@ -263,7 +267,9 @@ func TestSourceLoader_Reload(t *testing.T) {
 		},
 	}
 
-	loader.AddSource(config)
+	if err := loader.AddSource(config); err != nil {
+		t.Fatalf("AddSource failed: %v", err)
+	}
 
 	// Verify source exists before reload
 	_, found := loader.GetSource("test")
@@ -304,8 +310,12 @@ func TestSourceLoader_GetAllSources(t *testing.T) {
 		},
 	}
 
-	loader.AddSource(config1)
-	loader.AddSource(config2)
+	if err := loader.AddSource(config1); err != nil {
+		t.Fatalf("AddSource failed: %v", err)
+	}
+	if err := loader.AddSource(config2); err != nil {
+		t.Fatalf("AddSource failed: %v", err)
+	}
 
 	allSources := loader.GetAllSources()
 	if len(allSources) != 2 {

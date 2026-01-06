@@ -5,15 +5,15 @@ import "testing"
 func TestSourceLoader_Fallback(t *testing.T) {
 	// Test that SourceLoader provides fallback behavior similar to old GetBuiltInSources
 	loader := NewSourceLoader()
-	
+
 	// Try to load (may fail if no config files exist, which is fine)
 	_ = loader.Load()
-	
+
 	sources := loader.GetAllSources()
 	if sources == nil {
 		t.Fatal("SourceLoader.GetAllSources() returned nil")
 	}
-	
+
 	// If no sources loaded, that's acceptable (fallback happens in engine)
 	// But if sources exist, verify structure
 	if len(sources) > 0 {

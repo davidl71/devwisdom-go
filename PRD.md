@@ -199,16 +199,19 @@ A comprehensive MCP server providing project management automation tools for AI-
 
 ### US-2: Research: Exarp Cursor Extension Architecture
 
-**Priority:** 🟠 HIGH
-**Status:** In Progress
-**Tags:** research, architecture, extension, typescript
+**Priority:** 🟢 LOW (Future Goal)
+**Status:** Future Enhancement
+**Tags:** research, architecture, extension, typescript, future
+
+> **⚠️ FUTURE GOAL - NOT CURRENTLY BEING DEVELOPED**  
+> This user story represents a potential future enhancement. The cursor extension is documented but not in active development. The MCP server works standalone and provides all core functionality.
 
 *As a* Developer (Daily Contributor),
 *I want* Research: Exarp Cursor Extension Architecture,
 *So that* I can be confident the code works correctly.
 
 **Details:**
-🎯 **Objective:** Evaluate and plan the implementation of a Cursor extension to complement the Exarp MCP server.
+🎯 **Objective:** Evaluate and plan the implementation of a Cursor extension to complement the Exarp MCP server. **This is a future enhancement, not currently being developed.**
 
 📋 **Acceptance Criteria:**
 - Review VS Code Extension API documentation

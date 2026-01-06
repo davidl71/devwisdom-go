@@ -75,15 +75,16 @@ func (c *Config) Load() error {
 func (c *Config) Save() error {
 	data, err := json.MarshalIndent(c, "", "  ")
 	if err != nil {
-		return fmt.Errorf("failed to marshal config: %w", err)
+		return fmt.Errorf("failed to marshal config to JSON for file %q: %w", c.configPath, err)
 	}
 
-	if err := os.MkdirAll(filepath.Dir(c.configPath), 0755); err != nil {
-		return fmt.Errorf("failed to create config directory: %w", err)
+	configDir := filepath.Dir(c.configPath)
+	if err := os.MkdirAll(configDir, 0755); err != nil {
+		return fmt.Errorf("failed to create config directory %q: %w", configDir, err)
 	}
 
 	if err := os.WriteFile(c.configPath, data, 0644); err != nil {
-		return fmt.Errorf("failed to write config file: %w", err)
+		return fmt.Errorf("failed to write config file %q: %w", c.configPath, err)
 	}
 
 	return nil

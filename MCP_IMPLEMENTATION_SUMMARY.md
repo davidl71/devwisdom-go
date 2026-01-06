@@ -57,12 +57,18 @@ Successfully implemented a full JSON-RPC 2.0 MCP server for the devwisdom-go pro
 - **Parameters**: `days` (optional, default: 7)
 - **Returns**: Array of consultation entries
 - **Status**: ⚠️ Stub implementation (returns empty array, log system pending)
+- **Phase 5 Dependency**: Requires consultation logging system implementation
+- **Current Behavior**: Accepts `days` parameter but returns empty array `[]`
+- **Location**: `internal/mcp/server.go:523-536`
 
 ##### `export_for_podcast`
 - **Purpose**: Export consultations as podcast episodes
 - **Parameters**: `days` (optional, default: 7)
 - **Returns**: Podcast export object with episodes
 - **Status**: ⚠️ Stub implementation (returns empty episodes, export pending)
+- **Phase 5 Dependency**: Requires consultation logging system to have data to export
+- **Current Behavior**: Accepts `days` parameter but returns `{"episodes": [], "days": <value>}`
+- **Location**: `internal/mcp/server.go:538-553`
 
 #### 4. Resources Registered (4 resources)
 
@@ -73,18 +79,25 @@ Successfully implemented a full JSON-RPC 2.0 MCP server for the devwisdom-go pro
 
 ##### `wisdom://advisors`
 - **Purpose**: List all available advisors
-- **Returns**: JSON array of advisor metadata
-- **Status**: ⚠️ Partial implementation (returns placeholder data)
+- **Returns**: JSON object with metric_advisors, tool_advisors, stage_advisors arrays
+- **Status**: ✅ Fully implemented using Phase 3 advisor system
+- **Data Source**: Uses `advisorRegistry.GetAllMetricAdvisors()`, `GetAllToolAdvisors()`, `GetAllStageAdvisors()`
+- **Returns**: 14 metric advisors, 12 tool advisors, 10 stage advisors (real Phase 3 data)
 
 ##### `wisdom://advisor/{id}`
 - **Purpose**: Get details for a specific advisor
-- **Returns**: JSON object with advisor details
-- **Status**: ⚠️ Partial implementation (returns placeholder data)
+- **Returns**: JSON object with advisor details (id, type, advisor, rationale, icon, helps_with, language)
+- **Status**: ✅ Fully implemented using Phase 3 advisor system
+- **Data Source**: Uses `advisorRegistry.GetAdvisorForMetric()`, `GetAdvisorForTool()`, `GetAdvisorForStage()`
+- **Error Handling**: Returns proper error for unknown advisor IDs
 
 ##### `wisdom://consultations/{days}`
 - **Purpose**: Get consultation log entries for specified days
 - **Returns**: JSON array of consultation entries
 - **Status**: ⚠️ Stub implementation (returns empty array, log system pending)
+- **Phase 5 Dependency**: Requires consultation logging system implementation
+- **Current Behavior**: Accepts `days` parameter from URI but returns empty array `[]`
+- **Location**: `internal/mcp/server.go:769-783`
 
 ### Integration with Wisdom Engine
 
@@ -155,12 +168,48 @@ After restarting Cursor, the server will be available and can be used via MCP to
 
 ### Known Limitations
 
-1. **Consultation Logging**: Not yet implemented (Phase 5)
-2. **Podcast Export**: Not yet implemented (Phase 7)
-3. **Advisor Details**: Placeholder data (Phase 3)
-4. **Daily Random Selection**: Not yet implemented (Phase 6)
+1. **Consultation Logging**: Stub implementations for Phase 5
+   - `get_consultation_log` tool: Returns empty array (Phase 5)
+   - `export_for_podcast` tool: Returns empty episodes (Phase 5)
+   - `wisdom://consultations/{days}` resource: Returns empty array (Phase 5)
+   - **Rationale**: These require Phase 5 consultation logging system. Stubs are acceptable for Phase 4 completion.
+   - **Implementation Notes**: All stubs accept parameters correctly and will work once Phase 5 logging is implemented.
 
-These will be addressed in subsequent phases.
+2. **Podcast Export**: Stub implementation (Phase 5 dependency)
+   - Returns empty episodes until consultation logging provides data
+   - Format structure is ready for Phase 5 integration
+
+3. **Advisor Details**: ✅ Fully implemented using Phase 3 advisor system
+   - Uses real advisor data from Phase 3 (not placeholders)
+   - All advisor types supported (metric, tool, stage)
+
+4. **Daily Random Selection**: ✅ Implemented (Phase 6 complete)
+
+### Stub Implementation Details
+
+**Phase 5 Dependencies (Intentional Stubs):**
+
+These three components are intentionally stubbed because they depend on Phase 5 consultation logging:
+
+1. **`get_consultation_log` tool** (`internal/mcp/server.go:523-536`)
+   - Accepts `days` parameter (default: 7)
+   - Returns: `[]` (empty array)
+   - TODO comment: "Implement actual consultation log retrieval"
+   - Will be completed in Phase 5
+
+2. **`export_for_podcast` tool** (`internal/mcp/server.go:538-553`)
+   - Accepts `days` parameter (default: 7)
+   - Returns: `{"episodes": [], "days": <value>}`
+   - TODO comment: "Implement actual podcast export"
+   - Will be completed in Phase 5
+
+3. **`wisdom://consultations/{days}` resource** (`internal/mcp/server.go:769-783`)
+   - Accepts `days` parameter from URI path
+   - Returns: `[]` (empty array)
+   - TODO comment: "Implement consultation log retrieval"
+   - Will be completed in Phase 5
+
+**All stubs are properly documented and ready for Phase 5 integration.**
 
 ---
 

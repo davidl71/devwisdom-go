@@ -7,7 +7,6 @@ import (
 	"encoding/json"
 	"fmt"
 	"io"
-	"os"
 	"strconv"
 	"strings"
 	"time"
@@ -24,6 +23,7 @@ const Version = "0.1.0"
 type WisdomServer struct {
 	wisdom      *wisdom.Engine
 	logger      *logging.ConsultationLogger
+	appLogger   *logging.Logger // Structured logger for application logging
 	initialized bool
 }
 
@@ -38,9 +38,13 @@ func NewWisdomServer() *WisdomServer {
 		logger = nil
 	}
 
+	// Initialize structured application logger
+	appLogger := logging.NewLogger()
+
 	return &WisdomServer{
-		wisdom: wisdom.NewEngine(),
-		logger: logger,
+		wisdom:    wisdom.NewEngine(),
+		logger:    logger,
+		appLogger: appLogger,
 	}
 }
 
@@ -48,16 +52,12 @@ func NewWisdomServer() *WisdomServer {
 func (s *WisdomServer) Run(ctx context.Context, stdin io.Reader, stdout io.Writer) error {
 	// Initialize wisdom engine first (before any output)
 	if err := s.wisdom.Initialize(); err != nil {
-		return fmt.Errorf("failed to initialize wisdom engine: %w", err)
+		s.appLogger.Error("", "Failed to initialize wisdom engine: %v", err)
+		return fmt.Errorf("failed to initialize wisdom engine (check sources.json configuration and file permissions): %w", err)
 	}
 
-	// Print version to stderr for debugging (after initialization, before JSON-RPC loop)
-	// Use fmt.Fprintf to stderr explicitly - this should not interfere with stdout JSON-RPC
-	// However, some MCP clients merge stderr with stdout, so we make this conditional
-	// Only print if DEBUG environment variable is set to avoid breaking clients that merge streams
-	if os.Getenv("DEVWISDOM_DEBUG") == "1" {
-		fmt.Fprintf(os.Stderr, "devwisdom-go MCP server v%s starting...\n", Version)
-	}
+	// Log server startup
+	s.appLogger.Info("", "MCP server v%s starting", Version)
 
 	// Set up JSON-RPC 2.0 handlers
 	decoder := json.NewDecoder(stdin)
@@ -71,12 +71,15 @@ func (s *WisdomServer) Run(ctx context.Context, stdin io.Reader, stdout io.Write
 		var req JSONRPCRequest
 		if err := decoder.Decode(&req); err != nil {
 			if err == io.EOF {
+				s.appLogger.Info("", "EOF received, shutting down")
 				break
 			}
 			// Send parse error (id must be null for parse errors per JSON-RPC 2.0 spec)
-			resp := NewErrorResponse(nil, ErrCodeParseError, "Parse error", nil)
+			parseErrMsg := fmt.Sprintf("JSON parse error: invalid JSON-RPC request format (%v). Ensure request is valid JSON and follows JSON-RPC 2.0 specification", err)
+			s.appLogger.Error("", "JSON parse error: %v", err)
+			resp := NewErrorResponse(nil, ErrCodeParseError, parseErrMsg, nil)
 			if err := encoder.Encode(resp); err != nil {
-				return fmt.Errorf("failed to send parse error: %w", err)
+				return fmt.Errorf("failed to send parse error response to client: %w", err)
 			}
 			// After sending parse error, break to avoid infinite loop on invalid input
 			// The decoder can't recover from parse errors, so we must exit
@@ -87,25 +90,61 @@ func (s *WisdomServer) Run(ctx context.Context, stdin io.Reader, stdout io.Write
 		// Skip notifications (requests without id) - per JSON-RPC 2.0 spec
 		if req.ID == nil {
 			// Notifications don't get responses, just continue
+			s.appLogger.Debug("", "Received notification (no ID): %s", req.Method)
 			continue
 		}
 
+		// Log request start and measure duration
+		requestID := formatRequestID(req.ID)
+		startTime := time.Now()
+		s.appLogger.LogRequest(requestID, req.Method)
+
 		resp := s.handleRequest(&req)
+
+		// Log request completion with duration
+		duration := time.Since(startTime)
+		s.appLogger.LogRequestComplete(requestID, req.Method, duration)
+
 		if resp != nil {
 			if err := encoder.Encode(resp); err != nil {
-				return fmt.Errorf("failed to encode response: %w", err)
+				s.appLogger.Error(requestID, "Failed to encode response: %v", err)
+				return fmt.Errorf("failed to encode JSON-RPC response (method: %q, id: %v): %w", req.Method, req.ID, err)
 			}
 		}
 	}
 
+	s.appLogger.Info("", "MCP server shutting down")
 	return nil
+}
+
+// formatRequestID converts a JSON-RPC request ID to a string for logging
+func formatRequestID(id interface{}) string {
+	if id == nil {
+		return "null"
+	}
+	switch v := id.(type) {
+	case string:
+		return v
+	case float64:
+		// JSON numbers are decoded as float64
+		if v == float64(int64(v)) {
+			return fmt.Sprintf("%d", int64(v))
+		}
+		return fmt.Sprintf("%.0f", v)
+	case int:
+		return fmt.Sprintf("%d", v)
+	case int64:
+		return fmt.Sprintf("%d", v)
+	default:
+		return fmt.Sprintf("%v", id)
+	}
 }
 
 // handleRequest processes a JSON-RPC request
 func (s *WisdomServer) handleRequest(req *JSONRPCRequest) *JSONRPCResponse {
 	// Validate JSON-RPC version
 	if req.JSONRPC != "2.0" {
-		return NewErrorResponse(req.ID, ErrCodeInvalidRequest, "Invalid JSON-RPC version", nil)
+		return NewErrorResponse(req.ID, ErrCodeInvalidRequest, fmt.Sprintf("Invalid JSON-RPC version: expected \"2.0\", got %q. Ensure client is using JSON-RPC 2.0 protocol", req.JSONRPC), nil)
 	}
 
 	// Handle different methods
@@ -194,7 +233,7 @@ func (s *WisdomServer) handleToolsList(req *JSONRPCRequest) *JSONRPCResponse {
 					},
 					"source": map[string]interface{}{
 						"type":        "string",
-						"description": "Wisdom source ID (e.g., 'pistis_sophia', 'stoic')",
+						"description": "Wisdom source ID (e.g., 'pistis_sophia', 'stoic') or 'random' for date-seeded random selection",
 					},
 				},
 				"required": []string{"score"},
@@ -226,19 +265,6 @@ func (s *WisdomServer) handleToolsList(req *JSONRPCRequest) *JSONRPCResponse {
 				},
 			},
 		},
-		{
-			Name:        "export_for_podcast",
-			Description: "Export consultations as podcast episodes",
-			InputSchema: map[string]interface{}{
-				"type": "object",
-				"properties": map[string]interface{}{
-					"days": map[string]interface{}{
-						"type":        "number",
-						"description": "Number of days to export (default: 7)",
-					},
-				},
-			},
-		},
 	}
 
 	return NewSuccessResponse(req.ID, map[string]interface{}{
@@ -249,13 +275,26 @@ func (s *WisdomServer) handleToolsList(req *JSONRPCRequest) *JSONRPCResponse {
 // handleToolCall processes a tool call request
 func (s *WisdomServer) handleToolCall(req *JSONRPCRequest) *JSONRPCResponse {
 	var params ToolCallParams
+	requestID := formatRequestID(req.ID)
+
 	if err := json.Unmarshal(req.Params, &params); err != nil {
-		return NewInvalidParamsError(req.ID, fmt.Sprintf("Invalid tool call params: %v", err))
+		s.appLogger.LogError(requestID, "Tool call params parse", err)
+		return NewInvalidParamsError(req.ID, fmt.Sprintf("invalid tool call params (failed to parse JSON from request): %v. Ensure params is valid JSON object", err))
 	}
 
+	// Log tool call start and measure duration
+	startTime := time.Now()
+	s.appLogger.LogToolCall(requestID, params.Name, params.Arguments)
+
 	result, err := s.HandleToolCall(params.Name, params.Arguments)
+
+	// Log tool call completion
+	duration := time.Since(startTime)
+	s.appLogger.LogToolCallComplete(requestID, params.Name, duration)
+
 	if err != nil {
-		return NewInternalError(req.ID, fmt.Sprintf("Tool call failed: %v", err))
+		s.appLogger.LogError(requestID, fmt.Sprintf("Tool call: %s", params.Name), err)
+		return NewInternalError(req.ID, fmt.Sprintf("tool call %q failed with arguments %v: %v. Check tool parameters and ensure wisdom engine is initialized", params.Name, params.Arguments, err))
 	}
 
 	return NewSuccessResponse(req.ID, result)
@@ -304,40 +343,58 @@ func (s *WisdomServer) handleResourcesList(req *JSONRPCRequest) *JSONRPCResponse
 // handleResourceRead reads a resource
 func (s *WisdomServer) handleResourceRead(req *JSONRPCRequest) *JSONRPCResponse {
 	var params ResourceReadParams
+	requestID := formatRequestID(req.ID)
+
 	if err := json.Unmarshal(req.Params, &params); err != nil {
-		return NewInvalidParamsError(req.ID, fmt.Sprintf("Invalid resource read params: %v", err))
+		s.appLogger.LogError(requestID, "Resource read params parse", err)
+		return NewInvalidParamsError(req.ID, fmt.Sprintf("invalid resource read params (failed to parse JSON from request): %v. Ensure params contains valid 'uri' field", err))
 	}
+
+	// Log resource read
+	startTime := time.Now()
+	s.appLogger.Debug(requestID, "Reading resource: %s", params.URI)
 
 	// Parse resource URI
 	uri := params.URI
+	var resp *JSONRPCResponse
+
 	if uri == "wisdom://tools" {
-		return s.handleToolsResource(req)
+		resp = s.handleToolsResource(req)
 	} else if strings.HasPrefix(uri, "wisdom://sources") {
-		return s.handleSourcesResource(req)
+		resp = s.handleSourcesResource(req)
 	} else if uri == "wisdom://advisors" {
-		return s.handleAdvisorsResource(req)
+		resp = s.handleAdvisorsResource(req)
 	} else if strings.HasPrefix(uri, "wisdom://advisor/") {
 		// Handle wisdom://advisor/{id}
 		parts := strings.Split(uri, "/")
 		if len(parts) >= 3 {
 			advisorID := parts[len(parts)-1]
-			return s.handleAdvisorResource(req, advisorID)
+			resp = s.handleAdvisorResource(req, advisorID)
+		} else {
+			resp = NewInvalidParamsError(req.ID, fmt.Sprintf("invalid advisor resource URI: expected format 'wisdom://advisor/{id}', got %q", uri))
 		}
-		return NewInvalidParamsError(req.ID, "Invalid advisor resource URI")
 	} else if strings.HasPrefix(uri, "wisdom://consultations/") {
 		parts := strings.Split(uri, "/")
 		if len(parts) >= 3 {
 			daysStr := parts[len(parts)-1]
 			days, err := strconv.Atoi(daysStr)
 			if err != nil {
-				return NewInvalidParamsError(req.ID, fmt.Sprintf("Invalid days parameter: %s", daysStr))
+				resp = NewInvalidParamsError(req.ID, fmt.Sprintf("invalid days parameter %q in URI: must be a number (got %q)", daysStr, uri))
+			} else {
+				resp = s.handleConsultationsResource(req, days)
 			}
-			return s.handleConsultationsResource(req, days)
+		} else {
+			resp = NewInvalidParamsError(req.ID, fmt.Sprintf("invalid consultations resource URI: expected format 'wisdom://consultations/{days}', got %q", uri))
 		}
-		return NewInvalidParamsError(req.ID, "Invalid consultations resource URI")
+	} else {
+		resp = NewErrorResponse(req.ID, -32602, fmt.Sprintf("unknown resource URI %q. Use 'wisdom://sources', 'wisdom://advisors', 'wisdom://advisor/{id}', or 'wisdom://consultations/{days}'", uri), nil)
 	}
 
-	return NewErrorResponse(req.ID, -32602, "Unknown resource URI", nil)
+	// Log resource read completion
+	duration := time.Since(startTime)
+	s.appLogger.LogPerformance(requestID, fmt.Sprintf("Resource read: %s", uri), duration)
+
+	return resp
 }
 
 // HandleToolCall processes MCP tool calls
@@ -351,10 +408,9 @@ func (s *WisdomServer) HandleToolCall(name string, params map[string]interface{}
 		return s.handleGetDailyBriefing(params)
 	case "get_consultation_log":
 		return s.handleGetConsultationLog(params)
-	case "export_for_podcast":
-		return s.handleExportForPodcast(params)
 	default:
-		return nil, fmt.Errorf("unknown tool: %s", name)
+		availableTools := []string{"consult_advisor", "get_wisdom", "get_daily_briefing", "get_consultation_log"}
+		return nil, fmt.Errorf("unknown tool %q (available tools: %v). Check tool name spelling", name, availableTools)
 	}
 }
 
@@ -464,6 +520,7 @@ func (s *WisdomServer) handleConsultAdvisor(params map[string]interface{}) (inte
 		if err := s.logger.Log(&consultation); err != nil {
 			// Logging failure doesn't break the consultation response
 			// In production, you might want to log this error
+			_ = err // Explicitly ignore error for graceful degradation
 		}
 	}
 
@@ -479,7 +536,7 @@ func (s *WisdomServer) handleGetWisdom(params map[string]interface{}) (interface
 	} else if sc, ok := params["score"].(int); ok {
 		score = float64(sc)
 	} else {
-		return nil, fmt.Errorf("score parameter is required")
+		return nil, fmt.Errorf("score parameter is required and must be a number between 0-100")
 	}
 	// Validate and clamp score to 0-100 range
 	if score < 0 {
@@ -494,11 +551,11 @@ func (s *WisdomServer) handleGetWisdom(params map[string]interface{}) (interface
 		source = src
 	}
 
-	// Get wisdom quote
-	quote, err := s.wisdom.GetWisdom(score, source)
-	if err != nil {
-		return nil, fmt.Errorf("failed to get wisdom: %w", err)
-	}
+		// Get wisdom quote
+		quote, err := s.wisdom.GetWisdom(score, source)
+		if err != nil {
+			return nil, fmt.Errorf("failed to get wisdom quote (source: %q, score: %.1f): %w", source, score, err)
+		}
 
 	return quote, nil
 }
@@ -566,7 +623,7 @@ func (s *WisdomServer) handleGetConsultationLog(params map[string]interface{}) (
 
 	consultations, err := s.logger.GetLogs(days)
 	if err != nil {
-		return nil, fmt.Errorf("failed to retrieve consultation log: %w", err)
+		return nil, fmt.Errorf("failed to retrieve consultation log for last %d days (check log file permissions and .devwisdom directory): %w", days, err)
 	}
 
 	// Convert to interface{} slice for JSON serialization
@@ -576,51 +633,6 @@ func (s *WisdomServer) handleGetConsultationLog(params map[string]interface{}) (
 	}
 
 	return result, nil
-}
-
-// handleExportForPodcast implements export_for_podcast tool
-func (s *WisdomServer) handleExportForPodcast(params map[string]interface{}) (interface{}, error) {
-	days := 7 // Default
-	if d, ok := params["days"].(float64); ok {
-		days = int(d)
-	} else if d, ok := params["days"].(int); ok {
-		days = d
-	}
-
-	// Retrieve consultations from logger
-	if s.logger == nil {
-		// Logger not initialized, return empty episodes
-		return map[string]interface{}{
-			"episodes": []interface{}{},
-			"days":     days,
-		}, nil
-	}
-
-	consultations, err := s.logger.GetLogs(days)
-	if err != nil {
-		return nil, fmt.Errorf("failed to retrieve consultations for podcast: %w", err)
-	}
-
-	// Format consultations as podcast episodes
-	episodes := make([]interface{}, len(consultations))
-	for i, consultation := range consultations {
-		episodes[i] = map[string]interface{}{
-			"title":       fmt.Sprintf("Consultation with %s", consultation.AdvisorName),
-			"date":        consultation.Timestamp,
-			"advisor":     consultation.AdvisorName,
-			"quote":       consultation.Quote,
-			"source":      consultation.QuoteSource,
-			"encouragement": consultation.Encouragement,
-			"score":       consultation.ScoreAtTime,
-			"mode":        consultation.ConsultationMode,
-		}
-	}
-
-	return map[string]interface{}{
-		"episodes": episodes,
-		"days":     days,
-		"count":    len(episodes),
-	}, nil
 }
 
 // Resource handlers
@@ -644,7 +656,7 @@ func (s *WisdomServer) handleToolsResource(req *JSONRPCRequest) *JSONRPCResponse
 			"description": "Get a wisdom quote based on project health score and source",
 			"parameters": map[string]interface{}{
 				"score":  "Project health score (0-100) - required",
-				"source": "Wisdom source ID (e.g., 'pistis_sophia', 'stoic') - optional",
+				"source": "Wisdom source ID (e.g., 'pistis_sophia', 'stoic') or 'random' for date-seeded random selection - optional",
 			},
 		},
 		{
@@ -659,13 +671,6 @@ func (s *WisdomServer) handleToolsResource(req *JSONRPCRequest) *JSONRPCResponse
 			"description": "Retrieve consultation log entries",
 			"parameters": map[string]interface{}{
 				"days": "Number of days to retrieve (default: 7)",
-			},
-		},
-		{
-			"name":        "export_for_podcast",
-			"description": "Export consultations as podcast episodes",
-			"parameters": map[string]interface{}{
-				"days": "Number of days to export (default: 7)",
 			},
 		},
 	}
@@ -806,7 +811,7 @@ func (s *WisdomServer) handleAdvisorResource(req *JSONRPCRequest, advisorID stri
 		advisorType = "stage"
 	} else {
 		// Advisor not found
-		return NewErrorResponse(req.ID, ErrCodeInvalidParams, fmt.Sprintf("Advisor not found: %s", advisorID), nil)
+		return NewErrorResponse(req.ID, ErrCodeInvalidParams, fmt.Sprintf("advisor not found: %q. Use 'wisdom://advisors' resource to list available advisors", advisorID), nil)
 	}
 
 	// Build advisor response

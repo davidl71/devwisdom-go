@@ -62,7 +62,9 @@ func TestWisdomServer_HandleInitialize(t *testing.T) {
 
 func TestWisdomServer_HandleGetWisdom(t *testing.T) {
 	server := NewWisdomServer()
-	server.wisdom.Initialize()
+	if err := server.wisdom.Initialize(); err != nil {
+		t.Fatalf("Initialize failed: %v", err)
+	}
 
 	req := &JSONRPCRequest{
 		JSONRPC: "2.0",
@@ -104,7 +106,9 @@ func TestWisdomServer_HandleGetWisdom(t *testing.T) {
 
 func TestWisdomServer_HandleConsultAdvisor(t *testing.T) {
 	server := NewWisdomServer()
-	server.wisdom.Initialize()
+	if err := server.wisdom.Initialize(); err != nil {
+		t.Fatalf("Initialize failed: %v", err)
+	}
 
 	req := &JSONRPCRequest{
 		JSONRPC: "2.0",
@@ -173,7 +177,9 @@ func TestWisdomServer_HandleInvalidMethod(t *testing.T) {
 
 func TestWisdomServer_HandleInvalidParams(t *testing.T) {
 	server := NewWisdomServer()
-	server.wisdom.Initialize()
+	if err := server.wisdom.Initialize(); err != nil {
+		t.Fatalf("Initialize failed: %v", err)
+	}
 
 	req := &JSONRPCRequest{
 		JSONRPC: "2.0",
@@ -202,7 +208,9 @@ func TestWisdomServer_HandleInvalidParams(t *testing.T) {
 
 func TestWisdomServer_HandleResourcesRead(t *testing.T) {
 	server := NewWisdomServer()
-	server.wisdom.Initialize()
+	if err := server.wisdom.Initialize(); err != nil {
+		t.Fatalf("Initialize failed: %v", err)
+	}
 
 	req := &JSONRPCRequest{
 		JSONRPC: "2.0",
@@ -287,7 +295,9 @@ func TestWisdomServer_Run_InitializeAndTools(t *testing.T) {
 
 func TestWisdomServer_HandleNotification(t *testing.T) {
 	server := NewWisdomServer()
-	server.wisdom.Initialize() // Initialize engine to avoid "engine not initialized" error
+	if err := server.wisdom.Initialize(); err != nil {
+		t.Fatalf("Initialize failed: %v", err)
+	} // Initialize engine to avoid "engine not initialized" error
 
 	// Notification (no ID) - per JSON-RPC 2.0 spec, notifications don't get responses
 	req := &JSONRPCRequest{
@@ -318,7 +328,9 @@ func TestWisdomServer_HandleNotification(t *testing.T) {
 
 func TestWisdomServer_HandleGetDailyBriefing(t *testing.T) {
 	server := NewWisdomServer()
-	server.wisdom.Initialize()
+	if err := server.wisdom.Initialize(); err != nil {
+		t.Fatalf("Initialize failed: %v", err)
+	}
 
 	req := &JSONRPCRequest{
 		JSONRPC: "2.0",

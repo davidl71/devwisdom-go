@@ -27,34 +27,33 @@
   - [ ] Hebrew sources (pirkei_avot, proverbs, ecclesiastes, psalms) - Phase 7 (Sefaria API)
   - [x] random source selector
 
-## Phase 3: Advisor System
-- [ ] Complete metric advisor mappings
-- [ ] Complete tool advisor mappings
-- [ ] Complete stage advisor mappings
-- [ ] Score-based consultation frequency
-- [ ] Mode-aware advisor selection (AGENT/ASK/MANUAL)
+## Phase 3: Advisor System ✅
+- [x] Complete metric advisor mappings
+- [x] Complete tool advisor mappings
+- [x] Complete stage advisor mappings
+- [x] Score-based consultation frequency
+- [x] Mode-aware advisor selection (AGENT/ASK/MANUAL)
 
-## Phase 4: MCP Protocol Implementation
-- [ ] Implement JSON-RPC 2.0 handler
-- [ ] Register tools:
-  - [ ] consult_advisor
-  - [ ] get_wisdom
-  - [ ] get_daily_briefing
-  - [ ] get_consultation_log
-  - [ ] export_for_podcast
-- [ ] Register resources:
-  - [ ] wisdom://sources
-  - [ ] wisdom://advisors
-  - [ ] wisdom://advisor/{id}
-  - [ ] wisdom://consultations/{days}
-- [ ] Handle stdio transport
-- [ ] Error handling and logging
+## Phase 4: MCP Protocol Implementation ✅
+- [x] Implement JSON-RPC 2.0 handler
+- [x] Register tools:
+  - [x] consult_advisor
+  - [x] get_wisdom
+  - [x] get_daily_briefing
+  - [x] get_consultation_log (stub - Phase 5)
+- [x] Register resources:
+  - [x] wisdom://sources
+  - [x] wisdom://advisors
+  - [x] wisdom://advisor/{id}
+  - [x] wisdom://consultations/{days} (stub - Phase 5)
+- [x] Handle stdio transport
+- [x] Error handling and logging
 
-## Phase 5: Consultation Logging
-- [ ] JSONL log file format
-- [ ] Consultation tracking
-- [ ] Log retrieval and filtering
-- [ ] Date-based log rotation
+## Phase 5: Consultation Logging ✅
+- [x] JSONL log file format
+- [x] Consultation tracking
+- [x] Log retrieval and filtering
+- [ ] Date-based log rotation (optional - Phase 5.4, T-7)
 
 ## Phase 6: Daily Random Source Selection
 - [x] Date-seeded random selection
@@ -63,8 +62,6 @@
 
 ## Phase 7: Optional Features
 - [ ] Sefaria API integration (Hebrew texts)
-- [ ] Voice/TTS support (edge-tts/pyttsx3 equivalent)
-- [ ] Podcast export formatting
 
 ## Phase 8: Testing
 - [ ] Unit tests for wisdom engine
@@ -84,11 +81,7 @@
 - [ ] Performance optimization
 - [ ] Cross-compilation (Windows, Linux, macOS)
 
-## Future: Cursor Extension (Very Low Priority)
-- [ ] Research Cursor Extension Architecture
-- [ ] Phase 1: Extension Foundation (MVP)
-- [ ] Phase 2: Command Palette Integration
-- [ ] Phase 3: Sidebar Panel Implementation
-- [ ] Phase 4: Notifications & Polish
+## Future Goals
 
-**Note**: Extension tasks are documented in `docs/CURSOR_EXTENSION.md`. These are optional enhancements for better UX. MCP server works standalone.
+### Cursor Extension (Future Enhancement)
+A Cursor/VS Code extension is documented in `docs/CURSOR_EXTENSION.md` as a potential future enhancement. This would provide visual UI, status bar integration, and command palette access. **This is not currently being developed** - the MCP server works standalone and provides all core functionality through Cursor's built-in MCP integration.

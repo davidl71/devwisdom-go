@@ -3,6 +3,13 @@
 // managing advisor consultations, and handling project health-based guidance.
 package wisdom
 
+import (
+	"fmt"
+	"hash/fnv"
+	"math/rand"
+	"time"
+)
+
 // Quote represents a wisdom quote with metadata.
 // It contains the quote text, source information, and optional encouragement message.
 type Quote struct {
@@ -45,9 +52,36 @@ func (s *Source) GetQuote(aeonLevel string) *Quote {
 		}
 	}
 
-	// TODO: Implement daily consistent random selection
-	// For now, return first quote
-	return &quotes[0]
+	// If only one quote, return it directly
+	if len(quotes) == 1 {
+		return &quotes[0]
+	}
+
+	// Date-seeded random selection for daily consistency
+	// Uses same pattern as getRandomSourceLocked() in engine.go
+	now := time.Now()
+	dateStr := now.Format("20060102") // YYYYMMDD format
+
+	// Convert date string to int and add hash offset
+	var dateInt int64
+	if _, err := fmt.Sscanf(dateStr, "%d", &dateInt); err != nil {
+		// This should never fail since we just formatted the date, but handle it gracefully
+		dateInt = int64(now.Unix())
+	}
+
+	// Hash "random_quote" string for offset (different from "random_source" for source selection)
+	h := fnv.New32a()
+	h.Write([]byte("random_quote"))
+	hashOffset := int64(h.Sum32())
+
+	seed := dateInt + hashOffset
+
+	// Create seeded random generator
+	rng := rand.New(rand.NewSource(seed))
+
+	// Select random quote index
+	selectedIndex := rng.Intn(len(quotes))
+	return &quotes[selectedIndex]
 }
 
 // Consultation represents an advisor consultation with full metadata.

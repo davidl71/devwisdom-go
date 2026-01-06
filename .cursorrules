@@ -1,5 +1,14 @@
 # devwisdom-go Development Rules
 
+## Project Configuration
+
+- **Project Root**: `/Users/davidl/Projects/devwisdom-go`
+- **Project ID**: `039bb05a-6f78-492b-88b5-28fdfa3ebce7` (agentic-tools MCP)
+- **Repository**: <https://github.com/davidl71/devwisdom-go>
+- **Type**: Standalone Go MCP Server
+
+**IMPORTANT**: When generating project scorecards, reports, or performing project-wide operations, ensure the project root is set to `/Users/davidl/Projects/devwisdom-go`. Use `PROJECT_ROOT` environment variable or ensure tools detect this directory as the project root.
+
 ## Language & Framework
 - **Language**: Go 1.21+
 - **Framework**: Standard library + MCP protocol (JSON-RPC 2.0)
@@ -38,3 +47,64 @@
 - Tasks tracked in agentic-tools MCP (Project ID: 039bb05a-6f78-492b-88b5-28fdfa3ebce7)
 - Use PROJECT_GOALS.md for phase alignment
 - Follow TODO.md for task breakdown
+
+## MCP Tool Call Requirements
+
+**⚠️ CRITICAL: Always provide required parameters when calling MCP tools**
+
+### Todo2 MCP Tools (`mcp_extension-todo2_*`)
+
+**Common Mistake**: Calling `update_todos` without the required `updates` parameter array.
+
+**❌ INCORRECT**:
+```python
+mcp_extension-todo2_update_todos()  # Missing required 'updates' parameter
+```
+
+**✅ CORRECT**:
+```python
+mcp_extension-todo2_update_todos(
+    updates=[
+        {
+            "id": "T-2",
+            "status": "Review"
+        },
+        {
+            "id": "T-0", 
+            "status": "Review"
+        }
+    ]
+)
+```
+
+### Required Parameters for Todo2 Tools
+
+1. **`update_todos`**: 
+   - **REQUIRED**: `updates` (array of update objects)
+   - Each update object must have `id` (required)
+   - Optional: `status`, `priority`, `tags`, `dependencies`, `long_description`, `cursorInsight`
+   - Valid status values: `"Todo"`, `"In Progress"`, `"Done"` (Note: "Review" is valid in Todo2 JSON but not in the tool enum - use direct JSON update if needed)
+
+2. **`create_todos`**:
+   - **REQUIRED**: `todos` (array of todo objects)
+   - Each todo must have `name` and `long_description`
+
+3. **`add_comments`**:
+   - **REQUIRED**: `todoId` (string) and `comments` (array of comment objects)
+   - Each comment must have `type` and `content`
+
+4. **`get_todo_details`**:
+   - **REQUIRED**: `ids` (array of todo ID strings)
+
+5. **`delete_todos`**:
+   - **REQUIRED**: `ids` (array of todo ID strings)
+
+### When to Use Direct JSON Updates vs MCP Tools
+
+- **Use MCP Tools**: When the tool supports the operation and all required parameters are available
+- **Use Direct JSON Updates**: When:
+  - The tool enum doesn't support a needed value (e.g., "Review" status in `update_todos`)
+  - You need to make bulk changes that the tool doesn't support efficiently
+  - The tool call fails due to parameter validation issues
+
+**Always verify tool parameters before calling** - check the tool definition for required vs optional parameters.

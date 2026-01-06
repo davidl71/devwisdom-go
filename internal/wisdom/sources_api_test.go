@@ -29,7 +29,7 @@ func TestAPISourceLoader_LoadSource_Success(t *testing.T) {
 		}
 		w.Header().Set("Content-Type", "application/json")
 		w.WriteHeader(http.StatusOK)
-		w.Write([]byte(`{
+		if _, err := w.Write([]byte(`{
 			"id": "test",
 			"name": "Test Source",
 			"icon": "📜",
@@ -40,7 +40,9 @@ func TestAPISourceLoader_LoadSource_Success(t *testing.T) {
 					"encouragement": "Test"
 				}]
 			}
-		}`))
+		}`)); err != nil {
+			t.Errorf("w.Write failed: %v", err)
+		}
 	}))
 	defer server.Close()
 
@@ -104,14 +106,16 @@ func TestAPISourceLoader_LoadSourceWithRetry(t *testing.T) {
 		}
 		w.Header().Set("Content-Type", "application/json")
 		w.WriteHeader(http.StatusOK)
-		w.Write([]byte(`{
+		if _, err := w.Write([]byte(`{
 			"id": "test",
 			"name": "Test",
 			"icon": "📜",
 			"quotes": {
 				"chaos": [{"quote": "Test", "source": "Test", "encouragement": "Test"}]
 			}
-		}`))
+		}`)); err != nil {
+			t.Errorf("w.Write failed: %v", err)
+		}
 	}))
 	defer server.Close()
 
@@ -134,14 +138,16 @@ func TestAPISourceLoader_LoadSourceWithTimeout(t *testing.T) {
 	server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-Type", "application/json")
 		w.WriteHeader(http.StatusOK)
-		w.Write([]byte(`{
+		if _, err := w.Write([]byte(`{
 			"id": "test",
 			"name": "Test",
 			"icon": "📜",
 			"quotes": {
 				"chaos": [{"quote": "Test", "source": "Test", "encouragement": "Test"}]
 			}
-		}`))
+		}`)); err != nil {
+			t.Errorf("w.Write failed: %v", err)
+		}
 	}))
 	defer server.Close()
 

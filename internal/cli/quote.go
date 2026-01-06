@@ -24,7 +24,7 @@ func (a *App) runQuote(args []string) error {
 	// Initialize wisdom engine
 	engine := wisdom.NewEngine()
 	if err := engine.Initialize(); err != nil {
-		return fmt.Errorf("failed to initialize wisdom engine: %w", err)
+		return fmt.Errorf("failed to initialize wisdom engine (check sources.json configuration): %w", err)
 	}
 
 	// Determine source
@@ -33,7 +33,7 @@ func (a *App) runQuote(args []string) error {
 		// Use date-seeded random source selector for daily consistency
 		randomSource, err := engine.GetRandomSource(true)
 		if err != nil {
-			return fmt.Errorf("failed to get random source: %w", err)
+			return fmt.Errorf("failed to get random source (no sources available): %w", err)
 		}
 		selectedSource = randomSource
 	}
@@ -45,10 +45,14 @@ func (a *App) runQuote(args []string) error {
 		quote, err = engine.GetWisdom(*score, selectedSource)
 	} else {
 		// This shouldn't happen due to check above, but handle it
-		return fmt.Errorf("no source specified and no sources available")
+		return fmt.Errorf("no source specified and no sources available: ensure sources.json exists and contains valid source definitions. Use 'devwisdom sources' to list available sources")
 	}
 	if err != nil {
-		return fmt.Errorf("failed to get wisdom: %w", err)
+		scoreStr := "default"
+		if score != nil {
+			scoreStr = fmt.Sprintf("%.1f", *score)
+		}
+		return fmt.Errorf("failed to get wisdom quote (source: %q, score: %s): %w", selectedSource, scoreStr, err)
 	}
 
 	// Output based on format

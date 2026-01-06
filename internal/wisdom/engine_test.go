@@ -269,14 +269,34 @@ func TestEngine_GetRandomSource_NoSources(t *testing.T) {
 
 func TestEngine_GetRandomSource_OnlySefariaSources(t *testing.T) {
 	engine := NewEngine()
-	// Add only Sefaria sources (should be excluded)
-	engine.sources["pirkei_avot"] = &Source{Name: "Pirkei Avot", Icon: "📜", Quotes: make(map[string][]Quote)}
-	engine.sources["proverbs"] = &Source{Name: "Proverbs", Icon: "📜", Quotes: make(map[string][]Quote)}
+	// Add only Sefaria sources (now supported after Phase 7 implementation)
+	engine.sources["pirkei_avot"] = &Source{
+		Name: "Pirkei Avot",
+		Icon: "📜",
+		Quotes: map[string][]Quote{
+			"middle_aeons": {
+				{Quote: "Test quote", Source: "Pirkei Avot 1:1", Encouragement: "Test"},
+			},
+		},
+	}
+	engine.sources["proverbs"] = &Source{
+		Name: "Proverbs",
+		Icon: "📜",
+		Quotes: map[string][]Quote{
+			"middle_aeons": {
+				{Quote: "Test quote 2", Source: "Proverbs 1:1", Encouragement: "Test"},
+			},
+		},
+	}
 	engine.initialized = true
 
-	_, err := engine.GetRandomSource(true)
-	if err == nil {
-		t.Error("GetRandomSource should fail when only Sefaria sources available")
+	// Sefaria sources are now supported, so this should succeed
+	source, err := engine.GetRandomSource(true)
+	if err != nil {
+		t.Errorf("GetRandomSource should succeed with Sefaria sources: %v", err)
+	}
+	if source == "" {
+		t.Error("GetRandomSource should return a source ID")
 	}
 }
 

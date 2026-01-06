@@ -47,7 +47,7 @@ func (e *Engine) Initialize() error {
 
 	// Load configuration
 	if err := e.config.Load(); err != nil {
-		return fmt.Errorf("failed to load config: %w", err)
+		return fmt.Errorf("failed to load engine configuration: %w", err)
 	}
 
 	// Configure source loader
@@ -93,7 +93,7 @@ func (e *Engine) ReloadSources() error {
 	defer e.mu.Unlock()
 
 	if !e.initialized {
-		return fmt.Errorf("engine not initialized")
+		return fmt.Errorf("engine not initialized: call Initialize() before reloading sources")
 	}
 
 	if e.loader == nil {
@@ -116,21 +116,29 @@ func (e *Engine) GetWisdom(score float64, source string) (*Quote, error) {
 	defer e.mu.RUnlock()
 
 	if !e.initialized {
-		return nil, fmt.Errorf("engine not initialized")
+		return nil, fmt.Errorf("engine not initialized: call Initialize() before retrieving wisdom. This usually means sources.json could not be loaded")
 	}
 
 	// Handle "random" source selection
 	if source == "random" {
 		randomSource, err := e.getRandomSourceLocked(true)
 		if err != nil {
-			return nil, fmt.Errorf("failed to get random source: %w", err)
+			return nil, fmt.Errorf("failed to get random source (score: %.1f): %w", score, err)
 		}
 		source = randomSource
 	}
 
 	src, exists := e.sources[source]
 	if !exists {
-		return nil, fmt.Errorf("unknown source: %s", source)
+		// Get available sources for helpful error message
+		availableSources := make([]string, 0, len(e.sources))
+		for id := range e.sources {
+			availableSources = append(availableSources, id)
+		}
+		if len(availableSources) > 0 {
+			return nil, fmt.Errorf("unknown source %q (available sources: %v). Use 'devwisdom sources' to list all sources", source, availableSources)
+		}
+		return nil, fmt.Errorf("unknown source %q and no sources are available. Ensure sources.json is properly configured", source)
 	}
 
 	// Determine aeon level from score
@@ -153,20 +161,17 @@ func (e *Engine) GetRandomSource(seedDate bool) (string, error) {
 // getRandomSourceLocked is the internal implementation (assumes RLock is held)
 func (e *Engine) getRandomSourceLocked(seedDate bool) (string, error) {
 	if !e.initialized {
-		return "", fmt.Errorf("engine not initialized")
+		return "", fmt.Errorf("engine not initialized: call Initialize() before use")
 	}
 
-	// Get all available source IDs (excluding Sefaria API sources for now)
+	// Get all available source IDs
 	allSources := make([]string, 0, len(e.sources))
 	for id := range e.sources {
-		// Exclude Sefaria API sources (they require API integration)
-		if id != "pirkei_avot" && id != "proverbs" && id != "ecclesiastes" && id != "psalms" {
-			allSources = append(allSources, id)
-		}
+		allSources = append(allSources, id)
 	}
 
 	if len(allSources) == 0 {
-		return "", fmt.Errorf("no sources available")
+		return "", fmt.Errorf("no sources available: ensure sources.json exists and contains valid source definitions")
 	}
 
 	// Sort sources to ensure deterministic order (Go map iteration is non-deterministic)
@@ -258,22 +263,22 @@ func (e *Engine) AddProjectSource(config *SourceConfig) error {
 	defer e.mu.Unlock()
 
 	if e.loader == nil {
-		return fmt.Errorf("loader not initialized")
+		return fmt.Errorf("loader not initialized: engine must be initialized before adding project sources")
 	}
 
 	// Save to project directory
 	if err := e.loader.SaveProjectSource(config); err != nil {
-		return fmt.Errorf("failed to save project source: %w", err)
+		return fmt.Errorf("failed to save project source %q to project directory: %w", config.ID, err)
 	}
 
 	// Add to loader (this will also update the loader's internal sources)
 	if err := e.loader.AddSource(config); err != nil {
-		return fmt.Errorf("failed to add source: %w", err)
+		return fmt.Errorf("failed to add source %q to loader: %w", config.ID, err)
 	}
 
 	// Reload to ensure consistency
 	if err := e.loader.Reload(); err != nil {
-		return fmt.Errorf("failed to reload sources: %w", err)
+		return fmt.Errorf("failed to reload sources after adding %q: %w", config.ID, err)
 	}
 
 	// Update engine's sources map from loader

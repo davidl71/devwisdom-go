@@ -32,7 +32,7 @@ type ConsultationLogger struct {
 func NewConsultationLogger(logDir string) (*ConsultationLogger, error) {
 	// Create log directory if it doesn't exist
 	if err := os.MkdirAll(logDir, 0755); err != nil {
-		return nil, fmt.Errorf("failed to create log directory: %w", err)
+		return nil, fmt.Errorf("failed to create consultation log directory %q: %w", logDir, err)
 	}
 
 	// Log file path
@@ -51,7 +51,7 @@ func NewConsultationLogger(logDir string) (*ConsultationLogger, error) {
 			// File is from a different date - rotate it
 			rotatedPath := filepath.Join(logDir, fmt.Sprintf("consultations-%s.jsonl", fileDate))
 			if err := os.Rename(filePath, rotatedPath); err != nil {
-				return nil, fmt.Errorf("failed to rotate log file: %w", err)
+				return nil, fmt.Errorf("failed to rotate log file from %q to %q: %w", filePath, rotatedPath, err)
 			}
 		}
 	}
@@ -59,7 +59,7 @@ func NewConsultationLogger(logDir string) (*ConsultationLogger, error) {
 	// Open or create log file in append mode
 	file, err = os.OpenFile(filePath, os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0644)
 	if err != nil {
-		return nil, fmt.Errorf("failed to open log file: %w", err)
+		return nil, fmt.Errorf("failed to open log file %q: %w", filePath, err)
 	}
 
 	logger := &ConsultationLogger{
@@ -77,7 +77,7 @@ func NewConsultationLogger(logDir string) (*ConsultationLogger, error) {
 // Must be called with mutex held
 func (l *ConsultationLogger) rotateIfNeeded() error {
 	currentDate := time.Now().Format("2006-01-02")
-	
+
 	// If date hasn't changed, no rotation needed
 	if l.currentDate == currentDate {
 		return nil
@@ -227,7 +227,7 @@ func (l *ConsultationLogger) GetLogs(days int) ([]*wisdom.Consultation, error) {
 			// Extract date from filename (consultations-YYYY-MM-DD.jsonl)
 			dateStr := strings.TrimPrefix(name, "consultations-")
 			dateStr = strings.TrimSuffix(dateStr, ".jsonl")
-			
+
 			// Parse date to check if it's within range
 			fileDate, err := time.Parse("2006-01-02", dateStr)
 			if err != nil {
@@ -262,4 +262,3 @@ func (l *ConsultationLogger) Close() error {
 	}
 	return nil
 }
-

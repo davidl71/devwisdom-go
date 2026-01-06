@@ -1,0 +1,20 @@
+{
+  "version": "1.0",
+  "sources": {
+    "test_project_source": {
+      "id": "test_project_source",
+      "name": "Test Project Source",
+      "icon": "🚀",
+      "description": "Test source for project",
+      "quotes": {
+        "middle_aeons": [
+          {
+            "quote": "Test project quote",
+            "source": "Test",
+            "encouragement": "Test"
+          }
+        ]
+      }
+    }
+  }
+}

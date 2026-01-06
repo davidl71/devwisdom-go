@@ -48,7 +48,7 @@ func (a *App) Run(args []string) error {
 		a.printUsage()
 		return nil
 	default:
-		return fmt.Errorf("unknown command: %s. Use 'devwisdom help' for usage", command)
+		return fmt.Errorf("unknown command %q: available commands are quote, consult, briefing, sources, advisors - use 'devwisdom help' for usage", command)
 	}
 }
 

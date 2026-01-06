@@ -1,7 +1,8 @@
 {
-    "folders": [
-        {
-            "path": "../project-management-automation"
-        }
-    ]
+	"folders": [
+		{
+			"path": "."
+		}
+	],
+	"settings": {}
 }
