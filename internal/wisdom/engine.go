@@ -10,7 +10,9 @@ import (
 	"github.com/davidl71/devwisdom-go/internal/config"
 )
 
-// Engine is the main wisdom engine managing sources, advisors, and consultations
+// Engine is the main wisdom engine managing sources, advisors, and consultations.
+// It provides thread-safe access to wisdom sources and advisor consultations.
+// The engine must be initialized before use by calling Initialize().
 type Engine struct {
 	sources     map[string]*Source
 	loader      *SourceLoader
@@ -20,7 +22,8 @@ type Engine struct {
 	mu          sync.RWMutex
 }
 
-// NewEngine creates a new wisdom engine instance
+// NewEngine creates a new wisdom engine instance.
+// The engine is not initialized by default; call Initialize() before use.
 func NewEngine() *Engine {
 	return &Engine{
 		sources:  make(map[string]*Source),
@@ -30,7 +33,9 @@ func NewEngine() *Engine {
 	}
 }
 
-// Initialize loads wisdom sources and configuration
+// Initialize loads wisdom sources and configuration.
+// This method is idempotent and can be called multiple times safely.
+// It loads sources from configuration files or falls back to built-in sources.
 func (e *Engine) Initialize() error {
 	e.mu.Lock()
 	defer e.mu.Unlock()
@@ -68,7 +73,8 @@ func (e *Engine) Initialize() error {
 	return nil
 }
 
-// ReloadSources reloads sources from configuration files
+// ReloadSources reloads sources from configuration files.
+// This is useful when sources are updated externally and you want to refresh the engine.
 func (e *Engine) ReloadSources() error {
 	e.mu.Lock()
 	defer e.mu.Unlock()
@@ -81,7 +87,9 @@ func (e *Engine) ReloadSources() error {
 	return nil
 }
 
-// GetWisdom retrieves wisdom quote based on score and source
+// GetWisdom retrieves a wisdom quote based on score and source.
+// The score determines the aeon level, which selects appropriate quotes from the source.
+// If source is "random", a date-seeded random source is selected for consistency.
 func (e *Engine) GetWisdom(score float64, source string) (*Quote, error) {
 	e.mu.RLock()
 	defer e.mu.RUnlock()
@@ -112,8 +120,9 @@ func (e *Engine) GetWisdom(score float64, source string) (*Quote, error) {
 	return quote, nil
 }
 
-// GetRandomSource returns a random wisdom source ID
-// If seedDate is true, the same source will be returned for the entire day
+// GetRandomSource returns a random wisdom source ID.
+// If seedDate is true, the same source will be returned for the entire day (date-seeded).
+// This ensures consistent daily source selection across sessions.
 func (e *Engine) GetRandomSource(seedDate bool) (string, error) {
 	e.mu.RLock()
 	defer e.mu.RUnlock()
@@ -167,7 +176,8 @@ func (e *Engine) getRandomSourceLocked(seedDate bool) (string, error) {
 	return allSources[selectedIndex], nil
 }
 
-// ListSources returns all available wisdom sources
+// ListSources returns all available wisdom source IDs.
+// Returns an empty slice if the engine is not initialized.
 func (e *Engine) ListSources() []string {
 	e.mu.RLock()
 	defer e.mu.RUnlock()
@@ -183,7 +193,8 @@ func (e *Engine) ListSources() []string {
 	return sources
 }
 
-// GetSource returns a specific source by ID
+// GetSource returns a specific source by ID.
+// The second return value indicates whether the source was found.
 func (e *Engine) GetSource(id string) (*Source, bool) {
 	e.mu.RLock()
 	defer e.mu.RUnlock()
@@ -196,21 +207,24 @@ func (e *Engine) GetSource(id string) (*Source, bool) {
 	return source, exists
 }
 
-// GetLoader returns the source loader (for advanced usage)
+// GetLoader returns the source loader for advanced usage.
+// This allows direct access to source loading and configuration management.
 func (e *Engine) GetLoader() *SourceLoader {
 	e.mu.RLock()
 	defer e.mu.RUnlock()
 	return e.loader
 }
 
-// GetAdvisors returns the advisor registry
+// GetAdvisors returns the advisor registry.
+// This provides access to advisor mappings and consultation functionality.
 func (e *Engine) GetAdvisors() *AdvisorRegistry {
 	e.mu.RLock()
 	defer e.mu.RUnlock()
 	return e.advisors
 }
 
-// AddProjectSource adds a source and saves it to the project directory
+// AddProjectSource adds a source and saves it to the project directory.
+// The source is persisted to the project's sources.json file and immediately available.
 func (e *Engine) AddProjectSource(config *SourceConfig) error {
 	e.mu.Lock()
 	defer e.mu.Unlock()

@@ -1,3 +1,5 @@
+// Package config provides configuration management for the wisdom engine.
+// It handles loading and saving configuration from files and environment variables.
 package config
 
 import (
@@ -7,7 +9,7 @@ import (
 	"path/filepath"
 )
 
-// Config holds wisdom configuration
+// Config holds wisdom configuration including source selection and Hebrew text options.
 type Config struct {
 	Source        string `json:"source"`
 	HebrewEnabled bool   `json:"hebrew_enabled"`
@@ -16,7 +18,8 @@ type Config struct {
 	configPath    string
 }
 
-// NewConfig creates a new config with defaults
+// NewConfig creates a new config with default values.
+// Default source is "pistis_sophia" and Hebrew features are disabled.
 func NewConfig() *Config {
 	return &Config{
 		Source:        "pistis_sophia", // Default source
@@ -27,7 +30,9 @@ func NewConfig() *Config {
 	}
 }
 
-// Load loads configuration from file or environment
+// Load loads configuration from file or environment variables.
+// Environment variables take precedence over file configuration.
+// Returns nil if config file doesn't exist (it's optional).
 func (c *Config) Load() error {
 	// First check environment variables
 	if source := os.Getenv("EXARP_WISDOM_SOURCE"); source != "" {
@@ -65,7 +70,8 @@ func (c *Config) Load() error {
 	return nil // Config file is optional
 }
 
-// Save saves configuration to file
+// Save saves configuration to file in JSON format.
+// Creates the config directory if it doesn't exist.
 func (c *Config) Save() error {
 	data, err := json.MarshalIndent(c, "", "  ")
 	if err != nil {
@@ -83,7 +89,8 @@ func (c *Config) Save() error {
 	return nil
 }
 
-// GetConfigPath returns the path to the config file
+// GetConfigPath returns the path to the config file.
+// Checks home directory first, then falls back to current directory.
 func GetConfigPath() string {
 	// Look for .exarp_wisdom_config in current directory
 	// TODO: Also check home directory

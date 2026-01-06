@@ -1,3 +1,5 @@
+// Package cli provides the command-line interface for devwisdom-go.
+// It includes commands for quotes, consultations, sources, advisors, and briefings.
 package cli
 
 import (
@@ -5,19 +7,20 @@ import (
 	"os"
 )
 
-// App represents the CLI application
+// App represents the CLI application and handles command routing.
 type App struct {
 	version string
 }
 
-// NewApp creates a new CLI application instance
+// NewApp creates a new CLI application instance with the specified version.
 func NewApp(version string) *App {
 	return &App{
 		version: version,
 	}
 }
 
-// Run executes the CLI application with the given arguments
+// Run executes the CLI application with the given arguments.
+// Routes commands to appropriate handlers and returns any errors.
 func (a *App) Run(args []string) error {
 	if len(args) == 0 {
 		a.printUsage()

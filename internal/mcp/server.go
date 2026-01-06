@@ -1,3 +1,5 @@
+// Package mcp provides the Model Context Protocol (MCP) server implementation.
+// It implements JSON-RPC 2.0 protocol over stdio transport for wisdom consultations.
 package mcp
 
 import (
@@ -10,22 +12,35 @@ import (
 	"strings"
 	"time"
 
+	"github.com/davidl71/devwisdom-go/internal/logging"
 	"github.com/davidl71/devwisdom-go/internal/wisdom"
 )
 
-// Version is the devwisdom-go MCP server version
+// Version is the devwisdom-go MCP server version.
 const Version = "0.1.0"
 
-// WisdomServer implements the MCP server for wisdom tools and resources
+// WisdomServer implements the MCP server for wisdom tools and resources.
+// It handles JSON-RPC 2.0 requests and provides tools and resources for wisdom access.
 type WisdomServer struct {
 	wisdom      *wisdom.Engine
+	logger      *logging.ConsultationLogger
 	initialized bool
 }
 
-// NewWisdomServer creates a new wisdom MCP server instance
+// NewWisdomServer creates a new wisdom MCP server instance.
+// The server must be started with Run() to begin processing requests.
 func NewWisdomServer() *WisdomServer {
+	// Initialize consultation logger (log directory: .devwisdom)
+	logger, err := logging.NewConsultationLogger(".devwisdom")
+	if err != nil {
+		// Log initialization failure is non-fatal - server can still work without logging
+		// In production, you might want to log this to stderr or handle it differently
+		logger = nil
+	}
+
 	return &WisdomServer{
 		wisdom: wisdom.NewEngine(),
+		logger: logger,
 	}
 }
 
@@ -299,10 +314,9 @@ func (s *WisdomServer) handleResourceRead(req *JSONRPCRequest) *JSONRPCResponse 
 		return s.handleToolsResource(req)
 	} else if strings.HasPrefix(uri, "wisdom://sources") {
 		return s.handleSourcesResource(req)
-	} else if strings.HasPrefix(uri, "wisdom://advisors") {
-		if uri == "wisdom://advisors" {
-			return s.handleAdvisorsResource(req)
-		}
+	} else if uri == "wisdom://advisors" {
+		return s.handleAdvisorsResource(req)
+	} else if strings.HasPrefix(uri, "wisdom://advisor/") {
 		// Handle wisdom://advisor/{id}
 		parts := strings.Split(uri, "/")
 		if len(parts) >= 3 {
@@ -413,6 +427,9 @@ func (s *WisdomServer) handleConsultAdvisor(params map[string]interface{}) (inte
 		}
 	}
 
+	// Get consultation mode based on score
+	modeConfig := wisdom.GetConsultationMode(score)
+
 	// Create consultation
 	consultation := wisdom.Consultation{
 		Timestamp:        time.Now().Format(time.RFC3339),
@@ -422,6 +439,10 @@ func (s *WisdomServer) handleConsultAdvisor(params map[string]interface{}) (inte
 		AdvisorName:      advisorInfo.Advisor,
 		Rationale:        advisorInfo.Rationale,
 		ScoreAtTime:      score,
+		ConsultationMode: modeConfig.Name,
+		ModeIcon:         modeConfig.Icon,
+		ModeFrequency:    modeConfig.Frequency,
+		ModeGuidance:     modeConfig.Description,
 		Quote:            quote.Quote,
 		QuoteSource:      quote.Source,
 		Encouragement:    quote.Encouragement,
@@ -436,6 +457,14 @@ func (s *WisdomServer) handleConsultAdvisor(params map[string]interface{}) (inte
 	}
 	if stage != "" {
 		consultation.Stage = stage
+	}
+
+	// Log consultation (non-blocking - if logging fails, still return consultation)
+	if s.logger != nil {
+		if err := s.logger.Log(&consultation); err != nil {
+			// Logging failure doesn't break the consultation response
+			// In production, you might want to log this error
+		}
 	}
 
 	return consultation, nil
@@ -529,10 +558,24 @@ func (s *WisdomServer) handleGetConsultationLog(params map[string]interface{}) (
 		days = d
 	}
 
-	// TODO: Implement actual consultation log retrieval
-	// days parameter will be used when log retrieval is implemented
-	_ = days // Suppress unused variable warning until implementation
-	return []interface{}{}, nil
+	// Retrieve consultations from logger
+	if s.logger == nil {
+		// Logger not initialized, return empty array
+		return []interface{}{}, nil
+	}
+
+	consultations, err := s.logger.GetLogs(days)
+	if err != nil {
+		return nil, fmt.Errorf("failed to retrieve consultation log: %w", err)
+	}
+
+	// Convert to interface{} slice for JSON serialization
+	result := make([]interface{}, len(consultations))
+	for i, consultation := range consultations {
+		result[i] = consultation
+	}
+
+	return result, nil
 }
 
 // handleExportForPodcast implements export_for_podcast tool
@@ -544,11 +587,39 @@ func (s *WisdomServer) handleExportForPodcast(params map[string]interface{}) (in
 		days = d
 	}
 
-	// TODO: Implement actual podcast export
-	// For now, return empty episodes
+	// Retrieve consultations from logger
+	if s.logger == nil {
+		// Logger not initialized, return empty episodes
+		return map[string]interface{}{
+			"episodes": []interface{}{},
+			"days":     days,
+		}, nil
+	}
+
+	consultations, err := s.logger.GetLogs(days)
+	if err != nil {
+		return nil, fmt.Errorf("failed to retrieve consultations for podcast: %w", err)
+	}
+
+	// Format consultations as podcast episodes
+	episodes := make([]interface{}, len(consultations))
+	for i, consultation := range consultations {
+		episodes[i] = map[string]interface{}{
+			"title":       fmt.Sprintf("Consultation with %s", consultation.AdvisorName),
+			"date":        consultation.Timestamp,
+			"advisor":     consultation.AdvisorName,
+			"quote":       consultation.Quote,
+			"source":      consultation.QuoteSource,
+			"encouragement": consultation.Encouragement,
+			"score":       consultation.ScoreAtTime,
+			"mode":        consultation.ConsultationMode,
+		}
+	}
+
 	return map[string]interface{}{
-		"episodes": []interface{}{},
+		"episodes": episodes,
 		"days":     days,
+		"count":    len(episodes),
 	}, nil
 }
 
@@ -768,8 +839,19 @@ func (s *WisdomServer) handleAdvisorResource(req *JSONRPCRequest, advisorID stri
 
 // handleConsultationsResource returns consultation log entries
 func (s *WisdomServer) handleConsultationsResource(req *JSONRPCRequest, days int) *JSONRPCResponse {
-	// TODO: Implement consultation log retrieval
-	consultations := []interface{}{}
+	// Retrieve consultations from logger
+	var consultations []interface{}
+	if s.logger != nil {
+		logs, err := s.logger.GetLogs(days)
+		if err == nil {
+			// Convert to interface{} slice for JSON serialization
+			consultations = make([]interface{}, len(logs))
+			for i, consultation := range logs {
+				consultations[i] = consultation
+			}
+		}
+		// If logger is nil or error occurs, consultations remains empty array
+	}
 
 	return NewSuccessResponse(req.ID, map[string]interface{}{
 		"contents": []map[string]interface{}{

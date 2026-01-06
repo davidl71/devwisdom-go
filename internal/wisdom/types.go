@@ -1,6 +1,10 @@
+// Package wisdom provides wisdom quotes, sources, advisors, and consultation services.
+// It includes functionality for retrieving quotes from various wisdom sources,
+// managing advisor consultations, and handling project health-based guidance.
 package wisdom
 
-// Quote represents a wisdom quote with metadata
+// Quote represents a wisdom quote with metadata.
+// It contains the quote text, source information, and optional encouragement message.
 type Quote struct {
 	Quote         string `json:"quote"`
 	Source        string `json:"source"`
@@ -9,7 +13,8 @@ type Quote struct {
 	WisdomIcon    string `json:"wisdom_icon,omitempty"`
 }
 
-// Source represents a wisdom source with quotes by aeon level
+// Source represents a wisdom source with quotes organized by aeon level.
+// Aeon levels correspond to project health scores (chaos, lower_aeons, middle_aeons, upper_aeons, treasury).
 type Source struct {
 	Name        string             `json:"name"`
 	Icon        string             `json:"icon"`
@@ -17,7 +22,9 @@ type Source struct {
 	Description string             `json:"description,omitempty"`
 }
 
-// GetQuote retrieves a quote for the given aeon level
+// GetQuote retrieves a quote for the given aeon level.
+// If no quotes exist for the specified level, it falls back to any available quotes.
+// Returns a default quote if no quotes are available in the source.
 func (s *Source) GetQuote(aeonLevel string) *Quote {
 	quotes, exists := s.Quotes[aeonLevel]
 	if !exists || len(quotes) == 0 {
@@ -43,7 +50,8 @@ func (s *Source) GetQuote(aeonLevel string) *Quote {
 	return &quotes[0]
 }
 
-// Consultation represents an advisor consultation
+// Consultation represents an advisor consultation with full metadata.
+// It includes advisor information, quote, rationale, score context, and mode guidance.
 type Consultation struct {
 	Timestamp        string  `json:"timestamp"`
 	ConsultationType string  `json:"consultation_type"`
@@ -66,7 +74,7 @@ type Consultation struct {
 	ModeGuidance     string  `json:"mode_guidance,omitempty"`
 }
 
-// AdvisorInfo represents advisor metadata
+// AdvisorInfo represents advisor metadata including name, icon, rationale, and context.
 type AdvisorInfo struct {
 	Advisor   string `json:"advisor"`
 	Icon      string `json:"icon"`
@@ -75,7 +83,8 @@ type AdvisorInfo struct {
 	Language  string `json:"language,omitempty"`
 }
 
-// AeonLevel represents project health stages
+// AeonLevel represents project health stages based on score ranges.
+// These levels determine which quotes are selected from wisdom sources.
 type AeonLevel string
 
 const (
@@ -86,7 +95,13 @@ const (
 	AeonTreasury AeonLevel = "treasury"     // > 85%
 )
 
-// GetAeonLevel returns the aeon level based on score
+// GetAeonLevel returns the aeon level based on score.
+// Score ranges:
+//   - < 30: chaos
+//   - 30-50: lower_aeons
+//   - 50-70: middle_aeons
+//   - 70-85: upper_aeons
+//   - >= 85: treasury
 func GetAeonLevel(score float64) string {
 	switch {
 	case score < 30:
@@ -102,7 +117,8 @@ func GetAeonLevel(score float64) string {
 	}
 }
 
-// ConsultationMode represents project health consultation modes
+// ConsultationMode represents project health consultation modes based on score ranges.
+// These modes determine consultation frequency and advisor selection.
 type ConsultationMode string
 
 const (
@@ -112,7 +128,8 @@ const (
 	ModeMastery  ConsultationMode = "mastery"  // > 80%
 )
 
-// ConsultationModeConfig represents configuration for a consultation mode
+// ConsultationModeConfig represents configuration for a consultation mode.
+// It defines score ranges, frequency, description, and icon for each mode.
 type ConsultationModeConfig struct {
 	Name        string  `json:"name"`
 	MinScore    float64 `json:"min_score"`
@@ -122,7 +139,8 @@ type ConsultationModeConfig struct {
 	Icon        string  `json:"icon"`
 }
 
-// SessionMode represents different session interaction modes
+// SessionMode represents different session interaction modes.
+// Used for mode-aware advisor selection (AGENT, ASK, MANUAL).
 type SessionMode string
 
 const (
@@ -131,7 +149,8 @@ const (
 	SessionModeManual SessionMode = "MANUAL"
 )
 
-// ModeConfig represents configuration for session mode-aware advisor selection
+// ModeConfig represents configuration for session mode-aware advisor selection.
+// It defines preferred advisors, tone, and focus for each session mode.
 type ModeConfig struct {
 	PreferredAdvisors []string `json:"preferred_advisors"`
 	Tone              string   `json:"tone"`
