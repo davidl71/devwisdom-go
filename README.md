@@ -237,7 +237,7 @@ See `PROJECT_GOALS.md` for detailed phase breakdown and `PRD.md` for full requir
 - **TODO.md** - Task breakdown by phase
 - **EXARP_PLANNING_COMPLETE.md** - Planning analysis summary
 - **docs/WATCHDOG.md** - Watchdog script documentation
-- **docs/CURSOR_EXTENSION.md** - Cursor extension architecture (future enhancement)
+- **docs/CURSOR_EXTENSION.md** - Cursor extension architecture (⚠️ **Future goal - not currently implemented**)
 
 ## 🔗 Related
 
