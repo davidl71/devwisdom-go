@@ -14,7 +14,7 @@ func TestClient_GetText(t *testing.T) {
 		if r.URL.Path == "/api/texts/Proverbs" {
 			w.Header().Set("Content-Type", "application/json")
 			w.WriteHeader(http.StatusOK)
-			w.Write([]byte(`{
+			_, _ = w.Write([]byte(`{
 				"ref": "Proverbs 1",
 				"heRef": "משלי א׳",
 				"text": ["The proverbs of Solomon", "To know wisdom"],
@@ -57,7 +57,7 @@ func TestClient_GetTextBySourceID(t *testing.T) {
 		if r.URL.Path == "/api/texts/Pirkei_Avot" {
 			w.Header().Set("Content-Type", "application/json")
 			w.WriteHeader(http.StatusOK)
-			w.Write([]byte(`{
+			_, _ = w.Write([]byte(`{
 				"ref": "Pirkei Avot 1",
 				"heRef": "פרקי אבות א׳",
 				"text": ["Moses received the Torah"],
@@ -102,7 +102,7 @@ func TestClient_Cache(t *testing.T) {
 		callCount++
 		w.Header().Set("Content-Type", "application/json")
 		w.WriteHeader(http.StatusOK)
-		w.Write([]byte(`{
+		_, _ = w.Write([]byte(`{
 			"ref": "Proverbs 1",
 			"text": ["Test"],
 			"he": ["בדיקה"]
@@ -135,4 +135,3 @@ func TestClient_Cache(t *testing.T) {
 		t.Errorf("Expected 1 API call, got %d", callCount)
 	}
 }
-

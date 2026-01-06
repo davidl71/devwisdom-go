@@ -387,4 +387,3 @@ type testError struct {
 func (e *testError) Error() string {
 	return e.message
 }
-

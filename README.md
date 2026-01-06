@@ -4,6 +4,10 @@
 
 A standalone Go MCP server providing wisdom quotes, trusted advisors, and inspirational guidance for developers. Extracted from the exarp project as a proof of concept for using compiled languages (Go) for exarp modules.
 
+[![CI](https://github.com/davidl71/devwisdom-go/actions/workflows/ci.yml/badge.svg)](https://github.com/davidl71/devwisdom-go/actions/workflows/ci.yml)
+[![Go Version](https://img.shields.io/badge/go-1.21%2B-blue)](https://golang.org/)
+[![License](https://img.shields.io/badge/license-MIT-green)](LICENSE)
+
 ## 🎯 Project Status
 
 **Phase 1**: ✅ Complete (Core Structure)  
@@ -402,6 +406,75 @@ make watchdog          # Run with file watching and reload
 make watchdog-restart  # Run with file watching and restart on change
 make watchdog-monitor  # Run with crash monitoring only
 ```
+
+### Cross-Compilation
+
+Build binaries for multiple platforms:
+
+```bash
+# Build for specific platform
+make build-windows     # Windows (amd64)
+make build-linux       # Linux (amd64, arm64)
+make build-darwin      # macOS (amd64, arm64)
+
+# Build for all platforms
+make build-all-platforms
+
+# Build and package release archives
+make build-release     # Creates zip/tar.gz archives in dist/release/
+```
+
+**Release Archives:**
+- Windows: `devwisdom-{version}-windows-amd64.zip`
+- Linux: `devwisdom-{version}-linux-{arch}.tar.gz`
+- macOS: `devwisdom-{version}-darwin-{arch}.tar.gz`
+
+**Build Artifacts:**
+- Binaries are placed in `dist/{platform}-{arch}/`
+- Release archives are placed in `dist/release/`
+- Use `make clean-dist` to remove all build artifacts
+
+## 🔄 CI/CD
+
+### Continuous Integration
+
+The project uses GitHub Actions for CI/CD:
+
+- **CI Workflow** (`.github/workflows/ci.yml`):
+  - Runs on push and pull requests
+  - Tests on Go 1.21 and 1.22
+  - Runs linting with golangci-lint
+  - Builds binaries to verify compilation
+  - Uploads test coverage reports
+
+- **Release Workflow** (`.github/workflows/release.yml`):
+  - Triggers on version tags (e.g., `v1.0.0`)
+  - Builds binaries for all platforms:
+    - Windows (amd64)
+    - Linux (amd64, arm64)
+    - macOS (amd64, arm64)
+  - Creates GitHub release with all artifacts
+  - Generates release notes automatically
+
+### Creating a Release
+
+```bash
+# Create and push a version tag
+git tag -a v1.0.0 -m "Release v1.0.0"
+git push origin v1.0.0
+```
+
+The release workflow will automatically:
+1. Build binaries for all platforms
+2. Package them into release archives
+3. Create a GitHub release
+4. Attach all artifacts to the release
+
+### CI/CD Status
+
+View workflow status and logs:
+- [CI Workflow](https://github.com/davidl71/devwisdom-go/actions/workflows/ci.yml)
+- [Release Workflow](https://github.com/davidl71/devwisdom-go/actions/workflows/release.yml)
 
 ## 🏗️ Project Structure
 

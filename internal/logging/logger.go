@@ -43,9 +43,9 @@ func (l LogLevel) String() string {
 // Logger provides structured logging with levels, timestamps, and context.
 // All logs are written to stderr to maintain MCP protocol compatibility.
 type Logger struct {
-	mu          sync.Mutex
-	level       LogLevel
-	output      io.Writer
+	mu            sync.Mutex
+	level         LogLevel
+	output        io.Writer
 	slowThreshold time.Duration // Threshold for performance logging
 }
 
@@ -173,4 +173,3 @@ func (l *Logger) LogPerformance(context string, operation string, duration time.
 		l.Debug(context, "Operation: %s took %v", operation, duration)
 	}
 }
-

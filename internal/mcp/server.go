@@ -551,11 +551,11 @@ func (s *WisdomServer) handleGetWisdom(params map[string]interface{}) (interface
 		source = src
 	}
 
-		// Get wisdom quote
-		quote, err := s.wisdom.GetWisdom(score, source)
-		if err != nil {
-			return nil, fmt.Errorf("failed to get wisdom quote (source: %q, score: %.1f): %w", source, score, err)
-		}
+	// Get wisdom quote
+	quote, err := s.wisdom.GetWisdom(score, source)
+	if err != nil {
+		return nil, fmt.Errorf("failed to get wisdom quote (source: %q, score: %.1f): %w", source, score, err)
+	}
 
 	return quote, nil
 }

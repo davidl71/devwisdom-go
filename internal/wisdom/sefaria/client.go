@@ -137,4 +137,3 @@ func getBookMappingKeys() []string {
 func (c *Client) CleanupCache() {
 	c.cache.Cleanup()
 }
-

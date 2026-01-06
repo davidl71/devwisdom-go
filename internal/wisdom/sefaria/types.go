@@ -3,10 +3,10 @@ package sefaria
 
 // TextResponse represents a Sefaria API text response
 type TextResponse struct {
-	Ref      string   `json:"ref"`
-	HeRef    string   `json:"heRef"`
-	Text     []string `json:"text"` // English verses
-	He       []string `json:"he"`   // Hebrew verses
+	Ref      string    `json:"ref"`
+	HeRef    string    `json:"heRef"`
+	Text     []string  `json:"text"` // English verses
+	He       []string  `json:"he"`   // Hebrew verses
 	Versions []Version `json:"versions"`
 	Metadata *Metadata `json:"-"`
 }
@@ -41,4 +41,3 @@ var BookMapping = map[string]string{
 	"ecclesiastes": "Ecclesiastes",
 	"psalms":       "Psalms",
 }
-

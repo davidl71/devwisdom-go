@@ -14,9 +14,9 @@ type CacheEntry struct {
 
 // Cache provides thread-safe caching for Sefaria API responses
 type Cache struct {
-	mu    sync.RWMutex
+	mu      sync.RWMutex
 	entries map[string]*CacheEntry
-	ttl    time.Duration // Default TTL: 24 hours
+	ttl     time.Duration // Default TTL: 24 hours
 }
 
 // NewCache creates a new Sefaria API response cache
@@ -91,4 +91,3 @@ func (c *Cache) SetTTL(ttl time.Duration) {
 	defer c.mu.Unlock()
 	c.ttl = ttl
 }
-

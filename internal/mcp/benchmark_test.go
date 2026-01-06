@@ -145,4 +145,3 @@ func BenchmarkJSONRPC_Parse(b *testing.B) {
 		_ = json.Unmarshal([]byte(jsonStr), &req)
 	}
 }
-

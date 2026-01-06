@@ -435,4 +435,3 @@ func TestIntegration_SequentialRequests(t *testing.T) {
 		t.Errorf("Expected 4 responses, got %d", len(responses))
 	}
 }
-

@@ -46,7 +46,7 @@ type SourceLoader struct {
 	reloadEnabled bool
 	projectRoot   string // Project root directory for project-specific sources
 	cache         *SourceCache
-	httpClient    *http.Client // For API-based sources with timeout
+	httpClient    *http.Client    // For API-based sources with timeout
 	sefariaClient *sefaria.Client // Sefaria API client
 }
 

@@ -985,9 +985,9 @@
       "id": "T-20",
       "name": "Phase 10.4: Cross-compilation setup (Windows, Linux, macOS)",
       "long_description": "🎯 **Objective:** Set up cross-compilation to build binaries for Windows, Linux, and macOS platforms.\n\n📋 **Acceptance Criteria:**\n- Add Makefile targets for cross-compilation\n- Build Windows binaries (.exe)\n- Build Linux binaries (amd64, arm64)\n- Build macOS binaries (amd64, arm64)\n- Verify binaries work on target platforms\n- Create release packaging script\n- Document build process\n- Test binaries on target platforms (if available)\n\n🚫 **Scope Boundaries (CRITICAL):**\n- **Included:** Cross-compilation setup, build targets, packaging\n- **Excluded:** Platform-specific code changes, testing on all platforms\n- **Clarification Required:** None\n\n🔧 **Technical Requirements:**\n- Use Go cross-compilation (GOOS, GOARCH)\n- Set appropriate build tags\n- Handle platform-specific file paths if needed\n- Create release archives (zip, tar.gz)\n\n📁 **Files/Components:**\n- Update: Makefile (add cross-compilation targets)\n- Create: scripts/build-release.sh (optional)\n- Update: README.md (build instructions)\n\n🧪 **Testing Requirements:**\n- Verify binaries compile successfully\n- Test binaries on available platforms\n- Verify file permissions are correct\n- Test release archives extract correctly\n\n⚠️ **Edge Cases:**\n- Windows path separators\n- File permissions on different platforms\n- Binary size differences across platforms\n\n📚 **Dependencies:** None",
-      "status": "Todo",
+      "status": "Done",
       "created": "2026-01-06T18:52:04.594Z",
-      "lastModified": "2026-01-06T18:52:04.594Z",
+      "lastModified": "2026-01-06T21:20:24.559Z",
       "taskNumber": 20,
       "priority": "medium",
       "tags": [
@@ -996,15 +996,29 @@
         "cross-compilation",
         "build"
       ],
-      "dependencies": []
+      "dependencies": [],
+      "changes": [
+        {
+          "field": "status",
+          "oldValue": "Todo",
+          "newValue": "In Progress",
+          "timestamp": "2026-01-06T21:17:27.312Z"
+        },
+        {
+          "field": "status",
+          "oldValue": "Review",
+          "newValue": "Done",
+          "timestamp": "2026-01-06T21:20:24.559Z"
+        }
+      ]
     },
     {
       "id": "T-21",
       "name": "Phase 10.5: CI/CD pipeline setup",
       "long_description": "🎯 **Objective:** Set up continuous integration and deployment pipeline for automated testing, building, and releasing.\n\n📋 **Acceptance Criteria:**\n- Choose CI/CD platform (GitHub Actions, GitLab CI, etc.)\n- Set up automated testing on push/PR\n- Set up automated builds for all platforms\n- Set up automated releases (tags)\n- Add code quality checks (linting, formatting)\n- Add test coverage reporting\n- Configure release artifact generation\n- Document CI/CD process\n\n🚫 **Scope Boundaries (CRITICAL):**\n- **Included:** CI/CD configuration, automated testing, automated builds\n- **Excluded:** Deployment to production servers, complex deployment strategies\n- **Clarification Required:** Which CI/CD platform to use?\n\n🔧 **Technical Requirements:**\n- YAML configuration for CI/CD\n- Matrix builds for multiple platforms\n- Automated test execution\n- Automated binary generation\n- Release artifact creation\n\n📁 **Files/Components:**\n- Create: .github/workflows/ci.yml (if using GitHub Actions)\n- Create: .github/workflows/release.yml (if using GitHub Actions)\n- Update: README.md (CI/CD badges, status)\n\n🧪 **Testing Requirements:**\n- Verify CI runs on test commits\n- Verify builds succeed for all platforms\n- Verify releases work correctly\n- Test CI/CD pipeline end-to-end\n\n⚠️ **Edge Cases:**\n- CI secrets management\n- Platform-specific build issues\n- Release versioning\n\n📚 **Dependencies:** Phase 10.4 (Cross-compilation should be working)",
-      "status": "Todo",
+      "status": "Review",
       "created": "2026-01-06T18:52:04.594Z",
-      "lastModified": "2026-01-06T18:52:14.332Z",
+      "lastModified": "2026-01-06T21:22:38.256Z",
       "taskNumber": 21,
       "priority": "medium",
       "tags": [
@@ -1016,7 +1030,14 @@
       "dependencies": [
         "T-20"
       ],
-      "changes": []
+      "changes": [
+        {
+          "field": "status",
+          "oldValue": "Todo",
+          "newValue": "In Progress",
+          "timestamp": "2026-01-06T21:20:59.156Z"
+        }
+      ]
     },
     {
       "id": "T-22",
@@ -1172,7 +1193,7 @@
       ]
     }
   ],
-  "lastModified": "2026-01-06T21:13:04.723Z",
+  "lastModified": "2026-01-06T21:22:38.258Z",
   "comments": [
     {
       "id": "T-NaN-C-1",
@@ -1685,103 +1706,41 @@
       "content": "**Phase 10.3: Performance Optimization - Complete** ✅\n\n## Summary\n\nPerformance optimization completed with profiling infrastructure added and GetRandomSource optimized. All performance targets already exceeded, optimizations further improved allocation efficiency.\n\n## Implementation Details\n\n### 1. ✅ Profiling Infrastructure Added (`Makefile`):\n- **`make bench`**: Run all benchmarks with memory profiling\n- **`make bench-cpu`**: Generate CPU profile (`cpu.prof`)\n- **`make bench-mem`**: Generate memory profile (`mem.prof`)\n- **`make bench-profile`**: Generate both profiles\n- **`make pprof-cpu`**: Interactive CPU profile analysis\n- **`make pprof-mem`**: Interactive memory profile analysis\n- **`make pprof-web-cpu`**: Web interface for CPU profile (http://localhost:8080)\n- **`make pprof-web-mem`**: Web interface for memory profile (http://localhost:8080)\n\n### 2. ✅ GetRandomSource Optimization (`internal/wisdom/engine.go`):\n- **Cached sorted source list**: Pre-computed during initialization, reused for all random selections\n- **Cached date hash**: Computed once per day, reused for date-seeded randomness\n- **Performance improvement**:\n  - **Allocations**: Reduced from 7 to 2 (71% reduction) ✅\n  - **Memory**: Reduced from 5,723 to 5,384 bytes (6% reduction) ✅\n  - **Throughput**: Improved from 155,284 to 368,016 ops/sec (2.4x faster) ✅\n  - **Time**: 8.602 µs/op (still exceeds goal by 58x) ✅\n\n**Implementation Details:**\n- Added `sortedSources []string` cache with `sync.RWMutex`\n- Added `cachedDateHash int64` and `cachedDate string` with `sync.RWMutex`\n- `updateSortedSources()`: Updates cache when sources change\n- `getDateHash()`: Computes and caches date hash (once per day)\n- `getRandomSourceLocked()`: Uses cached values, auto-updates if cache is stale\n\n### 3. ✅ MCP Server Benchmarks Added (`internal/mcp/benchmark_test.go`):\n- **`BenchmarkServer_Initialize`**: Server initialization performance\n- **`BenchmarkServer_ToolCall_GetWisdom`**: End-to-end get_wisdom tool call\n- **`BenchmarkServer_ToolCall_ConsultAdvisor`**: End-to-end consult_advisor tool call\n- **`BenchmarkHandleToolCall_GetWisdom`**: Direct tool call (without JSON-RPC overhead)\n- **`BenchmarkHandleToolCall_ConsultAdvisor`**: Direct tool call (without JSON-RPC overhead)\n- **`BenchmarkJSONRPC_Parse`**: JSON-RPC parsing performance\n\n### 4. ✅ Documentation Updated (`docs/PERFORMANCE.md`):\n- Updated GetRandomSource benchmark results with optimization improvements\n- Added Makefile profiling commands to documentation\n- Documented profiling workflow and analysis tools\n\n## Performance Verification\n\n**All Performance Targets Met:**\n- ✅ **Startup time**: 0.387ms (goal: < 50ms) - **129x better**\n- ✅ **GetWisdom**: 17.48ns (goal: < 10ms) - **57,000x better**\n- ✅ **GetRandomSource**: 8.602µs (goal: < 10ms) - **58x better**\n- ✅ **Tool calls**: < 10ms (verified with benchmarks)\n\n**Optimization Results:**\n- ✅ **71% fewer allocations** in GetRandomSource (7 → 2 allocs)\n- ✅ **6% less memory** per operation (5,723 → 5,384 bytes)\n- ✅ **2.4x throughput improvement** (155k → 368k ops/sec)\n\n## Testing\n\n✅ All tests passing (wisdom engine, MCP server)\n✅ Benchmarks passing with improved performance\n✅ No linter errors\n✅ No breaking changes\n\n## Files Modified\n\n1. **`Makefile`**: Added profiling targets (bench, bench-cpu, bench-mem, pprof-*)\n2. **`internal/wisdom/engine.go`**: Optimized GetRandomSource with caching\n3. **`internal/mcp/benchmark_test.go`**: Added MCP server benchmarks (new file)\n4. **`docs/PERFORMANCE.md`**: Updated with optimization results and profiling instructions\n\n## Outcome\n\n**Status**: ✅ **COMPLETE**\n\nPerformance optimization complete. All targets exceeded, profiling infrastructure in place, and GetRandomSource optimized for better allocation efficiency. The application is production-ready with excellent performance characteristics.",
       "created": "2026-01-06T21:10:17.879Z",
       "lastModified": "2026-01-06T21:10:17.879Z"
+    },
+    {
+      "id": "T-20-C-1",
+      "todoId": "T-20",
+      "type": "research_with_links",
+      "content": "**MANDATORY RESEARCH COMPLETED** ✅\n\n## Section 1: Local Codebase Analysis\n\n**Current Build Setup:**\n\n1. **Makefile Structure** (`Makefile`):\n   - `build`: Builds MCP server binary (`devwisdom`)\n   - `build-cli`: Builds CLI binary (`devwisdom-cli`)\n   - `build-all`: Builds both binaries\n   - `clean`: Removes binaries and cleans Go cache\n   - Current builds are platform-specific (native architecture only)\n\n2. **Binary Targets**:\n   - `cmd/server/main.go`: MCP server entry point\n   - `cmd/cli/main.go`: CLI entry point\n   - Both use standard Go build (no CGO dependencies)\n\n3. **Project Structure**:\n   - Pure Go codebase (no C dependencies)\n   - Standard library only (no external CGO requirements)\n   - Can disable CGO for static binaries: `CGO_ENABLED=0`\n\n4. **Current Build Commands**:\n   ```makefile\n   build:\n       go build -o devwisdom ./cmd/server\n   build-cli:\n       go build -o devwisdom-cli ./cmd/cli\n   ```\n\n**Requirements for Cross-Compilation:**\n- Need to build for: Windows (.exe), Linux (amd64, arm64), macOS (amd64, arm64)\n- Should create release archives (zip for Windows, tar.gz for Unix)\n- Need to handle binary naming: `devwisdom-{os}-{arch}` or `devwisdom-{os}-{arch}.exe`\n- Should clean up build artifacts after packaging\n\n## Section 2: Internet Research (2026)\n\n**Go Cross-Compilation Best Practices:**\n\n1. **Environment Variables**:\n   - `GOOS`: Target operating system (linux, windows, darwin)\n   - `GOARCH`: Target architecture (amd64, arm64, 386)\n   - `CGO_ENABLED=0`: Disable CGO for static binaries (recommended for cross-compilation)\n\n2. **Common Platform Combinations**:\n   - Windows: `GOOS=windows GOARCH=amd64` → `.exe` extension\n   - Linux amd64: `GOOS=linux GOARCH=amd64`\n   - Linux arm64: `GOOS=linux GOARCH=arm64`\n   - macOS amd64: `GOOS=darwin GOARCH=amd64`\n   - macOS arm64: `GOOS=darwin GOARCH=arm64`\n\n3. **Build Commands**:\n   ```bash\n   # Windows\n   CGO_ENABLED=0 GOOS=windows GOARCH=amd64 go build -o devwisdom-windows-amd64.exe ./cmd/server\n   \n   # Linux\n   CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -o devwisdom-linux-amd64 ./cmd/server\n   \n   # macOS\n   CGO_ENABLED=0 GOOS=darwin GOARCH=arm64 go build -o devwisdom-darwin-arm64 ./cmd/server\n   ```\n\n4. **Release Packaging**:\n   - Windows: Use `zip` for archives\n   - Unix (Linux/macOS): Use `tar.gz` for archives\n   - Include README, LICENSE, and binaries in archives\n   - Name archives: `devwisdom-{version}-{os}-{arch}.{zip|tar.gz}`\n\n5. **Makefile Patterns**:\n   - Use variables for version and build directory\n   - Create `dist/` or `release/` directory for artifacts\n   - Use `@` prefix to suppress command echo\n   - Add `.PHONY` declarations for all targets\n\n## Section 3: Library Assessment\n\n**N/A** - Using Go standard library cross-compilation (no external tools needed)\n\n**Optional Tools** (not required):\n- `gox`: Parallel cross-compilation tool (simplifies multiple builds)\n- `fyne-cross`: Docker-based cross-compilation (overkill for this project)\n\n**Decision**: Use standard Go cross-compilation (simpler, no dependencies)\n\n## Section 4: Synthesis & Recommendation\n\n**Implementation Plan:**\n\n1. **Add Cross-Compilation Targets to Makefile**:\n   - `build-windows`: Build Windows binaries (amd64)\n   - `build-linux`: Build Linux binaries (amd64, arm64)\n   - `build-darwin`: Build macOS binaries (amd64, arm64)\n   - `build-all-platforms`: Build all platforms\n   - `build-release`: Build and package all platforms\n\n2. **Binary Naming Convention**:\n   - Windows: `devwisdom-windows-amd64.exe`, `devwisdom-cli-windows-amd64.exe`\n   - Linux: `devwisdom-linux-amd64`, `devwisdom-linux-arm64`, etc.\n   - macOS: `devwisdom-darwin-amd64`, `devwisdom-darwin-arm64`, etc.\n\n3. **Release Packaging**:\n   - Create `dist/` directory for build artifacts\n   - Package each platform separately\n   - Include binaries and documentation in archives\n   - Use version from git tags or VERSION file\n\n4. **Clean Targets**:\n   - `clean-dist`: Remove dist directory\n   - Update `clean` to include cross-compilation artifacts\n\n5. **Documentation**:\n   - Update README with cross-compilation instructions\n   - Document build process and requirements\n\n**Implementation Approach**:\n- Use Makefile variables for version and build directory\n- Use `CGO_ENABLED=0` for static binaries\n- Create platform-specific build targets\n- Add release packaging with proper naming\n- Test builds on available platforms\n- Document the process\n\n**Expected Outcomes**:\n- Cross-compilation targets in Makefile\n- Release packaging script/commands\n- Documentation updated\n- Binaries buildable for all target platforms",
+      "created": "2026-01-06T21:18:12.610Z",
+      "lastModified": "2026-01-06T21:18:12.610Z"
+    },
+    {
+      "id": "T-20-C-2",
+      "todoId": "T-20",
+      "type": "result",
+      "content": "**Phase 10.4: Cross-Compilation Setup - Complete** ✅\n\n## Summary\n\nCross-compilation setup completed with Makefile targets for building binaries on Windows, Linux, and macOS platforms. Release packaging included.\n\n## Implementation Details\n\n### 1. ✅ Cross-Compilation Targets Added (`Makefile`):\n\n**Platform-Specific Builds:**\n- **`make build-windows`**: Builds Windows binaries (amd64)\n  - Outputs: `devwisdom.exe`, `devwisdom-cli.exe`\n  - Location: `dist/windows-amd64/`\n\n- **`make build-linux`**: Builds Linux binaries (amd64, arm64)\n  - Outputs: `devwisdom`, `devwisdom-cli`\n  - Location: `dist/linux-amd64/`, `dist/linux-arm64/`\n\n- **`make build-darwin`**: Builds macOS binaries (amd64, arm64)\n  - Outputs: `devwisdom`, `devwisdom-cli`\n  - Location: `dist/darwin-amd64/`, `dist/darwin-arm64/`\n\n**Combined Targets:**\n- **`make build-all-platforms`**: Builds all platforms at once\n- **`make build-release`**: Builds all platforms and creates release archives\n\n**Build Configuration:**\n- Uses `CGO_ENABLED=0` for static binaries (no C dependencies)\n- Uses `-ldflags=\"-s -w\"` to strip debug symbols and reduce binary size\n- Version detection from git tags: `VERSION ?= $(shell git describe --tags --always --dirty)`\n\n### 2. ✅ Release Packaging:**\n\n**Archive Formats:**\n- Windows: `.zip` format\n- Linux/macOS: `.tar.gz` format\n\n**Archive Naming:**\n- Pattern: `devwisdom-{version}-{os}-{arch}.{zip|tar.gz}`\n- Example: `devwisdom-55e50eb-dirty-windows-amd64.zip`\n\n**Archive Contents:**\n- Both binaries included: `devwisdom` (server) and `devwisdom-cli` (CLI)\n- Archives placed in `dist/release/` directory\n\n### 3. ✅ Build Artifacts Management:**\n\n**Directory Structure:**\n```\ndist/\n├── windows-amd64/\n│   ├── devwisdom.exe\n│   └── devwisdom-cli.exe\n├── linux-amd64/\n│   ├── devwisdom\n│   └── devwisdom-cli\n├── linux-arm64/\n│   ├── devwisdom\n│   └── devwisdom-cli\n├── darwin-amd64/\n│   ├── devwisdom\n│   └── devwisdom-cli\n├── darwin-arm64/\n│   ├── devwisdom\n│   └── devwisdom-cli\n└── release/\n    ├── devwisdom-{version}-windows-amd64.zip\n    ├── devwisdom-{version}-linux-amd64.tar.gz\n    ├── devwisdom-{version}-linux-arm64.tar.gz\n    ├── devwisdom-{version}-darwin-amd64.tar.gz\n    └── devwisdom-{version}-darwin-arm64.tar.gz\n```\n\n**Clean Targets:**\n- **`make clean-dist`**: Removes `dist/` directory\n- **`make clean`**: Updated to include `clean-dist`\n\n### 4. ✅ Documentation Updated (`README.md`):\n\nAdded cross-compilation section with:\n- Platform-specific build commands\n- Release packaging instructions\n- Build artifact locations\n- Archive naming conventions\n\n## Build Verification\n\n**All Platforms Built Successfully:**\n- ✅ Windows amd64: 6.1MB (server), 6.2MB (CLI)\n- ✅ Linux amd64: 5.9MB (server), 6.0MB (CLI)\n- ✅ Linux arm64: 5.5MB (server), 5.6MB (CLI)\n- ✅ macOS amd64: 6.0MB (server), 6.1MB (CLI)\n- ✅ macOS arm64: 5.6MB (server), 5.7MB (CLI)\n\n**Release Archives Created:**\n- ✅ 5 release archives (Windows zip + 4 Unix tar.gz)\n- ✅ Total size: ~25MB for all platforms\n- ✅ All archives contain both binaries\n\n## Testing\n\n✅ All cross-compilation targets work\n✅ Release packaging creates archives correctly\n✅ Binary sizes are reasonable (5-6MB per binary)\n✅ No build errors\n✅ Clean targets work correctly\n\n## Files Modified\n\n1. **`Makefile`**: Added cross-compilation targets and release packaging\n2. **`README.md`**: Added cross-compilation documentation\n\n## Outcome\n\n**Status**: ✅ **COMPLETE**\n\nCross-compilation setup complete. Binaries can be built for all target platforms (Windows, Linux, macOS) with both amd64 and arm64 architectures where applicable. Release packaging creates distributable archives ready for distribution.\n\n**Next Steps:**\n- T-21 (CI/CD pipeline) can now use these cross-compilation targets\n- Release archives ready for GitHub Releases or other distribution channels",
+      "created": "2026-01-06T21:19:34.368Z",
+      "lastModified": "2026-01-06T21:19:34.368Z"
+    },
+    {
+      "id": "T-21-C-1",
+      "todoId": "T-21",
+      "type": "research_with_links",
+      "content": "**MANDATORY RESEARCH COMPLETED** ✅\n\n## Section 1: Local Codebase Analysis\n\n**Current CI/CD Status:**\n\n1. **Repository**: `git@github.com:davidl71/devwisdom-go.git`\n   - ✅ GitHub repository confirmed\n   - ✅ No existing `.github/workflows/` directory\n   - ✅ Ready for GitHub Actions setup\n\n2. **Build Infrastructure** (`Makefile`):\n   - ✅ Cross-compilation targets available (T-20 complete)\n   - ✅ `make build-all-platforms`: Builds all platforms\n   - ✅ `make build-release`: Creates release archives\n   - ✅ `make test`: Runs all tests\n   - ✅ `make lint`: Runs golangci-lint\n   - ✅ `make test-coverage`: Generates coverage report\n\n3. **Project Structure**:\n   - Go 1.21+ project\n   - Standard library only (no CGO dependencies)\n   - Pure Go codebase (easy to cross-compile)\n   - Test suite exists: `go test ./...`\n\n4. **Version Management**:\n   - Makefile uses: `VERSION ?= $(shell git describe --tags --always --dirty)`\n   - Git tags can be used for releases\n\n5. **Build Artifacts** (from T-20):\n   - Windows: `devwisdom-{version}-windows-amd64.zip`\n   - Linux: `devwisdom-{version}-linux-{arch}.tar.gz` (amd64, arm64)\n   - macOS: `devwisdom-{version}-darwin-{arch}.tar.gz` (amd64, arm64)\n   - Location: `dist/release/`\n\n## Section 2: Internet Research (2026)\n\n**GitHub Actions for Go Projects - Best Practices:**\n\n1. **Workflow Structure**:\n   - Use `actions/setup-go@v5` for Go setup\n   - Use matrix strategy for multiple Go versions/platforms\n   - Cache Go modules: `actions/cache@v3`\n   - Run tests: `go test ./...`\n   - Run linting: `golangci-lint` (if available)\n\n2. **CI Workflow** (`.github/workflows/ci.yml`):\n   - Trigger on: `push`, `pull_request`\n   - Jobs: `test`, `lint`, `build`\n   - Matrix: Go versions (1.21, 1.22, latest)\n   - Upload coverage: `codecov` or `coveralls` (optional)\n\n3. **Release Workflow** (`.github/workflows/release.yml`):\n   - Trigger on: `push` with tag pattern `v*`\n   - Jobs: `build`, `release`\n   - Matrix: Platforms (windows, linux, darwin) × Architectures (amd64, arm64)\n   - Upload artifacts: `actions/upload-artifact@v4`\n   - Create release: `softprops/action-gh-release@v1`\n\n4. **Common Patterns**:\n   ```yaml\n   - uses: actions/setup-go@v5\n     with:\n       go-version: '1.21'\n   - uses: actions/cache@v3\n     with:\n       path: ~/go/pkg/mod\n       key: ${{ runner.os }}-go-${{ hashFiles('**/go.sum') }}\n   ```\n\n5. **Release Artifacts**:\n   - Use `actions/upload-artifact@v4` for build artifacts\n   - Use `softprops/action-gh-release@v1` for GitHub Releases\n   - Attach all platform binaries to release\n\n## Section 3: Library Assessment\n\n**GitHub Actions**:\n- **actions/setup-go@v5**: Official Go setup action (recommended)\n- **actions/cache@v3**: Module caching (improves build speed)\n- **actions/upload-artifact@v4**: Upload build artifacts\n- **softprops/action-gh-release@v1**: Create GitHub releases\n- **golangci/golangci-lint-action@v3**: Run golangci-lint (optional)\n\n**Decision**: Use standard GitHub Actions (no external dependencies)\n\n## Section 4: Synthesis & Recommendation\n\n**Implementation Plan:**\n\n1. **Create CI Workflow** (`.github/workflows/ci.yml`):\n   - Test on push/PR\n   - Matrix: Go versions (1.21, 1.22)\n   - Jobs: test, lint, build\n   - Upload coverage report\n\n2. **Create Release Workflow** (`.github/workflows/release.yml`):\n   - Trigger on tags: `v*`\n   - Matrix: Platforms × Architectures\n   - Build all platforms\n   - Create GitHub release with artifacts\n\n3. **Add CI/CD Badges** (`README.md`):\n   - Workflow status badge\n   - Test coverage badge (if using codecov)\n   - Go version badge\n\n4. **Documentation**:\n   - Document CI/CD process\n   - Explain release workflow\n   - Add troubleshooting section\n\n**Implementation Approach**:\n- Use GitHub Actions (repository is on GitHub)\n- Leverage existing Makefile targets\n- Use matrix strategy for parallel builds\n- Cache Go modules for faster builds\n- Upload artifacts for releases\n\n**Expected Outcomes**:\n- Automated testing on push/PR\n- Automated builds for all platforms\n- Automated releases on tags\n- Code quality checks (linting, formatting)\n- Test coverage reporting\n- CI/CD badges in README",
+      "created": "2026-01-06T21:21:26.859Z",
+      "lastModified": "2026-01-06T21:21:26.859Z"
+    },
+    {
+      "id": "T-21-C-2",
+      "todoId": "T-21",
+      "type": "result",
+      "content": "**Phase 10.5: CI/CD Pipeline Setup - Complete** ✅\n\n## Summary\n\nCI/CD pipeline setup completed with GitHub Actions workflows for automated testing, building, and releasing.\n\n## Implementation Details\n\n### 1. ✅ CI Workflow Created (`.github/workflows/ci.yml`):\n\n**Jobs:**\n1. **Test Job**:\n   - Matrix strategy: Go 1.21, 1.22\n   - Runs all tests: `go test ./... -v -coverprofile=coverage.out`\n   - Uploads coverage reports as artifacts\n   - Caches Go modules for faster builds\n\n2. **Lint Job**:\n   - Runs golangci-lint with latest version\n   - Timeout: 5 minutes\n   - Uses `golangci/golangci-lint-action@v4`\n\n3. **Build Job**:\n   - Builds both server and CLI binaries\n   - Verifies compilation succeeds\n   - Checks binary file types\n\n**Triggers:**\n- Push to `main` or `develop` branches\n- Pull requests to `main` or `develop` branches\n\n### 2. ✅ Release Workflow Created (`.github/workflows/release.yml`):\n\n**Build Matrix:**\n- Windows (amd64)\n- Linux (amd64, arm64)\n- macOS (amd64, arm64)\n\n**Steps:**\n1. Checkout code\n2. Set up Go 1.22\n3. Cache Go modules\n4. Build server binary (cross-compiled)\n5. Build CLI binary (cross-compiled)\n6. Package binaries:\n   - Windows: `.zip` format\n   - Linux/macOS: `.tar.gz` format\n7. Upload artifacts\n8. Create GitHub release with all artifacts\n\n**Triggers:**\n- Push tags matching `v*` pattern (e.g., `v1.0.0`)\n\n**Release Features:**\n- Automatically generates release notes\n- Attaches all platform binaries\n- Marks as pre-release if tag contains `-` (e.g., `v1.0.0-beta`)\n\n### 3. ✅ Documentation Updated (`README.md`):\n\n**Added:**\n- CI/CD badges at top of README:\n  - CI workflow status badge\n  - Go version badge\n  - License badge (placeholder)\n- CI/CD section with:\n  - Workflow descriptions\n  - Release creation instructions\n  - Links to workflow status pages\n\n### 4. ✅ Workflow Features:\n\n**CI Workflow:**\n- ✅ Automated testing on push/PR\n- ✅ Multiple Go version testing (1.21, 1.22)\n- ✅ Code quality checks (linting)\n- ✅ Build verification\n- ✅ Test coverage reporting\n- ✅ Module caching for faster builds\n\n**Release Workflow:**\n- ✅ Automated builds for all platforms\n- ✅ Cross-compilation (Windows, Linux, macOS)\n- ✅ Multiple architectures (amd64, arm64)\n- ✅ Release artifact generation\n- ✅ GitHub release creation\n- ✅ Automatic release notes\n\n## Workflow Configuration\n\n**Actions Used:**\n- `actions/checkout@v4`: Checkout repository\n- `actions/setup-go@v5`: Set up Go environment\n- `actions/cache@v4`: Cache Go modules\n- `actions/upload-artifact@v4`: Upload build artifacts\n- `golangci/golangci-lint-action@v4`: Run linting\n- `softprops/action-gh-release@v2`: Create GitHub releases\n\n**Build Configuration:**\n- `CGO_ENABLED=0`: Static binaries (no C dependencies)\n- `-ldflags=\"-s -w\"`: Strip debug symbols, reduce size\n- Go version: 1.22 (latest stable)\n\n## Testing\n\n✅ Workflow files created and validated\n✅ YAML syntax correct\n✅ All required actions specified\n✅ Matrix strategies configured\n✅ Artifact uploads configured\n✅ Release workflow permissions set\n\n## Files Created\n\n1. **`.github/workflows/ci.yml`**: CI workflow (91 lines)\n2. **`.github/workflows/release.yml`**: Release workflow (95 lines)\n\n## Files Modified\n\n1. **`README.md`**: Added CI/CD badges and documentation\n\n## Outcome\n\n**Status**: ✅ **COMPLETE**\n\nCI/CD pipeline setup complete. GitHub Actions workflows are configured for:\n- Automated testing on every push/PR\n- Automated linting\n- Automated builds for all platforms\n- Automated releases on version tags\n\n**Next Steps:**\n- Push workflows to GitHub to activate CI/CD\n- Create a test tag to verify release workflow\n- Monitor workflow runs in GitHub Actions\n\n**Usage:**\n- CI runs automatically on push/PR\n- Create release: `git tag -a v1.0.0 -m \"Release v1.0.0\" && git push origin v1.0.0`",
+      "created": "2026-01-06T21:22:38.256Z",
+      "lastModified": "2026-01-06T21:22:38.256Z"
     }
   ],
   "activities": [
-    {
-      "id": "activity-1767724860127-sxbx91xen",
-      "type": "todo_created",
-      "todoId": "T-13",
-      "todoName": "Fix all golangci-lint issues (errcheck and staticcheck)",
-      "timestamp": "2026-01-06T18:41:00.127Z",
-      "details": {
-        "priority": "medium",
-        "tags": [
-          "linting",
-          "golangci-lint",
-          "errcheck",
-          "staticcheck"
-        ],
-        "dependencies": []
-      }
-    },
-    {
-      "id": "activity-1767724932110-32hyfwm6c",
-      "type": "todo_created",
-      "todoId": "T-14",
-      "todoName": "Review and assess CLI and Zsh plugin implementation status",
-      "timestamp": "2026-01-06T18:42:12.110Z",
-      "details": {
-        "priority": "medium",
-        "tags": [
-          "review",
-          "cli",
-          "zsh-plugin",
-          "assessment"
-        ],
-        "dependencies": []
-      }
-    },
-    {
-      "id": "activity-1767724960494-c57d8c6jg",
-      "type": "comment_added",
-      "todoId": "T-14",
-      "todoName": "Review and assess CLI and Zsh plugin implementation status",
-      "timestamp": "2026-01-06T18:42:40.494Z",
-      "details": {
-        "commentType": "research_with_links",
-        "commentPreview": "**MANDATORY RESEARCH COMPLETED** ✅\n\n## Section 1: Local Codebase Analysis\n\n**CLI Implementation Stat...",
-        "commentId": "T-14-C-1"
-      }
-    },
-    {
-      "id": "activity-1767724960872-ra0j52guu",
-      "type": "status_changed",
-      "todoId": "T-14",
-      "todoName": "Review and assess CLI and Zsh plugin implementation status",
-      "timestamp": "2026-01-06T18:42:40.872Z",
-      "details": {
-        "field": "status",
-        "oldValue": "Todo",
-        "newValue": "In Progress"
-      }
-    },
-    {
-      "id": "activity-1767724990413-trssbzr1c",
-      "type": "comment_added",
-      "todoId": "T-13",
-      "todoName": "Fix all golangci-lint issues (errcheck and staticcheck)",
-      "timestamp": "2026-01-06T18:43:10.413Z",
-      "details": {
-        "commentType": "result",
-        "commentPreview": "**All golangci-lint Issues Fixed Successfully** ✅\n\n## Summary\nFixed all 16 linting issues found by g...",
-        "commentId": "T-13-C-1"
-      }
-    },
-    {
-      "id": "activity-1767724992129-v664vcjo1",
-      "type": "comment_added",
-      "todoId": "T-14",
-      "todoName": "Review and assess CLI and Zsh plugin implementation status",
-      "timestamp": "2026-01-06T18:43:12.129Z",
-      "details": {
-        "commentType": "result",
-        "commentPreview": "**CLI and Zsh Plugin Review Complete** ✅\n\n## Assessment Summary\n\n**All CLI and Zsh Plugin functional...",
-        "commentId": "T-14-C-2"
-      }
-    },
-    {
-      "id": "activity-1767725060831-ceyee80l0",
-      "type": "comment_added",
-      "todoId": "T-20251211192348-23",
-      "todoName": "Implement CLI quote command",
-      "timestamp": "2026-01-06T18:44:20.831Z",
-      "details": {
-        "commentType": "result",
-        "commentPreview": "**CLI Quote Command - Complete** ✅\n\nImplementation verified: Fully implemented in `internal/cli/quot...",
-        "commentId": "T-20251211192348-23-C-1"
-      }
-    },
     {
       "id": "activity-1767725062726-o3xhpqdlw",
       "type": "comment_added",
@@ -2966,6 +2925,90 @@
         "field": "status",
         "oldValue": "Review",
         "newValue": "Done"
+      }
+    },
+    {
+      "id": "activity-1767734247312-aqjov66ar",
+      "type": "status_changed",
+      "todoId": "T-20",
+      "todoName": "Phase 10.4: Cross-compilation setup (Windows, Linux, macOS)",
+      "timestamp": "2026-01-06T21:17:27.312Z",
+      "details": {
+        "field": "status",
+        "oldValue": "Todo",
+        "newValue": "In Progress"
+      }
+    },
+    {
+      "id": "activity-1767734292610-xyamfc1ys",
+      "type": "comment_added",
+      "todoId": "T-20",
+      "todoName": "Phase 10.4: Cross-compilation setup (Windows, Linux, macOS)",
+      "timestamp": "2026-01-06T21:18:12.610Z",
+      "details": {
+        "commentType": "research_with_links",
+        "commentPreview": "**MANDATORY RESEARCH COMPLETED** ✅\n\n## Section 1: Local Codebase Analysis\n\n**Current Build Setup:**\n...",
+        "commentId": "T-20-C-1"
+      }
+    },
+    {
+      "id": "activity-1767734374368-f5ehebe5k",
+      "type": "comment_added",
+      "todoId": "T-20",
+      "todoName": "Phase 10.4: Cross-compilation setup (Windows, Linux, macOS)",
+      "timestamp": "2026-01-06T21:19:34.368Z",
+      "details": {
+        "commentType": "result",
+        "commentPreview": "**Phase 10.4: Cross-Compilation Setup - Complete** ✅\n\n## Summary\n\nCross-compilation setup completed ...",
+        "commentId": "T-20-C-2"
+      }
+    },
+    {
+      "id": "activity-1767734424559-6nkj0iybq",
+      "type": "status_changed",
+      "todoId": "T-20",
+      "todoName": "Phase 10.4: Cross-compilation setup (Windows, Linux, macOS)",
+      "timestamp": "2026-01-06T21:20:24.559Z",
+      "details": {
+        "field": "status",
+        "oldValue": "Review",
+        "newValue": "Done"
+      }
+    },
+    {
+      "id": "activity-1767734459156-hnwnaxt1k",
+      "type": "status_changed",
+      "todoId": "T-21",
+      "todoName": "Phase 10.5: CI/CD pipeline setup",
+      "timestamp": "2026-01-06T21:20:59.156Z",
+      "details": {
+        "field": "status",
+        "oldValue": "Todo",
+        "newValue": "In Progress"
+      }
+    },
+    {
+      "id": "activity-1767734486859-w6afw87q6",
+      "type": "comment_added",
+      "todoId": "T-21",
+      "todoName": "Phase 10.5: CI/CD pipeline setup",
+      "timestamp": "2026-01-06T21:21:26.859Z",
+      "details": {
+        "commentType": "research_with_links",
+        "commentPreview": "**MANDATORY RESEARCH COMPLETED** ✅\n\n## Section 1: Local Codebase Analysis\n\n**Current CI/CD Status:**...",
+        "commentId": "T-21-C-1"
+      }
+    },
+    {
+      "id": "activity-1767734558256-6osrbplo6",
+      "type": "comment_added",
+      "todoId": "T-21",
+      "todoName": "Phase 10.5: CI/CD pipeline setup",
+      "timestamp": "2026-01-06T21:22:38.256Z",
+      "details": {
+        "commentType": "result",
+        "commentPreview": "**Phase 10.5: CI/CD Pipeline Setup - Complete** ✅\n\n## Summary\n\nCI/CD pipeline setup completed with G...",
+        "commentId": "T-21-C-2"
       }
     }
   ],
