@@ -55,17 +55,6 @@
       ],
       "description": "Task management and agent memories with JSON file storage for Todo2 integration"
     },
-    "exarp_pma": {
-      "command": "/Users/davidl/Projects/project-management-automation/exarp-uvx-wrapper.sh",
-      "args": [
-        "--mcp"
-      ],
-      "env": {
-        "EXARP_DEV_MODE": "1",
-        "PROJECT_ROOT": "/Users/davidl/Projects/devwisdom-go"
-      },
-      "description": "Exarp for Project Management Automation - auto-detects uvx location across platforms (FastMCP mode)"
-    },
     "mcp-generic-tools": {
       "command": "/Users/davidl/Projects/mcp-generic-tools/run_server.sh",
       "args": [],
