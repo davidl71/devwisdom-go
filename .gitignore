@@ -38,7 +38,11 @@ config.json
 .env.local
 
 # Build artifacts
-/devwisdom-go
+devwisdom
+devwisdom-cli
+server
+cli
+*.prof
 
 # Coverage
 *.coverprofile
@@ -59,3 +63,6 @@ alignment_report.md
 .cursor/rules/todo2.mdc
 .cursor/mcp.json
 .todo2/
+
+# OpenMemory - IDE/Assistant specific rules
+.cursor/rules/openmemory.mdc
