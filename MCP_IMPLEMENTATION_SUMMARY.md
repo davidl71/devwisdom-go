@@ -1,9 +1,12 @@
 # MCP Protocol Implementation Summary
 
 ## Phase 4: MCP Protocol Implementation - COMPLETE ✅
+## Phase 4.5: SDK Migration - COMPLETE ✅ (2026-01-09)
 
 ### Overview
 Successfully implemented a full JSON-RPC 2.0 MCP server for the devwisdom-go project. The server now supports all required tools and resources, with proper error handling and protocol compliance.
+
+**UPDATE (2026-01-09)**: Migrated to official `modelcontextprotocol/go-sdk v1.2.0`. The custom implementation is now deprecated but kept for handler logic reuse. See `docs/MCP_SDK_MIGRATION.md` for details.
 
 ### Implementation Details
 

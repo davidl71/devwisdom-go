@@ -52,17 +52,12 @@ The `.cursor/mcp.json` file configures multiple MCP servers that provide complem
 - **Purpose**: Provides file system access within the project directory
 - **Path**: Configured for `/Users/davidl/Projects/devwisdom-go`
 
-### 8. **mcp-generic-tools** (Generic Tools)
-- **Command**: `/Users/davidl/Projects/mcp-generic-tools/run_server.sh`
-- **Description**: Generic MCP tools (context management, prompt tracking, recommendations)
-- **Purpose**: Provides context management, prompt tracking, and recommendations
-
-### 9. **mcp-stdio-tools** (Stdio Tools)
+### 8. **mcp-stdio-tools** (Stdio Tools)
 - **Command**: `/Users/davidl/Projects/mcp-stdio-tools/run_server.sh`
 - **Description**: Stdio-based MCP tools (12 tools migrated from exarp_pma)
 - **Purpose**: Provides stdio-based tools that work with the MCP protocol
 
-### 10. **gotohuman** (Human-in-the-Loop)
+### 9. **gotohuman** (Human-in-the-Loop)
 - **Command**: `uvx mcpower-proxy==0.0.87 --wrapped-config {...} @gotohuman/mcp-server`
 - **Description**: Human-in-the-loop platform - Allow AI agents and automations to send requests for approval to your gotoHuman inbox
 - **Purpose**: Enables batch operations and critical actions to request human confirmation before execution
@@ -105,7 +100,6 @@ Several servers use environment variables:
 ### External Projects
 
 - **project-management-automation**: Located at `/Users/davidl/Projects/project-management-automation`
-- **mcp-generic-tools**: Located at `/Users/davidl/Projects/mcp-generic-tools`
 - **mcp-stdio-tools**: Located at `/Users/davidl/Projects/mcp-stdio-tools`
 
 ## Troubleshooting

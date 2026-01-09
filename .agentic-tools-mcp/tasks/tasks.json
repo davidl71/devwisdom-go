@@ -90,7 +90,7 @@
     {
       "id": "3a7d1940-004c-4079-aad2-f39517d87e3f",
       "name": "Phase 3: Advisor System",
-      "details": "Complete advisor system including metric \u2192 advisor mappings, tool \u2192 advisor mappings, stage \u2192 advisor mappings, score-based consultation frequency, and mode-aware advisor selection (AGENT/ASK/MANUAL).",
+      "details": "Complete advisor system including metric → advisor mappings, tool → advisor mappings, stage → advisor mappings, score-based consultation frequency, and mode-aware advisor selection (AGENT/ASK/MANUAL).",
       "projectId": "bfec727f-93a6-42e5-bfe6-66e01b495ddf",
       "completed": false,
       "createdAt": "2025-12-07T22:42:37.775Z",
@@ -652,6 +652,45 @@
         "documentation",
         "examples",
         "usage"
+      ],
+      "level": 0
+    },
+    {
+      "id": "db1c99c5-351d-460f-ba09-c6dfa4f9a2d5",
+      "name": "Research Go task runners (mage vs task) for build system improvements",
+      "details": "Research and compare mage and task task runners for Go projects. Evaluate which would be better for replacing or enhancing the current Makefile. Consider: ease of use, Go integration, cross-compilation support, CI/CD compatibility, learning curve, and community adoption. Document findings with recommendations.",
+      "projectId": "bfec727f-93a6-42e5-bfe6-66e01b495ddf",
+      "completed": false,
+      "createdAt": "2026-01-08T16:25:43.209Z",
+      "updatedAt": "2026-01-08T21:59:54.177Z",
+      "dependsOn": [],
+      "priority": 5,
+      "status": "in-progress",
+      "tags": [
+        "research",
+        "build-system",
+        "task-runner",
+        "mage",
+        "task"
+      ],
+      "level": 0
+    },
+    {
+      "id": "42892d29-efbd-41b4-bd91-aa1bd44c8e6c",
+      "name": "Research and implement Go build tags for conditional compilation",
+      "details": "Research Go build tags and identify use cases in the project (e.g., platform-specific code, feature flags, debug builds, example code). Implement build tags where appropriate to improve code organization and enable conditional compilation features. Review existing build tag usage in examples/add_project_source.go.",
+      "projectId": "bfec727f-93a6-42e5-bfe6-66e01b495ddf",
+      "completed": false,
+      "createdAt": "2026-01-08T16:25:44.961Z",
+      "updatedAt": "2026-01-08T16:25:44.961Z",
+      "dependsOn": [],
+      "priority": 5,
+      "status": "pending",
+      "tags": [
+        "research",
+        "build-system",
+        "build-tags",
+        "conditional-compilation"
       ],
       "level": 0
     }

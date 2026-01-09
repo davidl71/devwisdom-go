@@ -12,9 +12,13 @@ A standalone Go MCP server providing wisdom quotes, trusted advisors, and inspir
 
 **Phase 1**: ✅ Complete (Core Structure)  
 **Phase 2**: ✅ Complete (Wisdom Data Porting - 16/21 local sources)  
+**Phase 3**: ✅ Complete (Advisor System)  
+**Phase 4**: ✅ Complete (MCP Protocol Implementation)  
+**Phase 4.5**: ✅ Complete (SDK Migration - 2026-01-09)  
 **Phase 6**: ✅ Complete (Random Source Selector)  
-**Current Phase**: Phase 3 (Advisor System)  
-**Language**: Go 1.21+  
+**Current Phase**: Phase 5 (Consultation Logging)  
+**Language**: Go 1.23+  
+**MCP SDK**: Official `modelcontextprotocol/go-sdk v1.2.0`  
 **Type**: MCP Server / Developer Tools
 
 ## 📋 Quick Start
