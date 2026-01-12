@@ -258,9 +258,10 @@ func (h *WisdomHandlers) handleGetConsultationLog(params map[string]interface{})
 	return consultations, nil
 }
 
-// HandleToolsResource handles wisdom://tools resource
-func (h *WisdomHandlers) HandleToolsResource(req *JSONRPCRequest) *JSONRPCResponse {
-	tools := []Tool{
+// getToolDefinitions returns the list of available tools
+// This is a shared function used by both handlers.go and server.go
+func getToolDefinitions() []Tool {
+	return []Tool{
 		{
 			Name:        "consult_advisor",
 			Description: "Consult a wisdom advisor based on metric, tool, or stage",
@@ -336,7 +337,11 @@ func (h *WisdomHandlers) HandleToolsResource(req *JSONRPCRequest) *JSONRPCRespon
 			},
 		},
 	}
+}
 
+// HandleToolsResource handles wisdom://tools resource
+func (h *WisdomHandlers) HandleToolsResource(req *JSONRPCRequest) *JSONRPCResponse {
+	tools := getToolDefinitions()
 	return NewSuccessResponse(req.ID, map[string]interface{}{
 		"contents": []map[string]interface{}{
 			{
