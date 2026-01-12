@@ -84,6 +84,29 @@ func (s *WisdomServerSDK) Run(ctx context.Context) error {
 // ToolHandlerFunc is a function type for handling tool execution
 type ToolHandlerFunc func(map[string]interface{}) (interface{}, error)
 
+// newErrorResult creates a CallToolResult with an error message
+func newErrorResult(message string) *mcp.CallToolResult {
+	return &mcp.CallToolResult{
+		IsError: true,
+		Content: []mcp.Content{
+			&mcp.TextContent{
+				Text: message,
+			},
+		},
+	}
+}
+
+// newSuccessResult creates a CallToolResult with success JSON content
+func newSuccessResult(jsonText string) *mcp.CallToolResult {
+	return &mcp.CallToolResult{
+		Content: []mcp.Content{
+			&mcp.TextContent{
+				Text: jsonText,
+			},
+		},
+	}
+}
+
 // wrapToolHandler wraps a tool handler function to work with SDK's CallToolRequest
 // This eliminates duplication across all tool handlers by providing:
 // - Argument unmarshaling
@@ -95,51 +118,24 @@ func wrapToolHandler(handler ToolHandlerFunc) func(context.Context, *mcp.CallToo
 		args := make(map[string]interface{})
 		if req.Params != nil && len(req.Params.Arguments) > 0 {
 			if err := json.Unmarshal(req.Params.Arguments, &args); err != nil {
-				return &mcp.CallToolResult{
-					IsError: true,
-					Content: []mcp.Content{
-						&mcp.TextContent{
-							Text: fmt.Sprintf("Failed to parse arguments: %v", err),
-						},
-					},
-				}, nil
+				return newErrorResult(fmt.Sprintf("Failed to parse arguments: %v", err)), nil
 			}
 		}
 
 		// Call the actual handler
 		result, err := handler(args)
 		if err != nil {
-			return &mcp.CallToolResult{
-				IsError: true,
-				Content: []mcp.Content{
-					&mcp.TextContent{
-						Text: fmt.Sprintf("Tool execution error: %v", err),
-					},
-				},
-			}, nil
+			return newErrorResult(fmt.Sprintf("Tool execution error: %v", err)), nil
 		}
 
 		// Marshal result to JSON
 		resultJSON, err := json.Marshal(result)
 		if err != nil {
-			return &mcp.CallToolResult{
-				IsError: true,
-				Content: []mcp.Content{
-					&mcp.TextContent{
-						Text: fmt.Sprintf("Failed to marshal result: %v", err),
-					},
-				},
-			}, nil
+			return newErrorResult(fmt.Sprintf("Failed to marshal result: %v", err)), nil
 		}
 
 		// Return success result
-		return &mcp.CallToolResult{
-			Content: []mcp.Content{
-				&mcp.TextContent{
-					Text: string(resultJSON),
-				},
-			},
-		}, nil
+		return newSuccessResult(string(resultJSON)), nil
 	}
 }
 
