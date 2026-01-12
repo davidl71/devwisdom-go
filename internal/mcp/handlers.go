@@ -342,12 +342,18 @@ func getToolDefinitions() []Tool {
 // HandleToolsResource handles wisdom://tools resource
 func (h *WisdomHandlers) HandleToolsResource(req *JSONRPCRequest) *JSONRPCResponse {
 	tools := getToolDefinitions()
-	return NewSuccessResponse(req.ID, map[string]interface{}{
+	return newResourceResponse(req.ID, "wisdom://tools", tools)
+}
+
+// newResourceResponse creates a JSON-RPC success response for a resource
+// This helper eliminates duplication in resource handler responses
+func newResourceResponse(id interface{}, uri string, data interface{}) *JSONRPCResponse {
+	return NewSuccessResponse(id, map[string]interface{}{
 		"contents": []map[string]interface{}{
 			{
-				"uri":      "wisdom://tools",
+				"uri":      uri,
 				"mimeType": "application/json",
-				"text":     string(mustMarshalJSONCompact(tools)),
+				"text":     string(mustMarshalJSONCompact(data)),
 			},
 		},
 	})
@@ -370,15 +376,7 @@ func (h *WisdomHandlers) HandleSourcesResource(req *JSONRPCRequest) *JSONRPCResp
 		}
 	}
 
-	return NewSuccessResponse(req.ID, map[string]interface{}{
-		"contents": []map[string]interface{}{
-			{
-				"uri":      "wisdom://sources",
-				"mimeType": "application/json",
-				"text":     string(mustMarshalJSONCompact(sourceDetails)),
-			},
-		},
-	})
+	return newResourceResponse(req.ID, "wisdom://sources", sourceDetails)
 }
 
 // HandleAdvisorsResource handles wisdom://advisors resource
@@ -397,15 +395,7 @@ func (h *WisdomHandlers) HandleAdvisorsResource(req *JSONRPCRequest) *JSONRPCRes
 		"stage_advisors":  stageAdvisors,
 	}
 
-	return NewSuccessResponse(req.ID, map[string]interface{}{
-		"contents": []map[string]interface{}{
-			{
-				"uri":      "wisdom://advisors",
-				"mimeType": "application/json",
-				"text":     string(mustMarshalJSONCompact(advisors)),
-			},
-		},
-	})
+	return newResourceResponse(req.ID, "wisdom://advisors", advisors)
 }
 
 // HandleAdvisorResource handles wisdom://advisor/{id} resource
@@ -450,15 +440,7 @@ func (h *WisdomHandlers) HandleAdvisorResource(req *JSONRPCRequest, advisorID st
 		advisor["language"] = advisorInfo.Language
 	}
 
-	return NewSuccessResponse(req.ID, map[string]interface{}{
-		"contents": []map[string]interface{}{
-			{
-				"uri":      "wisdom://advisor/" + advisorID,
-				"mimeType": "application/json",
-				"text":     string(mustMarshalJSONCompact(advisor)),
-			},
-		},
-	})
+	return newResourceResponse(req.ID, "wisdom://advisor/"+advisorID, advisor)
 }
 
 // HandleConsultationsResource handles wisdom://consultations/{days} resource
@@ -477,15 +459,7 @@ func (h *WisdomHandlers) HandleConsultationsResource(req *JSONRPCRequest, days i
 		// If logger is nil or error occurs, consultations remains empty array
 	}
 
-	return NewSuccessResponse(req.ID, map[string]interface{}{
-		"contents": []map[string]interface{}{
-			{
-				"uri":      fmt.Sprintf("wisdom://consultations/%d", days),
-				"mimeType": "application/json",
-				"text":     string(mustMarshalJSONCompact(consultations)),
-			},
-		},
-	})
+	return newResourceResponse(req.ID, fmt.Sprintf("wisdom://consultations/%d", days), consultations)
 }
 
 // mustMarshalJSONCompact marshals to compact JSON (no indentation)
