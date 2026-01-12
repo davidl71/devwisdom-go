@@ -24,10 +24,29 @@ import (
 	"github.com/davidl71/devwisdom-go/internal/wisdom"
 	
 	mcplogging "github.com/davidl71/mcp-go-core/pkg/mcp/logging"
+	mcpconfig "github.com/davidl71/mcp-go-core/pkg/mcp/config"
 )
 
-// Version is the devwisdom-go MCP server version.
+// Version is the devwisdom-go MCP server version (default).
 const Version = "0.1.0"
+
+// getServerName returns the server name from config or default
+func getServerName() string {
+	cfg, err := mcpconfig.LoadBaseConfig()
+	if err == nil && cfg.Name != "" && cfg.Name != "mcp-server" {
+		return cfg.Name
+	}
+	return "devwisdom"
+}
+
+// getServerVersion returns the server version from config or default
+func getServerVersion() string {
+	cfg, err := mcpconfig.LoadBaseConfig()
+	if err == nil && cfg.Version != "" && cfg.Version != "1.0.0" {
+		return cfg.Version
+	}
+	return Version
+}
 
 // WisdomServer implements the MCP server for wisdom tools and resources.
 // It handles JSON-RPC 2.0 requests and provides tools and resources for wisdom access.
@@ -191,8 +210,8 @@ func (s *WisdomServer) handleInitialize(req *JSONRPCRequest) *JSONRPCResponse {
 			Resources: &ResourcesCapability{},
 		},
 		ServerInfo: ServerInfo{
-			Name:    "devwisdom",
-			Version: Version,
+			Name:    getServerName(),
+			Version: getServerVersion(),
 		},
 	}
 

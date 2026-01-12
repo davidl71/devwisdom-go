@@ -13,6 +13,7 @@ import (
 	"github.com/davidl71/devwisdom-go/internal/wisdom"
 	
 	mcplogging "github.com/davidl71/mcp-go-core/pkg/mcp/logging"
+	mcpconfig "github.com/davidl71/mcp-go-core/pkg/mcp/config"
 	"github.com/modelcontextprotocol/go-sdk/mcp"
 )
 
@@ -27,6 +28,24 @@ type WisdomServerSDK struct {
 
 // NewWisdomServerSDK creates a new wisdom MCP server instance using the official SDK.
 func NewWisdomServerSDK() *WisdomServerSDK {
+	// Load server configuration from environment or defaults
+	cfg, err := mcpconfig.LoadBaseConfig()
+	if err != nil {
+		// Fallback to defaults if config load fails
+		cfg = &mcpconfig.BaseConfig{
+			Name:    "devwisdom",
+			Version: Version,
+		}
+	}
+	
+	// Override defaults if not set in environment
+	if cfg.Name == "" || cfg.Name == "mcp-server" {
+		cfg.Name = "devwisdom"
+	}
+	if cfg.Version == "" || cfg.Version == "1.0.0" {
+		cfg.Version = Version
+	}
+
 	// Initialize consultation logger (log directory: .devwisdom)
 	logger, err := logging.NewConsultationLogger(".devwisdom")
 	if err != nil {
@@ -37,10 +56,10 @@ func NewWisdomServerSDK() *WisdomServerSDK {
 	// Initialize structured application logger (supports both DEVWISDOM_DEBUG and MCP_DEBUG)
 	appLogger := logging.NewLogger()
 
-	// Create SDK server
+	// Create SDK server with config
 	sdkServer := mcp.NewServer(&mcp.Implementation{
-		Name:    "devwisdom",
-		Version: Version,
+		Name:    cfg.Name,
+		Version: cfg.Version,
 	}, nil)
 
 	return &WisdomServerSDK{
