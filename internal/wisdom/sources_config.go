@@ -12,6 +12,7 @@ import (
 	"time"
 
 	"github.com/davidl71/devwisdom-go/internal/wisdom/sefaria"
+	"github.com/davidl71/mcp-go-core/pkg/mcp/security"
 )
 
 // SourceConfig represents a configurable wisdom source
@@ -284,6 +285,7 @@ func (sl *SourceLoader) addConfig(config *SourceConfig) {
 }
 
 // findProjectRoot finds the project root directory by looking for common markers
+// Uses mcp-go-core GetProjectRoot for go.mod detection, then checks for additional markers
 func findProjectRoot() string {
 	// Start from current working directory
 	cwd, err := os.Getwd()
@@ -291,10 +293,18 @@ func findProjectRoot() string {
 		return ""
 	}
 
+	// First try mcp-go-core GetProjectRoot (looks for go.mod)
+	// This handles Go projects efficiently
+	if root, err := security.GetProjectRoot(cwd); err == nil {
+		// Found go.mod, return immediately
+		return root
+	}
+
+	// Fallback: look for other project markers (for non-Go projects)
 	current := cwd
 	for {
 		// Check for project markers
-		markers := []string{".git", ".todo2", "go.mod", "package.json", "CMakeLists.txt", "Makefile"}
+		markers := []string{".git", ".todo2", "package.json", "CMakeLists.txt", "Makefile"}
 		for _, marker := range markers {
 			if _, err := os.Stat(filepath.Join(current, marker)); err == nil {
 				return current
