@@ -9,6 +9,8 @@ import (
 
 	"github.com/davidl71/devwisdom-go/internal/logging"
 	"github.com/davidl71/devwisdom-go/internal/wisdom"
+	
+	mcplogging "github.com/davidl71/mcp-go-core/pkg/mcp/logging"
 )
 
 // WisdomHandlers provides handler methods for tools and resources.
@@ -16,11 +18,11 @@ import (
 type WisdomHandlers struct {
 	wisdom    *wisdom.Engine
 	logger    *logging.ConsultationLogger
-	appLogger *logging.Logger
+	appLogger *mcplogging.Logger
 }
 
 // NewWisdomHandlers creates a new handlers instance.
-func NewWisdomHandlers(wisdomEngine *wisdom.Engine, consultationLogger *logging.ConsultationLogger, appLogger *logging.Logger) *WisdomHandlers {
+func NewWisdomHandlers(wisdomEngine *wisdom.Engine, consultationLogger *logging.ConsultationLogger, appLogger *mcplogging.Logger) *WisdomHandlers {
 	return &WisdomHandlers{
 		wisdom:    wisdomEngine,
 		logger:    consultationLogger,

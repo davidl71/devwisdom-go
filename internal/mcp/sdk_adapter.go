@@ -11,6 +11,8 @@ import (
 
 	"github.com/davidl71/devwisdom-go/internal/logging"
 	"github.com/davidl71/devwisdom-go/internal/wisdom"
+	
+	mcplogging "github.com/davidl71/mcp-go-core/pkg/mcp/logging"
 	"github.com/modelcontextprotocol/go-sdk/mcp"
 )
 
@@ -20,7 +22,7 @@ type WisdomServerSDK struct {
 	server    *mcp.Server
 	wisdom    *wisdom.Engine
 	logger    *logging.ConsultationLogger
-	appLogger *logging.Logger
+	appLogger *mcplogging.Logger
 }
 
 // NewWisdomServerSDK creates a new wisdom MCP server instance using the official SDK.
@@ -32,7 +34,7 @@ func NewWisdomServerSDK() *WisdomServerSDK {
 		logger = nil
 	}
 
-	// Initialize structured application logger
+	// Initialize structured application logger (supports both DEVWISDOM_DEBUG and MCP_DEBUG)
 	appLogger := logging.NewLogger()
 
 	// Create SDK server

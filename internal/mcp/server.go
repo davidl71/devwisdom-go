@@ -22,6 +22,8 @@ import (
 
 	"github.com/davidl71/devwisdom-go/internal/logging"
 	"github.com/davidl71/devwisdom-go/internal/wisdom"
+	
+	mcplogging "github.com/davidl71/mcp-go-core/pkg/mcp/logging"
 )
 
 // Version is the devwisdom-go MCP server version.
@@ -32,7 +34,7 @@ const Version = "0.1.0"
 type WisdomServer struct {
 	wisdom      *wisdom.Engine
 	logger      *logging.ConsultationLogger
-	appLogger   *logging.Logger // Structured logger for application logging
+	appLogger   *mcplogging.Logger // Structured logger for application logging
 	initialized bool
 }
 
@@ -47,7 +49,7 @@ func NewWisdomServer() *WisdomServer {
 		logger = nil
 	}
 
-	// Initialize structured application logger
+	// Initialize structured application logger (supports both DEVWISDOM_DEBUG and MCP_DEBUG)
 	appLogger := logging.NewLogger()
 
 	return &WisdomServer{
