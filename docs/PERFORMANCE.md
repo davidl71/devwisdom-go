@@ -6,9 +6,17 @@
 
 ---
 
+## Related Documentation
+
+- **[README.md](../README.md)** - Project overview and quick start
+- **[PROJECT_GOALS.md](../PROJECT_GOALS.md)** - Strategic phases and performance goals
+- **[docs/README.md](README.md)** - Complete documentation index
+
+---
+
 ## Performance Goals
 
-From `PROJECT_GOALS.md`:
+From [PROJECT_GOALS.md](../PROJECT_GOALS.md):
 
 - **Startup time**: < 50ms (vs Python ~200ms)
 - **Response time**: < 10ms per tool call

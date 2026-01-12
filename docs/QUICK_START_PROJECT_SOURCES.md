@@ -2,6 +2,12 @@
 
 **The easiest way to add custom wisdom sources to your project**
 
+## Related Documentation
+
+- **[ADDING_PROJECT_SOURCES.md](ADDING_PROJECT_SOURCES.md)** - Comprehensive guide with all options
+- **[CONFIGURABLE_SOURCES.md](CONFIGURABLE_SOURCES.md)** - Configuration-based source management
+- **[docs/README.md](README.md)** - Complete documentation index
+
 ---
 
 ## 🚀 30-Second Setup

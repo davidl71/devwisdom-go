@@ -2,6 +2,13 @@
 
 **Guide**: How to add custom wisdom sources to your project
 
+## Related Documentation
+
+- **[QUICK_START_PROJECT_SOURCES.md](QUICK_START_PROJECT_SOURCES.md)** - Quick start guide
+- **[CONFIGURABLE_SOURCES.md](CONFIGURABLE_SOURCES.md)** - Configuration-based source management
+- **[docs/README.md](README.md)** - Complete documentation index
+- **[PYTHON_SOURCES_ANALYSIS.md](../PYTHON_SOURCES_ANALYSIS.md)** - Python source structure reference
+
 ---
 
 ## Quick Start

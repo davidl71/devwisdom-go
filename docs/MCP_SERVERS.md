@@ -2,6 +2,12 @@
 
 This document describes the MCP (Model Context Protocol) servers configured for devwisdom-go.
 
+## Related Documentation
+
+- **[README.md](../README.md)** - Project overview and quick start
+- **[docs/README.md](README.md)** - Complete documentation index
+- **[WATCHDOG.md](WATCHDOG.md)** - Watchdog script for server monitoring
+
 ## Overview
 
 The `.cursor/mcp.json` file configures multiple MCP servers that provide complementary functionality to the devwisdom-go project. These servers are integrated into Cursor's AI assistant to provide enhanced capabilities.

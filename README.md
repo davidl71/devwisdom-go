@@ -516,12 +516,19 @@ See `PROJECT_GOALS.md` for detailed phase breakdown and `PRD.md` for full requir
 
 ## 📚 Documentation
 
+### Core Documentation
 - **PROJECT_GOALS.md** - Strategic phases and goals
 - **PRD.md** - Product Requirements Document (129 user stories)
 - **TODO.md** - Task breakdown by phase
-- **EXARP_PLANNING_COMPLETE.md** - Planning analysis summary
+
+### Reference Documentation
+- **[docs/README.md](docs/README.md)** - Complete documentation index
 - **docs/WATCHDOG.md** - Watchdog script documentation
+- **docs/PERFORMANCE.md** - Performance analysis and benchmarks
+- **docs/MCP_SERVERS.md** - MCP server configuration guide
 - **docs/CURSOR_EXTENSION.md** - Cursor extension architecture (⚠️ **Future goal - not currently implemented**)
+
+See [docs/README.md](docs/README.md) for complete documentation index.
 
 ## 🔗 Related
 

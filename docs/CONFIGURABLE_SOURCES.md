@@ -3,6 +3,12 @@
 **Version**: 1.0  
 **Date**: 2025-01-26
 
+## Related Documentation
+
+- **[QUICK_START_PROJECT_SOURCES.md](QUICK_START_PROJECT_SOURCES.md)** - Quick start guide
+- **[ADDING_PROJECT_SOURCES.md](ADDING_PROJECT_SOURCES.md)** - Comprehensive guide for adding sources
+- **[docs/README.md](README.md)** - Complete documentation index
+
 ---
 
 ## Overview

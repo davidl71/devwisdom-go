@@ -1,5 +1,11 @@
 # Watchdog Script Documentation
 
+## Related Documentation
+
+- **[README.md](../README.md)** - Project overview and quick start
+- **[docs/README.md](README.md)** - Complete documentation index
+- **[MCP_SERVERS.md](MCP_SERVERS.md)** - MCP server configuration
+
 ## Overview
 
 The `watchdog.sh` script provides automatic crash recovery and file change monitoring for the devwisdom-go MCP server. It ensures the server stays running and can automatically reload or restart when configuration or source files change.
