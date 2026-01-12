@@ -1,0 +1,323 @@
+---
+description: Patterns and lessons learned from exarp-go project to apply to devwisdom-go
+alwaysApply: true
+---
+
+# 🔄 Exarp-Go Patterns & Lessons Learned
+
+**⚠️ Apply these proven patterns from exarp-go to devwisdom-go ⚠️**
+
+**Reference:** See `docs/EXARP_GO_LESSONS.md` and `docs/EXARP_GO_IMPROVEMENT_TASKS.md` for complete documentation.
+
+## Framework-Agnostic Architecture
+
+### MCPServer Interface Pattern
+```go
+// ✅ GOOD: Framework-agnostic interface (from exarp-go)
+type MCPServer interface {
+    RegisterTool(name, description string, schema ToolSchema, handler ToolHandler) error
+    RegisterPrompt(name, description string, handler PromptHandler) error
+    RegisterResource(uri, name, description, mimeType string, handler ResourceHandler) error
+    Run(ctx context.Context, transport Transport) error
+    GetName() string
+    CallTool(ctx context.Context, name string, args json.RawMessage) ([]TextContent, error)
+    ListTools() []ToolInfo
+}
+```
+
+**Benefits:**
+- Easy to swap frameworks without code changes
+- Testable with mock implementations
+- Clear separation of concerns
+- Future-proof for framework changes
+
+### Factory Pattern
+```go
+// ✅ GOOD: Centralized server creation (from exarp-go)
+func NewServer(frameworkType config.FrameworkType, name, version string) (framework.MCPServer, error)
+func NewServerFromConfig(cfg *config.Config) (framework.MCPServer, error)
+```
+
+**Benefits:**
+- Single point of server creation
+- Consistent initialization
+- Easy configuration-driven creation
+
+## CLI/MCP Dual Mode
+
+### TTY Detection Pattern
+```go
+// ✅ GOOD: Detect execution mode automatically (from exarp-go)
+func main() {
+    // Detect if running in CLI mode (TTY) or MCP server mode (stdio)
+    if cli.IsTTY() {
+        // CLI mode - run command line interface
+        if err := cli.Run(); err != nil {
+            log.Fatalf("CLI error: %v", err)
+        }
+        return
+    }
+    // MCP server mode - run as stdio server
+    // ...
+}
+
+func IsTTY() bool {
+    return term.IsTerminal(int(os.Stdin.Fd()))
+}
+```
+
+**Benefits:**
+- Single binary for both modes
+- Automatic mode detection
+- Clean separation of concerns
+
+### CLI Reusing Server Infrastructure
+```go
+// ✅ GOOD: Reuse server for CLI (from exarp-go)
+func executeTool(server framework.MCPServer, toolName, argsJSON string) error {
+    ctx := context.Background()
+    var args map[string]interface{}
+    json.Unmarshal([]byte(argsJSON), &args)
+    argsBytes, _ := json.Marshal(args)
+    result, err := server.CallTool(ctx, toolName, argsBytes)
+    // Display results
+}
+```
+
+**Benefits:**
+- Code reuse between CLI and MCP
+- Consistent behavior
+- Single source of truth
+
+## Tool Registration Patterns
+
+### Batch Registration Pattern
+```go
+// ✅ GOOD: Organize tools in batches (from exarp-go)
+func RegisterAllTools(server framework.MCPServer) error {
+    // Batch 1: Simple tools
+    if err := registerBatch1Tools(server); err != nil {
+        return fmt.Errorf("failed to register Batch 1 tools: %w", err)
+    }
+    // Batch 2: Medium tools
+    if err := registerBatch2Tools(server); err != nil {
+        return fmt.Errorf("failed to register Batch 2 tools: %w", err)
+    }
+    // Batch 3: Advanced tools
+    if err := registerBatch3Tools(server); err != nil {
+        return fmt.Errorf("failed to register Batch 3 tools: %w", err)
+    }
+    return nil
+}
+```
+
+**Benefits:**
+- Clear organization
+- Easy to add new tools
+- Error handling per batch
+- Maintainable as tools grow
+
+### Structured Schema Definitions
+```go
+// ✅ GOOD: Structured tool schemas (from exarp-go)
+framework.ToolSchema{
+    Type: "object",
+    Properties: map[string]interface{}{
+        "action": map[string]interface{}{
+            "type":    "string",
+            "enum":    []string{"run", "analyze"},
+            "default": "run",
+        },
+        "path": map[string]interface{}{
+            "type": "string",
+        },
+    },
+}
+```
+
+**Benefits:**
+- Type-safe parameter definitions
+- Validation built into schema
+- Self-documenting
+- IDE-friendly
+
+## Configuration Management
+
+### Environment-Based Configuration
+```go
+// ✅ GOOD: Environment variables with defaults (from exarp-go)
+type Config struct {
+    Framework FrameworkType `yaml:"framework" env:"MCP_FRAMEWORK"`
+    Name      string        `yaml:"name" env:"MCP_SERVER_NAME"`
+    Version   string        `yaml:"version" env:"MCP_VERSION"`
+}
+
+func Load() (*Config, error) {
+    cfg := &Config{
+        Framework: FrameworkGoSDK, // Default
+        Name:      "devwisdom-go",
+        Version:   "0.1.0",
+    }
+    // Override from environment
+    if frameworkStr := os.Getenv("MCP_FRAMEWORK"); frameworkStr != "" {
+        cfg.Framework = FrameworkType(frameworkStr)
+    }
+    return cfg, nil
+}
+```
+
+**Benefits:**
+- Sensible defaults
+- Environment variable override
+- Easy deployment configuration
+- No external config files required
+
+## Security Patterns
+
+### Path Validation
+```go
+// ✅ GOOD: Always validate paths (from exarp-go)
+func ValidatePath(path, root string) (string, error) {
+    // Resolve absolute paths
+    // Check path is within root
+    // Prevent path traversal
+}
+```
+
+**Usage:**
+```go
+validatedRoot, err := security.ValidatePath(workspaceRoot, workspaceRoot)
+if err != nil {
+    return "", fmt.Errorf("invalid workspace root: %w", err)
+}
+```
+
+**Benefits:**
+- Prevents path traversal attacks
+- Safe subprocess execution
+- Clear security boundaries
+
+### Workspace Root Detection
+```go
+// ✅ GOOD: Robust workspace root detection (from exarp-go)
+func getWorkspaceRoot() string {
+    // 1. Check environment variable first
+    projectRoot := os.Getenv("PROJECT_ROOT")
+    
+    // 2. Ignore placeholder values
+    if strings.Contains(projectRoot, "{{PROJECT_ROOT}}") || projectRoot == "" {
+        // 3. Try executable location
+        execPath, err := os.Executable()
+        if err == nil {
+            execDir := filepath.Dir(execPath)
+            if filepath.Base(execDir) == "bin" {
+                return filepath.Dir(execDir)
+            }
+            return execDir
+        }
+        // 4. Fallback to runtime.Caller
+        _, filename, _, ok := runtime.Caller(0)
+        if ok {
+            return filepath.Join(filepath.Dir(filename), "..", "..")
+        }
+    }
+    return "."
+}
+```
+
+**Benefits:**
+- Works in various deployment scenarios
+- Handles development and production paths
+- Graceful fallbacks
+
+## Development Workflow
+
+### Hot Reload Scripts
+```bash
+# ✅ GOOD: Development scripts with file watching (from exarp-go)
+# Use fswatch (macOS) or inotifywait (Linux)
+# Fallback to polling if no file watcher available
+# Auto-rebuild on Go file changes
+```
+
+**Makefile Pattern:**
+```makefile
+# ✅ GOOD: Tool detection in Makefile (from exarp-go)
+config: ## Configure build system (detect available tools)
+    @# Detect uv, pytest, file watchers, etc.
+    @# Generate .make.config file
+    @# Conditional targets based on available tools
+```
+
+## Testing Patterns
+
+### Tool Testing Utilities
+```go
+// ✅ GOOD: Schema-based test generation (from exarp-go)
+func testToolExecution(server framework.MCPServer, toolName string) error {
+    // Get tool info
+    tools := server.ListTools()
+    // Generate example arguments from schema
+    exampleArgs := generateExampleArgs(toolInfo.Schema)
+    // Execute with example arguments
+    result, err := server.CallTool(context.Background(), toolName, argsBytes)
+}
+```
+
+**Benefits:**
+- Easy tool testing
+- Schema-driven test generation
+- Quick verification of tools
+
+## Implementation Checklist
+
+**When implementing exarp-go patterns:**
+
+1. **Framework Abstraction** (T-A1)
+   - ✅ Create `internal/framework/server.go` with `MCPServer` interface
+   - ✅ Move existing MCP implementation behind interface
+   - ✅ Ensure no breaking changes
+
+2. **Factory Pattern** (T-A2)
+   - ✅ Create `internal/factory/server.go`
+   - ✅ Implement `NewServer()` and `NewServerFromConfig()`
+   - ✅ Update main.go to use factory
+
+3. **Configuration** (T-A3)
+   - ✅ Create `internal/config/config.go`
+   - ✅ Support environment variables
+   - ✅ Provide sensible defaults
+
+4. **CLI/MCP Dual Mode** (T-B1, T-B2, T-B3)
+   - ✅ Implement TTY detection
+   - ✅ Create CLI command structure
+   - ✅ Reuse server infrastructure
+
+5. **Tool Registration** (T-C1, T-C2)
+   - ✅ Organize tools in batches
+   - ✅ Improve schema definitions
+
+6. **Development Workflow** (T-D1, T-D2, T-D3)
+   - ✅ Create hot reload scripts
+   - ✅ Enhance Makefile with tool detection
+   - ✅ Add tool testing utilities
+
+7. **Security** (T-E1, T-E2)
+   - ✅ Implement path validation
+   - ✅ Add workspace root detection with fallbacks
+
+## Reference Documentation
+
+- **Complete Lessons:** `docs/EXARP_GO_LESSONS.md`
+- **Task Breakdown:** `docs/EXARP_GO_IMPROVEMENT_TASKS.md`
+- **Task List:** `TODO_EXARP_GO_IMPROVEMENTS.md`
+- **Import Instructions:** `docs/TODO2_IMPORT_INSTRUCTIONS.md`
+
+## Active Tasks
+
+See `TODO_EXARP_GO_IMPROVEMENTS.md` for the complete list of 12 tasks to apply these patterns:
+- **Phase 1:** Framework Abstraction & Architecture (3 tasks)
+- **Phase 2:** CLI/MCP Dual Mode (3 tasks)
+- **Phase 3:** Tool Registration & Organization (2 tasks)
+- **Phase 4:** Development Workflow & Testing (3 tasks)
+- **Phase 5:** Security & Path Validation (2 tasks)
