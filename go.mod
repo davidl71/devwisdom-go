@@ -3,7 +3,7 @@ module github.com/davidl71/devwisdom-go
 go 1.24.0
 
 require (
-	github.com/davidl71/mcp-go-core v0.1.0
+	github.com/davidl71/mcp-go-core v0.2.0
 	github.com/modelcontextprotocol/go-sdk v1.2.0
 )
 
