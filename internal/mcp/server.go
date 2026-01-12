@@ -32,19 +32,37 @@ const Version = "0.1.0"
 
 // getServerName returns the server name from config or default
 func getServerName() string {
-	cfg, err := mcpconfig.LoadBaseConfig()
-	if err == nil && cfg.Name != "" && cfg.Name != "mcp-server" {
+	// Try loading from environment first (backward compatibility)
+	if cfg, err := mcpconfig.LoadBaseConfig(); err == nil && cfg.Name != "" && cfg.Name != "mcp-server" {
 		return cfg.Name
 	}
+	
+	// Use builder pattern with defaults
+	cfg, err := mcpconfig.NewConfigBuilder().
+		WithName("devwisdom").
+		Build()
+	if err == nil {
+		return cfg.Name
+	}
+	
 	return "devwisdom"
 }
 
 // getServerVersion returns the server version from config or default
 func getServerVersion() string {
-	cfg, err := mcpconfig.LoadBaseConfig()
-	if err == nil && cfg.Version != "" && cfg.Version != "1.0.0" {
+	// Try loading from environment first (backward compatibility)
+	if cfg, err := mcpconfig.LoadBaseConfig(); err == nil && cfg.Version != "" && cfg.Version != "1.0.0" {
 		return cfg.Version
 	}
+	
+	// Use builder pattern with defaults
+	cfg, err := mcpconfig.NewConfigBuilder().
+		WithVersion(Version).
+		Build()
+	if err == nil {
+		return cfg.Version
+	}
+	
 	return Version
 }
 

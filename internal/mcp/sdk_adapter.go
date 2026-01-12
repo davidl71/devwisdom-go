@@ -28,22 +28,22 @@ type WisdomServerSDK struct {
 
 // NewWisdomServerSDK creates a new wisdom MCP server instance using the official SDK.
 func NewWisdomServerSDK() *WisdomServerSDK {
-	// Load server configuration from environment or defaults
+	// Load server configuration using builder pattern (with environment variable support)
+	// Try loading from environment first (backward compatibility)
 	cfg, err := mcpconfig.LoadBaseConfig()
-	if err != nil {
-		// Fallback to defaults if config load fails
-		cfg = &mcpconfig.BaseConfig{
-			Name:    "devwisdom",
-			Version: Version,
+	if err != nil || cfg.Name == "" || cfg.Name == "mcp-server" || cfg.Version == "" || cfg.Version == "1.0.0" {
+		// Use builder pattern with defaults
+		cfg, err = mcpconfig.NewConfigBuilder().
+			WithName("devwisdom").
+			WithVersion(Version).
+			Build()
+		if err != nil {
+			// Fallback to hardcoded defaults if builder fails
+			cfg = &mcpconfig.BaseConfig{
+				Name:    "devwisdom",
+				Version: Version,
+			}
 		}
-	}
-	
-	// Override defaults if not set in environment
-	if cfg.Name == "" || cfg.Name == "mcp-server" {
-		cfg.Name = "devwisdom"
-	}
-	if cfg.Version == "" || cfg.Version == "1.0.0" {
-		cfg.Version = Version
 	}
 
 	// Initialize consultation logger (log directory: .devwisdom)
