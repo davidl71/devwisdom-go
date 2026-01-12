@@ -27,7 +27,7 @@ func TestSDKAdapterBasic(t *testing.T) {
 // TestSDKAdapterToolsRegistration tests that tools are registered
 func TestSDKAdapterToolsRegistration(t *testing.T) {
 	server := NewWisdomServerSDK()
-	
+
 	// Try to register tools (this should not fail)
 	if err := server.registerTools(); err != nil {
 		t.Fatalf("registerTools failed: %v", err)
@@ -37,7 +37,7 @@ func TestSDKAdapterToolsRegistration(t *testing.T) {
 // TestSDKAdapterResourcesRegistration tests that resources are registered
 func TestSDKAdapterResourcesRegistration(t *testing.T) {
 	server := NewWisdomServerSDK()
-	
+
 	// Try to register resources (this should not fail)
 	if err := server.registerResources(); err != nil {
 		t.Fatalf("registerResources failed: %v", err)
@@ -55,15 +55,15 @@ func TestSDKAdapterToolHandlers(t *testing.T) {
 
 	// Test consult_advisor handler
 	args := map[string]interface{}{
-		"score": 75.0,
+		"score":  75.0,
 		"metric": "security",
 	}
-	
+
 	result, err := helperServer.handleConsultAdvisor(args)
 	if err != nil {
 		t.Fatalf("handleConsultAdvisor failed: %v", err)
 	}
-	
+
 	// Verify result can be marshaled to JSON (as SDK adapter does)
 	_, err = json.Marshal(result)
 	if err != nil {
@@ -91,10 +91,9 @@ func TestSDKAdapterResourceHandlers(t *testing.T) {
 		Method: "resources/read",
 		Params: json.RawMessage(`{"uri": "wisdom://tools"}`),
 	}
-	
+
 	resp := helperServer.handleToolsResource(mockReq)
 	if resp.Error != nil {
 		t.Fatalf("handleToolsResource failed: %v", resp.Error.Message)
 	}
 }
-

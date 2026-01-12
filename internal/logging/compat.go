@@ -15,7 +15,7 @@ func NewLogger() *logging.Logger {
 	if os.Getenv("DEVWISDOM_DEBUG") == "1" {
 		os.Setenv("MCP_DEBUG", "1")
 	}
-	
+
 	// Use mcp-go-core logger
 	return logging.NewLogger()
 }

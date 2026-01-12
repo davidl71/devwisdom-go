@@ -29,7 +29,7 @@ func TestRunSources(t *testing.T) {
 			name:    "sources with json flag",
 			args:    []string{"--json"},
 			wantErr: false,
-			check: validateJSONOutput,
+			check:   validateJSONOutput,
 		},
 	}
 

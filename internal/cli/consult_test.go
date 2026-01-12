@@ -44,7 +44,7 @@ func TestRunConsult(t *testing.T) {
 			name:    "consult with json flag",
 			args:    []string{"--metric", "security", "--json"},
 			wantErr: false,
-			check: validateJSONOutput,
+			check:   validateJSONOutput,
 		},
 		{
 			name:    "consult with quiet flag",

@@ -9,7 +9,7 @@ import (
 
 	"github.com/davidl71/devwisdom-go/internal/logging"
 	"github.com/davidl71/devwisdom-go/internal/wisdom"
-	
+
 	mcplogging "github.com/davidl71/mcp-go-core/pkg/mcp/logging"
 )
 
@@ -473,4 +473,3 @@ func mustMarshalJSONCompact(v interface{}) []byte {
 	}
 	return data
 }
-

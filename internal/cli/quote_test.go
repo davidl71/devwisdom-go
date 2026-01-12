@@ -27,7 +27,7 @@ func TestRunQuote(t *testing.T) {
 			name:    "quote with json flag",
 			args:    []string{"--json"},
 			wantErr: false,
-			check: validateJSONOutput,
+			check:   validateJSONOutput,
 		},
 		{
 			name:    "quote with source and score",

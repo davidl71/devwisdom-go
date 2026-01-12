@@ -37,7 +37,7 @@ func TestRunBriefing(t *testing.T) {
 			name:    "briefing with json flag",
 			args:    []string{"--json"},
 			wantErr: false,
-			check: validateJSONOutput,
+			check:   validateJSONOutput,
 		},
 	}
 

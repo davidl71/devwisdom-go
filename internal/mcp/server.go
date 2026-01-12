@@ -22,9 +22,9 @@ import (
 
 	"github.com/davidl71/devwisdom-go/internal/logging"
 	"github.com/davidl71/devwisdom-go/internal/wisdom"
-	
-	mcplogging "github.com/davidl71/mcp-go-core/pkg/mcp/logging"
+
 	mcpconfig "github.com/davidl71/mcp-go-core/pkg/mcp/config"
+	mcplogging "github.com/davidl71/mcp-go-core/pkg/mcp/logging"
 )
 
 // Version is the devwisdom-go MCP server version (default).
@@ -36,7 +36,7 @@ func getServerName() string {
 	if cfg, err := mcpconfig.LoadBaseConfig(); err == nil && cfg.Name != "" && cfg.Name != "mcp-server" {
 		return cfg.Name
 	}
-	
+
 	// Use builder pattern with defaults
 	cfg, err := mcpconfig.NewConfigBuilder().
 		WithName("devwisdom").
@@ -44,7 +44,7 @@ func getServerName() string {
 	if err == nil {
 		return cfg.Name
 	}
-	
+
 	return "devwisdom"
 }
 
@@ -54,7 +54,7 @@ func getServerVersion() string {
 	if cfg, err := mcpconfig.LoadBaseConfig(); err == nil && cfg.Version != "" && cfg.Version != "1.0.0" {
 		return cfg.Version
 	}
-	
+
 	// Use builder pattern with defaults
 	cfg, err := mcpconfig.NewConfigBuilder().
 		WithVersion(Version).
@@ -62,7 +62,7 @@ func getServerVersion() string {
 	if err == nil {
 		return cfg.Version
 	}
-	
+
 	return Version
 }
 
@@ -383,27 +383,6 @@ func (s *WisdomServer) HandleToolCall(name string, params map[string]interface{}
 func (s *WisdomServer) handleConsultAdvisor(params map[string]interface{}) (interface{}, error) {
 	handlers := NewWisdomHandlers(s.wisdom, s.logger, s.appLogger)
 	return handlers.handleConsultAdvisor(params)
-}
-
-// DEPRECATED: Handler methods moved to handlers.go. This delegates to handlers.go.
-// handleGetWisdom implements get_wisdom tool
-func (s *WisdomServer) handleGetWisdom(params map[string]interface{}) (interface{}, error) {
-	handlers := NewWisdomHandlers(s.wisdom, s.logger, s.appLogger)
-	return handlers.handleGetWisdom(params)
-}
-
-// DEPRECATED: Handler methods moved to handlers.go. This delegates to handlers.go.
-// handleGetDailyBriefing implements get_daily_briefing tool
-func (s *WisdomServer) handleGetDailyBriefing(params map[string]interface{}) (interface{}, error) {
-	handlers := NewWisdomHandlers(s.wisdom, s.logger, s.appLogger)
-	return handlers.handleGetDailyBriefing(params)
-}
-
-// DEPRECATED: Handler methods moved to handlers.go. This delegates to handlers.go.
-// handleGetConsultationLog implements get_consultation_log tool
-func (s *WisdomServer) handleGetConsultationLog(params map[string]interface{}) (interface{}, error) {
-	handlers := NewWisdomHandlers(s.wisdom, s.logger, s.appLogger)
-	return handlers.handleGetConsultationLog(params)
 }
 
 // Resource handlers

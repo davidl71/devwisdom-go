@@ -11,9 +11,9 @@ import (
 
 	"github.com/davidl71/devwisdom-go/internal/logging"
 	"github.com/davidl71/devwisdom-go/internal/wisdom"
-	
-	mcplogging "github.com/davidl71/mcp-go-core/pkg/mcp/logging"
+
 	mcpconfig "github.com/davidl71/mcp-go-core/pkg/mcp/config"
+	mcplogging "github.com/davidl71/mcp-go-core/pkg/mcp/logging"
 	"github.com/modelcontextprotocol/go-sdk/mcp"
 )
 
@@ -329,19 +329,19 @@ func (s *WisdomServerSDK) registerAllResources(handlers *WisdomHandlers) error {
 			return nil, fmt.Errorf("resource URI is required")
 		}
 		uri := req.Params.URI
-		
+
 		// Extract advisor ID from URI (wisdom://advisor/{id})
 		if !strings.HasPrefix(uri, "wisdom://advisor/") {
 			return nil, fmt.Errorf("invalid advisor URI format: %s", uri)
 		}
 		advisorID := strings.TrimPrefix(uri, "wisdom://advisor/")
-		
+
 		mockReq := &JSONRPCRequest{
 			ID:     "resource",
 			Method: "resources/read",
 			Params: json.RawMessage(fmt.Sprintf(`{"uri": "%s"}`, uri)),
 		}
-		
+
 		resp := handlers.HandleAdvisorResource(mockReq, advisorID)
 		return s.convertResourceResponse(resp, uri)
 	}
@@ -359,7 +359,7 @@ func (s *WisdomServerSDK) registerAllResources(handlers *WisdomHandlers) error {
 			return nil, fmt.Errorf("resource URI is required")
 		}
 		uri := req.Params.URI
-		
+
 		// Extract days from URI (wisdom://consultations/{days})
 		if !strings.HasPrefix(uri, "wisdom://consultations/") {
 			return nil, fmt.Errorf("invalid consultations URI format: %s", uri)
@@ -371,13 +371,13 @@ func (s *WisdomServerSDK) registerAllResources(handlers *WisdomHandlers) error {
 				days = d
 			}
 		}
-		
+
 		mockReq := &JSONRPCRequest{
 			ID:     "resource",
 			Method: "resources/read",
 			Params: json.RawMessage(fmt.Sprintf(`{"uri": "%s"}`, uri)),
 		}
-		
+
 		resp := handlers.HandleConsultationsResource(mockReq, days)
 		return s.convertResourceResponse(resp, uri)
 	}
@@ -394,7 +394,7 @@ func (s *WisdomServerSDK) createResourceHandler(uri string, handlerFunc func(*JS
 			Method: "resources/read",
 			Params: json.RawMessage(fmt.Sprintf(`{"uri": "%s"}`, uri)),
 		}
-		
+
 		resp := handlerFunc(mockReq)
 		return s.convertResourceResponse(resp, uri)
 	}
@@ -433,4 +433,3 @@ func getString(m map[string]interface{}, key, defaultValue string) string {
 	}
 	return defaultValue
 }
-
