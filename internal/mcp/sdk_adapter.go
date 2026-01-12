@@ -81,6 +81,68 @@ func (s *WisdomServerSDK) Run(ctx context.Context) error {
 	return nil
 }
 
+// ToolHandlerFunc is a function type for handling tool execution
+type ToolHandlerFunc func(map[string]interface{}) (interface{}, error)
+
+// wrapToolHandler wraps a tool handler function to work with SDK's CallToolRequest
+// This eliminates duplication across all tool handlers by providing:
+// - Argument unmarshaling
+// - Error handling and result marshaling
+// - Consistent error response format
+func wrapToolHandler(handler ToolHandlerFunc) func(context.Context, *mcp.CallToolRequest) (*mcp.CallToolResult, error) {
+	return func(ctx context.Context, req *mcp.CallToolRequest) (*mcp.CallToolResult, error) {
+		// Extract and unmarshal arguments
+		args := make(map[string]interface{})
+		if req.Params != nil && len(req.Params.Arguments) > 0 {
+			if err := json.Unmarshal(req.Params.Arguments, &args); err != nil {
+				return &mcp.CallToolResult{
+					IsError: true,
+					Content: []mcp.Content{
+						&mcp.TextContent{
+							Text: fmt.Sprintf("Failed to parse arguments: %v", err),
+						},
+					},
+				}, nil
+			}
+		}
+
+		// Call the actual handler
+		result, err := handler(args)
+		if err != nil {
+			return &mcp.CallToolResult{
+				IsError: true,
+				Content: []mcp.Content{
+					&mcp.TextContent{
+						Text: fmt.Sprintf("Tool execution error: %v", err),
+					},
+				},
+			}, nil
+		}
+
+		// Marshal result to JSON
+		resultJSON, err := json.Marshal(result)
+		if err != nil {
+			return &mcp.CallToolResult{
+				IsError: true,
+				Content: []mcp.Content{
+					&mcp.TextContent{
+						Text: fmt.Sprintf("Failed to marshal result: %v", err),
+					},
+				},
+			}, nil
+		}
+
+		// Return success result
+		return &mcp.CallToolResult{
+			Content: []mcp.Content{
+				&mcp.TextContent{
+					Text: string(resultJSON),
+				},
+			},
+		}, nil
+	}
+}
+
 // registerTools registers all MCP tools with the SDK server.
 func (s *WisdomServerSDK) registerTools() error {
 	// Create handlers instance to reuse business logic
@@ -117,56 +179,7 @@ func (s *WisdomServerSDK) registerTools() error {
 		},
 	}
 
-	consultAdvisorHandler := func(ctx context.Context, req *mcp.CallToolRequest) (*mcp.CallToolResult, error) {
-		// Extract arguments - SDK uses json.RawMessage, need to unmarshal
-		args := make(map[string]interface{})
-		if req.Params != nil && len(req.Params.Arguments) > 0 {
-			if err := json.Unmarshal(req.Params.Arguments, &args); err != nil {
-				return &mcp.CallToolResult{
-					IsError: true,
-					Content: []mcp.Content{
-						&mcp.TextContent{
-							Text: fmt.Sprintf("Failed to parse arguments: %v", err),
-						},
-					},
-				}, nil
-			}
-		}
-
-		// Call handler
-		result, err := handlers.handleConsultAdvisor(args)
-		if err != nil {
-			return &mcp.CallToolResult{
-				IsError: true,
-				Content: []mcp.Content{
-					&mcp.TextContent{
-						Text: fmt.Sprintf("Tool execution error: %v", err),
-					},
-				},
-			}, nil
-		}
-
-		// Convert result to JSON string for SDK
-		resultJSON, err := json.Marshal(result)
-		if err != nil {
-			return &mcp.CallToolResult{
-				IsError: true,
-				Content: []mcp.Content{
-					&mcp.TextContent{
-						Text: fmt.Sprintf("Failed to marshal result: %v", err),
-					},
-				},
-			}, nil
-		}
-
-		return &mcp.CallToolResult{
-			Content: []mcp.Content{
-				&mcp.TextContent{
-					Text: string(resultJSON),
-				},
-			},
-		}, nil
-	}
+	consultAdvisorHandler := wrapToolHandler(handlers.handleConsultAdvisor)
 
 	s.server.AddTool(consultAdvisorTool, consultAdvisorHandler)
 
@@ -190,53 +203,7 @@ func (s *WisdomServerSDK) registerTools() error {
 		},
 	}
 
-	getWisdomHandler := func(ctx context.Context, req *mcp.CallToolRequest) (*mcp.CallToolResult, error) {
-		args := make(map[string]interface{})
-		if req.Params != nil && len(req.Params.Arguments) > 0 {
-			if err := json.Unmarshal(req.Params.Arguments, &args); err != nil {
-				return &mcp.CallToolResult{
-					IsError: true,
-					Content: []mcp.Content{
-						&mcp.TextContent{
-							Text: fmt.Sprintf("Failed to parse arguments: %v", err),
-						},
-					},
-				}, nil
-			}
-		}
-
-		result, err := handlers.handleGetWisdom(args)
-		if err != nil {
-			return &mcp.CallToolResult{
-				IsError: true,
-				Content: []mcp.Content{
-					&mcp.TextContent{
-						Text: fmt.Sprintf("Tool execution error: %v", err),
-					},
-				},
-			}, nil
-		}
-
-		resultJSON, err := json.Marshal(result)
-		if err != nil {
-			return &mcp.CallToolResult{
-				IsError: true,
-				Content: []mcp.Content{
-					&mcp.TextContent{
-						Text: fmt.Sprintf("Failed to marshal result: %v", err),
-					},
-				},
-			}, nil
-		}
-
-		return &mcp.CallToolResult{
-			Content: []mcp.Content{
-				&mcp.TextContent{
-					Text: string(resultJSON),
-				},
-			},
-		}, nil
-	}
+	getWisdomHandler := wrapToolHandler(handlers.handleGetWisdom)
 
 	s.server.AddTool(getWisdomTool, getWisdomHandler)
 
@@ -255,53 +222,7 @@ func (s *WisdomServerSDK) registerTools() error {
 		},
 	}
 
-	getDailyBriefingHandler := func(ctx context.Context, req *mcp.CallToolRequest) (*mcp.CallToolResult, error) {
-		args := make(map[string]interface{})
-		if req.Params != nil && len(req.Params.Arguments) > 0 {
-			if err := json.Unmarshal(req.Params.Arguments, &args); err != nil {
-				return &mcp.CallToolResult{
-					IsError: true,
-					Content: []mcp.Content{
-						&mcp.TextContent{
-							Text: fmt.Sprintf("Failed to parse arguments: %v", err),
-						},
-					},
-				}, nil
-			}
-		}
-
-		result, err := handlers.handleGetDailyBriefing(args)
-		if err != nil {
-			return &mcp.CallToolResult{
-				IsError: true,
-				Content: []mcp.Content{
-					&mcp.TextContent{
-						Text: fmt.Sprintf("Tool execution error: %v", err),
-					},
-				},
-			}, nil
-		}
-
-		resultJSON, err := json.Marshal(result)
-		if err != nil {
-			return &mcp.CallToolResult{
-				IsError: true,
-				Content: []mcp.Content{
-					&mcp.TextContent{
-						Text: fmt.Sprintf("Failed to marshal result: %v", err),
-					},
-				},
-			}, nil
-		}
-
-		return &mcp.CallToolResult{
-			Content: []mcp.Content{
-				&mcp.TextContent{
-					Text: string(resultJSON),
-				},
-			},
-		}, nil
-	}
+	getDailyBriefingHandler := wrapToolHandler(handlers.handleGetDailyBriefing)
 
 	s.server.AddTool(getDailyBriefingTool, getDailyBriefingHandler)
 
@@ -320,53 +241,7 @@ func (s *WisdomServerSDK) registerTools() error {
 		},
 	}
 
-	getConsultationLogHandler := func(ctx context.Context, req *mcp.CallToolRequest) (*mcp.CallToolResult, error) {
-		args := make(map[string]interface{})
-		if req.Params != nil && len(req.Params.Arguments) > 0 {
-			if err := json.Unmarshal(req.Params.Arguments, &args); err != nil {
-				return &mcp.CallToolResult{
-					IsError: true,
-					Content: []mcp.Content{
-						&mcp.TextContent{
-							Text: fmt.Sprintf("Failed to parse arguments: %v", err),
-						},
-					},
-				}, nil
-			}
-		}
-
-		result, err := handlers.handleGetConsultationLog(args)
-		if err != nil {
-			return &mcp.CallToolResult{
-				IsError: true,
-				Content: []mcp.Content{
-					&mcp.TextContent{
-						Text: fmt.Sprintf("Tool execution error: %v", err),
-					},
-				},
-			}, nil
-		}
-
-		resultJSON, err := json.Marshal(result)
-		if err != nil {
-			return &mcp.CallToolResult{
-				IsError: true,
-				Content: []mcp.Content{
-					&mcp.TextContent{
-						Text: fmt.Sprintf("Failed to marshal result: %v", err),
-					},
-				},
-			}, nil
-		}
-
-		return &mcp.CallToolResult{
-			Content: []mcp.Content{
-				&mcp.TextContent{
-					Text: string(resultJSON),
-				},
-			},
-		}, nil
-	}
+	getConsultationLogHandler := wrapToolHandler(handlers.handleGetConsultationLog)
 
 	s.server.AddTool(getConsultationLogTool, getConsultationLogHandler)
 
