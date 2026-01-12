@@ -2,7 +2,6 @@ package cli
 
 import (
 	"bytes"
-	"encoding/json"
 	"os"
 	"strings"
 	"testing"
@@ -45,58 +44,7 @@ func TestRunConsult(t *testing.T) {
 			name:    "consult with json flag",
 			args:    []string{"--metric", "security", "--json"},
 			wantErr: false,
-			check: func(output string) bool {
-				// Extract JSON from output (may have warnings before it)
-				lines := strings.Split(output, "\n")
-				var jsonLines []string
-				inJSON := false
-				braceCount := 0
-				bracketCount := 0
-
-				for _, line := range lines {
-					trimmed := strings.TrimSpace(line)
-					if trimmed == "" {
-						if inJSON {
-							jsonLines = append(jsonLines, "")
-						}
-						continue
-					}
-					// Skip warning lines
-					if strings.HasPrefix(trimmed, "Warning:") {
-						continue
-					}
-					// Start collecting JSON when we see { or [
-					if !inJSON && (trimmed[0] == '{' || trimmed[0] == '[') {
-						inJSON = true
-					}
-
-					if inJSON {
-						jsonLines = append(jsonLines, trimmed)
-						// Count braces and brackets to know when JSON ends
-						for _, char := range trimmed {
-							if char == '{' {
-								braceCount++
-							} else if char == '}' {
-								braceCount--
-							} else if char == '[' {
-								bracketCount++
-							} else if char == ']' {
-								bracketCount--
-							}
-						}
-						// JSON is complete when all braces/brackets are closed
-						if braceCount == 0 && bracketCount == 0 && len(jsonLines) > 0 {
-							break
-						}
-					}
-				}
-				if len(jsonLines) > 0 {
-					jsonStr := strings.Join(jsonLines, "\n")
-					return json.Valid([]byte(jsonStr))
-				}
-				// Try validating entire output as fallback
-				return json.Valid([]byte(output))
-			},
+			check: validateJSONOutput,
 		},
 		{
 			name:    "consult with quiet flag",
