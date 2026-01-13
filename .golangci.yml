@@ -1,0 +1,207 @@
+# golangci-lint configuration for devwisdom-go
+# See https://golangci-lint.run/usage/configuration/ for full documentation
+
+# Note: Using v1 config format for compatibility with golangci-lint v1.64.8
+
+run:
+  # Timeout for analysis
+  timeout: 5m
+  
+  # Include test files
+  tests: true
+
+# Issues configuration
+issues:
+  # Exclude directories
+  exclude-dirs:
+    - vendor
+    - .git
+    - bin
+    - .exarp
+    - .todo2
+    - tests/fixtures
+  
+  # Exclude files
+  exclude-files:
+    - ".*\\.pb\\.go$"
+    - ".*_generated\\.go$"
+  
+  # Maximum issues count per one linter
+  max-issues-per-linter: 50
+  
+  # Maximum count of issues with the same text
+  max-same-issues: 3
+
+# Output configuration
+output:
+  # Colored output
+  colored: true
+  
+  # Print linter name in issue line
+  print-issued-lines: true
+  
+  # Print linter name in unused line
+  print-linter-name: true
+
+# Linters configuration
+linters:
+  # Enable specific linters (focused set for smaller project)
+  enable:
+    - errcheck          # Check for unchecked errors
+    - govet             # Go vet
+    - ineffassign       # Detect unused assignments
+    - staticcheck       # Static analysis
+    - unused            # Unused code detection
+    - misspell          # Spelling checker
+    - unconvert         # Remove unnecessary conversions
+    - unparam           # Unused parameters
+    - gocritic          # Go code critic
+    - revive            # Fast, configurable linter
+    - gosec             # Security issues
+    - errname           # Error naming
+    - errorlint         # Error wrapping
+    - err113            # Error handling
+    - funlen            # Function length
+    - gochecknoglobals  # Check for global variables
+    - gochecknoinits    # Check for init functions
+    - goconst           # Constant detection
+    - gocyclo           # Cyclomatic complexity
+    - godot             # Comment formatting
+    - godox             # TODO/BUG/FIXME comments
+    - goimports         # Import formatting
+    - goprintffuncname  # Printf function name
+    - lll               # Line length
+    - nakedret          # Naked returns
+    - noctx             # Context passing
+    - nolintlint        # Lint nolint directives
+    - prealloc          # Preallocate slices
+    - tagliatelle       # Struct tag checking
+    - thelper           # Test helper detection
+    - whitespace        # Whitespace checking
+    - wrapcheck         # Error wrapping
+
+# Linters settings
+linters-settings:
+  errcheck:
+    # Report about not checking of errors in type assertions
+    check-type-assertions: true
+    # Report about assignment of errors to blank identifier
+    check-blank: true
+    # Report about not checking of errors in if conditions
+    check-asserts: true
+
+  gocritic:
+    enabled-tags:
+      - diagnostic
+      - experimental
+      - opinionated
+      - performance
+      - style
+    disabled-checks:
+      - dupImport
+      - ifElseChain
+      - octalLiteral
+      - whyNoLint
+      - wrapperFunc
+
+  gocyclo:
+    # Minimal code complexity to report
+    min-complexity: 15
+
+  funlen:
+    lines: 100
+    statements: 50
+
+  goconst:
+    # Minimal length of string constant
+    min-len: 3
+    # Minimum occurrences of constant string count to trigger issue
+    min-occurrences: 3
+
+  godot:
+    # Check comments starting from the 3rd comment line
+    min-len: 3
+    # Check all comments (top-level and non-top-level)
+    scope: all
+
+  goimports:
+    # Put imports beginning with prefix after 3rd-party packages
+    local-prefixes: github.com/davidl71/devwisdom-go
+
+  govet:
+    # Enable all analyzers
+    enable-all: true
+
+  lll:
+    # Max line length, lines longer will be reported
+    line-length: 140
+
+  misspell:
+    # Correct spellings using locale preferences for US or UK
+    locale: US
+
+  nolintlint:
+    # Enable to ensure that nolint directives are all used
+    allow-unused: false
+    # Require an explanation for nolint directives
+    require-explanation: false
+
+  revive:
+    # Sets the default failure confidence
+    min-confidence: 0
+    # Sets the default severity
+    severity: warning
+    # Enable or disable rules
+    rules:
+      - name: exported
+        severity: warning
+      - name: error-return
+        severity: warning
+      - name: error-naming
+        severity: warning
+      - name: var-naming
+        severity: warning
+      - name: range
+        severity: warning
+      - name: receiver-naming
+        severity: warning
+      - name: unexported-naming
+        severity: warning
+      - name: var-declaration
+        severity: warning
+      - name: range-val-in-closure
+        severity: warning
+      - name: range-val-address
+        severity: warning
+      - name: waitgroup-by-value
+        severity: warning
+      - name: atomic
+        severity: warning
+      - name: empty-lines
+        severity: warning
+      - name: line-length-limit
+        severity: warning
+      - name: duplicated-imports
+        severity: warning
+      - name: import-shadowing
+        severity: warning
+      - name: bare-return
+        severity: warning
+      - name: unused-parameter
+        severity: warning
+      - name: unhandled-error
+        severity: warning
+      - name: cognitive-complexity
+        severity: warning
+      - name: early-return
+        severity: warning
+      - name: indent-error-flow
+        severity: warning
+      - name: errorf
+        severity: warning
+      - name: empty-block
+        severity: warning
+      - name: superfluous-else
+        severity: warning
+      - name: unreachable-code
+        severity: warning
