@@ -131,8 +131,6 @@ func TestSDKAdapter_Run(t *testing.T) {
 
 // TestSDKAdapter_Run_InitializationError tests Run with initialization failure
 func TestSDKAdapter_Run_InitializationError(t *testing.T) {
-	server := NewWisdomServerSDK()
-
 	// Create a mock wisdom engine that fails to initialize
 	// We can't easily mock this, so we'll test the error path by using a real engine
 	// but with invalid configuration. However, this is complex.
@@ -183,10 +181,10 @@ func TestWrapToolHandler(t *testing.T) {
 	// Test with valid handler
 	handler := wrapToolHandler(handlers.handleGetWisdom)
 
-	// Create a test request
+	// Create a test request - check actual SDK structure
 	req := &mcp.CallToolRequest{
 		Params: &mcp.CallToolRequestParams{
-			Name: "get_wisdom",
+			Name:      "get_wisdom",
 			Arguments: json.RawMessage(`{"score": 75.0, "source": "stoic"}`),
 		},
 	}
@@ -219,7 +217,7 @@ func TestWrapToolHandler_InvalidJSON(t *testing.T) {
 	handler := wrapToolHandler(handlers.handleGetWisdom)
 
 	req := &mcp.CallToolRequest{
-		Params: &mcp.CallToolRequestParams{
+		Params: &mcp.CallToolParamsRaw{
 			Name:      "get_wisdom",
 			Arguments: json.RawMessage(`invalid json`),
 		},
@@ -250,7 +248,7 @@ func TestWrapToolHandler_HandlerError(t *testing.T) {
 
 	// Use invalid arguments that will cause handler to return error
 	req := &mcp.CallToolRequest{
-		Params: &mcp.CallToolRequestParams{
+		Params: &mcp.CallToolParamsRaw{
 			Name:      "get_wisdom",
 			Arguments: json.RawMessage(`{"invalid": "args"}`), // Missing required "score"
 		},
@@ -424,7 +422,7 @@ func TestCreateResourceHandler(t *testing.T) {
 	handler := server.createResourceHandler("wisdom://sources", handlers.HandleSourcesResource)
 
 	req := &mcp.ReadResourceRequest{
-		Params: &mcp.ReadResourceRequestParams{
+		Params: &mcp.ReadResourceParams{
 			URI: "wisdom://sources",
 		},
 	}
