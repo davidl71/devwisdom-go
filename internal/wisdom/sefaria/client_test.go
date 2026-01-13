@@ -4,6 +4,7 @@ import (
 	"context"
 	"net/http"
 	"net/http/httptest"
+	"strings"
 	"testing"
 	"time"
 )
@@ -133,5 +134,117 @@ func TestClient_Cache(t *testing.T) {
 	// Should only have called API once
 	if callCount != 1 {
 		t.Errorf("Expected 1 API call, got %d", callCount)
+	}
+}
+
+func TestClient_CleanupCache(t *testing.T) {
+	client := NewClient(nil)
+	cache := NewCache()
+
+	// Add an expired entry
+	expiredEntry := &CacheEntry{
+		Response:  &TextResponse{Ref: "Test"},
+		Timestamp: time.Now().Add(-25 * time.Hour), // Expired (TTL is 24 hours)
+		TTL:       24 * time.Hour,
+	}
+	cache.mu.Lock()
+	cache.entries["test:key"] = expiredEntry
+	cache.mu.Unlock()
+
+	client.cache = cache
+
+	// Cleanup should remove expired entry
+	client.CleanupCache()
+
+	cache.mu.RLock()
+	_, exists := cache.entries["test:key"]
+	cache.mu.RUnlock()
+
+	if exists {
+		t.Error("CleanupCache should have removed expired entry")
+	}
+}
+
+func TestClient_buildEndpoint(t *testing.T) {
+	client := NewClient(nil)
+
+	tests := []struct {
+		name     string
+		book     string
+		chapter  int
+		verse    int
+		expected string
+	}{
+		{"full book", "Proverbs", 0, 0, "texts/Proverbs"},
+		{"full chapter", "Proverbs", 1, 0, "texts/Proverbs.1"},
+		{"specific verse", "Proverbs", 1, 5, "texts/Proverbs.1.5"},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			result := client.buildEndpoint(tt.book, tt.chapter, tt.verse)
+			if result != tt.expected {
+				t.Errorf("buildEndpoint(%q, %d, %d) = %q, want %q", tt.book, tt.chapter, tt.verse, result, tt.expected)
+			}
+		})
+	}
+}
+
+func TestClient_GetText_ErrorHandling(t *testing.T) {
+	tests := []struct {
+		name           string
+		statusCode     int
+		responseBody   string
+		expectedErrMsg string
+	}{
+		{
+			name:           "404 not found",
+			statusCode:     http.StatusNotFound,
+			responseBody:   `{"error": "Not found"}`,
+			expectedErrMsg: "Sefaria API returned status 404",
+		},
+		{
+			name:           "500 server error",
+			statusCode:     http.StatusInternalServerError,
+			responseBody:   `{"error": "Internal error"}`,
+			expectedErrMsg: "Sefaria API returned status 500",
+		},
+		{
+			name:           "invalid JSON",
+			statusCode:     http.StatusOK,
+			responseBody:   `invalid json`,
+			expectedErrMsg: "failed to parse Sefaria API response",
+		},
+		{
+			name:           "empty response",
+			statusCode:     http.StatusOK,
+			responseBody:   `{"ref": "", "text": [], "he": []}`,
+			expectedErrMsg: "Sefaria API response has no text content",
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+				w.WriteHeader(tt.statusCode)
+				_, _ = w.Write([]byte(tt.responseBody))
+			}))
+			defer server.Close()
+
+			client := &Client{
+				httpClient: &http.Client{Timeout: 5 * time.Second},
+				baseURL:    server.URL + "/api",
+				cache:      NewCache(),
+			}
+
+			ctx := context.Background()
+			_, err := client.GetText(ctx, "Proverbs", 0, 0)
+
+			if err == nil {
+				t.Error("Expected error but got nil")
+			} else if !strings.Contains(err.Error(), tt.expectedErrMsg) {
+				t.Errorf("Error message %q does not contain %q", err.Error(), tt.expectedErrMsg)
+			}
+		})
 	}
 }
