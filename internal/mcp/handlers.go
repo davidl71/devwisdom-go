@@ -11,6 +11,7 @@ import (
 	"github.com/davidl71/devwisdom-go/internal/wisdom"
 
 	mcplogging "github.com/davidl71/mcp-go-core/pkg/mcp/logging"
+	"github.com/davidl71/mcp-go-core/pkg/mcp/request"
 )
 
 // WisdomHandlers provides handler methods for tools and resources.
@@ -233,8 +234,13 @@ func (h *WisdomHandlers) handleGetDailyBriefing(params map[string]interface{}) (
 
 // handleGetConsultationLog implements get_consultation_log tool
 func (h *WisdomHandlers) handleGetConsultationLog(params map[string]interface{}) (interface{}, error) {
-	days := 7 // default
+	// Apply defaults using mcp-go-core utility
+	request.ApplyDefaults(params, map[string]interface{}{
+		"days": 7,
+	})
 
+	// Extract days parameter (ApplyDefaults ensures it's set)
+	days := 7 // fallback
 	if d, ok := params["days"].(float64); ok {
 		days = int(d)
 	} else if d, ok := params["days"].(int); ok {
