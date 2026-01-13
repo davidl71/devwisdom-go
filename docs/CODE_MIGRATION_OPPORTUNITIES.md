@@ -277,11 +277,11 @@ resultMap, err := mcpresponse.ConvertToMap(result)
 ## Migration Checklist
 
 ### High Priority
-- [ ] Migrate `convertToMap()` to `mcp-go-core/pkg/mcp/response/convert.go`
-- [ ] Add tests for `ConvertToMap()` in mcp-go-core
-- [ ] Update devwisdom-go to use `mcpresponse.ConvertToMap()`
-- [ ] Remove local `convertToMap()` implementation
-- [ ] Update documentation
+- [x] Migrate `convertToMap()` to `mcp-go-core/pkg/mcp/response/convert.go` ✅ **COMPLETE**
+- [x] Add tests for `ConvertToMap()` in mcp-go-core ✅ **COMPLETE**
+- [x] Update devwisdom-go to use `mcpresponse.ConvertToMap()` ✅ **COMPLETE**
+- [x] Remove local `convertToMap()` implementation ✅ **COMPLETE**
+- [x] Update documentation ✅ **COMPLETE**
 
 ### Medium Priority (Deferred)
 - [ ] Evaluate tool handler wrapper pattern generalization
