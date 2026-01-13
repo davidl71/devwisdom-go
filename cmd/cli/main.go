@@ -8,16 +8,15 @@ import (
 
 	"github.com/davidl71/devwisdom-go/internal/cli"
 	"github.com/davidl71/devwisdom-go/internal/mcp"
+	mcpcli "github.com/davidl71/mcp-go-core/pkg/mcp/cli"
 )
 
 const version = "0.1.0"
 
 func main() {
 	// Detect mode: if stdin is not a TTY, run as MCP server
-	stat, _ := os.Stdin.Stat()
-	isTTY := (stat.Mode() & os.ModeCharDevice) != 0
-
-	if !isTTY {
+	// Use mcp-go-core's standardized TTY detection
+	if !mcpcli.IsTTY() {
 		// MCP server mode
 		server := mcp.NewWisdomServer()
 		if err := server.Run(context.Background(), os.Stdin, os.Stdout); err != nil {
