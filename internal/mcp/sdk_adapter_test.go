@@ -183,7 +183,7 @@ func TestWrapToolHandler(t *testing.T) {
 
 	// Create a test request - check actual SDK structure
 	req := &mcp.CallToolRequest{
-		Params: &mcp.CallToolRequestParams{
+		Params: &mcp.CallToolParamsRaw{
 			Name:      "get_wisdom",
 			Arguments: json.RawMessage(`{"score": 75.0, "source": "stoic"}`),
 		},
