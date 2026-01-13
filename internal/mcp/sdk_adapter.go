@@ -277,8 +277,6 @@ func (s *WisdomServerSDK) registerTools() {
 	getConsultationLogHandler := wrapToolHandler(handlers.handleGetConsultationLog)
 
 	s.server.AddTool(getConsultationLogTool, getConsultationLogHandler)
-
-	return nil
 }
 
 // registerResources registers all MCP resources with the SDK server.
