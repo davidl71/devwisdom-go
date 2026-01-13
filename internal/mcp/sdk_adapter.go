@@ -88,9 +88,7 @@ func (s *WisdomServerSDK) Run(ctx context.Context) error {
 	s.appLogger.Info("", "MCP server v%s starting (SDK)", Version)
 
 	// Register tools
-	if err := s.registerTools(); err != nil {
-		return fmt.Errorf("failed to register tools: %w", err)
-	}
+	s.registerTools()
 
 	// Register resources
 	if err := s.registerResources(); err != nil {
@@ -121,16 +119,6 @@ func newErrorResult(message string) *mcp.CallToolResult {
 	}
 }
 
-// newSuccessResult creates a CallToolResult with success JSON content
-func newSuccessResult(jsonText string) *mcp.CallToolResult {
-	return &mcp.CallToolResult{
-		Content: []mcp.Content{
-			&mcp.TextContent{
-				Text: jsonText,
-			},
-		},
-	}
-}
 
 // wrapToolHandler wraps a tool handler function to work with SDK's CallToolRequest
 // This eliminates duplication across all tool handlers by providing:
@@ -189,7 +177,7 @@ func wrapToolHandler(handler ToolHandlerFunc) func(context.Context, *mcp.CallToo
 
 
 // registerTools registers all MCP tools with the SDK server.
-func (s *WisdomServerSDK) registerTools() error {
+func (s *WisdomServerSDK) registerTools() {
 	// Create handlers instance to reuse business logic
 	handlers := NewWisdomHandlers(s.wisdom, s.logger, s.appLogger)
 
