@@ -2,9 +2,19 @@ package cli
 
 import (
 	"bytes"
+	"encoding/json"
 	"os"
 	"testing"
 )
+
+// validateJSONOutput validates that the output is valid JSON
+func validateJSONOutput(output string) bool {
+	if len(output) == 0 {
+		return false
+	}
+	var v interface{}
+	return json.Unmarshal([]byte(output), &v) == nil
+}
 
 func TestRunQuote(t *testing.T) {
 	app := NewApp("0.1.0")

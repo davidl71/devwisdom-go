@@ -1,6 +1,6 @@
 module github.com/davidl71/devwisdom-go
 
-go 1.24.0
+go 1.25.5
 
 require (
 	github.com/davidl71/mcp-go-core v0.3.1

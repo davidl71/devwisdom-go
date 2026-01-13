@@ -6,6 +6,7 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
+	"os"
 	"strconv"
 	"strings"
 
@@ -14,6 +15,7 @@ import (
 
 	mcpconfig "github.com/davidl71/mcp-go-core/pkg/mcp/config"
 	mcplogging "github.com/davidl71/mcp-go-core/pkg/mcp/logging"
+	mcpresponse "github.com/davidl71/mcp-go-core/pkg/mcp/response"
 	"github.com/modelcontextprotocol/go-sdk/mcp"
 )
 
@@ -54,7 +56,11 @@ func NewWisdomServerSDK() *WisdomServerSDK {
 	}
 
 	// Initialize structured application logger (supports both DEVWISDOM_DEBUG and MCP_DEBUG)
-	appLogger := logging.NewLogger()
+	// Handle DEVWISDOM_DEBUG for backward compatibility
+	if os.Getenv("DEVWISDOM_DEBUG") == "1" {
+		os.Setenv("MCP_DEBUG", "1")
+	}
+	appLogger := mcplogging.NewLogger()
 
 	// Create SDK server with config
 	sdkServer := mcp.NewServer(&mcp.Implementation{
@@ -131,6 +137,7 @@ func newSuccessResult(jsonText string) *mcp.CallToolResult {
 // - Argument unmarshaling
 // - Error handling and result marshaling
 // - Consistent error response format
+// - Standardized response formatting using mcp-go-core utilities
 func wrapToolHandler(handler ToolHandlerFunc) func(context.Context, *mcp.CallToolRequest) (*mcp.CallToolResult, error) {
 	return func(ctx context.Context, req *mcp.CallToolRequest) (*mcp.CallToolResult, error) {
 		// Extract and unmarshal arguments
@@ -147,15 +154,59 @@ func wrapToolHandler(handler ToolHandlerFunc) func(context.Context, *mcp.CallToo
 			return newErrorResult(fmt.Sprintf("Tool execution error: %v", err)), nil
 		}
 
-		// Marshal result to JSON
-		resultJSON, err := json.Marshal(result)
+		// Convert result to map[string]interface{} for response.FormatResult()
+		resultMap, err := convertToMap(result)
 		if err != nil {
-			return newErrorResult(fmt.Sprintf("Failed to marshal result: %v", err)), nil
+			return newErrorResult(fmt.Sprintf("Failed to convert result to map: %v", err)), nil
 		}
 
-		// Return success result
-		return newSuccessResult(string(resultJSON)), nil
+		// Extract output_path from args if present
+		outputPath := ""
+		if path, ok := args["output_path"].(string); ok && path != "" {
+			outputPath = path
+		}
+
+		// Use mcp-go-core response formatter for standardized formatting
+		textContents, err := mcpresponse.FormatResult(resultMap, outputPath)
+		if err != nil {
+			return newErrorResult(fmt.Sprintf("Failed to format result: %v", err)), nil
+		}
+
+		// Convert []types.TextContent to []mcp.Content ([]mcp.TextContent)
+		contents := make([]mcp.Content, len(textContents))
+		for i, tc := range textContents {
+			contents[i] = &mcp.TextContent{
+				Text: tc.Text,
+			}
+		}
+
+		// Return success result with formatted content
+		return &mcp.CallToolResult{
+			Content: contents,
+		}, nil
 	}
+}
+
+// convertToMap converts any result to map[string]interface{}
+// Handles both maps and structs by marshaling/unmarshaling through JSON
+func convertToMap(result interface{}) (map[string]interface{}, error) {
+	// If already a map, return it
+	if m, ok := result.(map[string]interface{}); ok {
+		return m, nil
+	}
+
+	// Marshal to JSON and unmarshal to map
+	jsonData, err := json.Marshal(result)
+	if err != nil {
+		return nil, fmt.Errorf("failed to marshal result: %w", err)
+	}
+
+	var resultMap map[string]interface{}
+	if err := json.Unmarshal(jsonData, &resultMap); err != nil {
+		return nil, fmt.Errorf("failed to unmarshal result to map: %w", err)
+	}
+
+	return resultMap, nil
 }
 
 // registerTools registers all MCP tools with the SDK server.

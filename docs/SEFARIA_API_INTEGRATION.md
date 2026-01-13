@@ -2,7 +2,7 @@
 
 **Date**: 2026-01-06  
 **Status**: Research Complete, Ready for Implementation  
-**Task**: T-25 (Phase 7.1)
+**Task**: T-20251211192348-9 (Phase 7.1 - Sefaria API Integration)
 
 ---
 
@@ -312,9 +312,9 @@ type Version struct {
 
 ## Next Steps
 
-1. ✅ Research complete (T-25)
-2. ⏳ Implement API client (T-26)
-3. ⏳ Integrate with source loading
+1. ✅ Research complete (T-20251211192348-9)
+2. ✅ Implementation complete (T-20251211192348-9)
+3. ✅ Integrated with source loading (T-20251211192348-9)
 4. ⏳ Add tests
 5. ⏳ Update documentation
 

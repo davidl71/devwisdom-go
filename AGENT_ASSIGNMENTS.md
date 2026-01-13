@@ -11,11 +11,11 @@
 **Focus:** Core functionality documentation and log rotation
 
 **Tasks:**
-1. **T-7:** Phase 5.4: Implement Date-Based Log Rotation
+1. **T-20251211192348-7:** Phase 5.4: Implement Date-Based Log Rotation ✅ Complete
    - Priority: Low 🟢
    - Complexity: Low-Medium (2-3 hours)
    - Files: `internal/logging/consultation_log.go` + test file
-   - Status: Ready (dependency T-3 complete)
+   - Status: ✅ Done (replaced legacy T-7)
 
 2. **T-13:** Phase 9.1: API Documentation (godoc)
    - Priority: Medium 🟡

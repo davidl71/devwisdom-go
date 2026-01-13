@@ -32,6 +32,7 @@ This directory contains reference documentation for the devwisdom-go project. Fo
 
 - **[PERFORMANCE.md](PERFORMANCE.md)** - Performance analysis and benchmarks
 - **[CACHING_AND_TIMEOUTS.md](CACHING_AND_TIMEOUTS.md)** - Caching strategies and timeout configuration
+- **[PROTOBUF_ANALYSIS.md](PROTOBUF_ANALYSIS.md)** - Protobuf benefit analysis (conclusion: not recommended)
 
 ### 🔮 Future Features
 

@@ -53,7 +53,7 @@
 - [x] JSONL log file format
 - [x] Consultation tracking
 - [x] Log retrieval and filtering
-- [ ] Date-based log rotation (optional - Phase 5.4, T-7)
+- [x] Date-based log rotation (optional - Phase 5.4, T-20251211192348-7) ✅ Complete
 
 ## Phase 6: Daily Random Source Selection
 - [x] Date-seeded random selection

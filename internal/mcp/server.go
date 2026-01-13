@@ -16,6 +16,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"io"
+	"os"
 	"strconv"
 	"strings"
 	"time"
@@ -87,7 +88,11 @@ func NewWisdomServer() *WisdomServer {
 	}
 
 	// Initialize structured application logger (supports both DEVWISDOM_DEBUG and MCP_DEBUG)
-	appLogger := logging.NewLogger()
+	// Handle DEVWISDOM_DEBUG for backward compatibility
+	if os.Getenv("DEVWISDOM_DEBUG") == "1" {
+		os.Setenv("MCP_DEBUG", "1")
+	}
+	appLogger := mcplogging.NewLogger()
 
 	return &WisdomServer{
 		wisdom:    wisdom.NewEngine(),
