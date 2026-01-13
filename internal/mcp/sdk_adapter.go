@@ -155,7 +155,7 @@ func wrapToolHandler(handler ToolHandlerFunc) func(context.Context, *mcp.CallToo
 		}
 
 		// Convert result to map[string]interface{} for response.FormatResult()
-		resultMap, err := convertToMap(result)
+		resultMap, err := mcpresponse.ConvertToMap(result)
 		if err != nil {
 			return newErrorResult(fmt.Sprintf("Failed to convert result to map: %v", err)), nil
 		}
@@ -187,27 +187,6 @@ func wrapToolHandler(handler ToolHandlerFunc) func(context.Context, *mcp.CallToo
 	}
 }
 
-// convertToMap converts any result to map[string]interface{}
-// Handles both maps and structs by marshaling/unmarshaling through JSON
-func convertToMap(result interface{}) (map[string]interface{}, error) {
-	// If already a map, return it
-	if m, ok := result.(map[string]interface{}); ok {
-		return m, nil
-	}
-
-	// Marshal to JSON and unmarshal to map
-	jsonData, err := json.Marshal(result)
-	if err != nil {
-		return nil, fmt.Errorf("failed to marshal result: %w", err)
-	}
-
-	var resultMap map[string]interface{}
-	if err := json.Unmarshal(jsonData, &resultMap); err != nil {
-		return nil, fmt.Errorf("failed to unmarshal result to map: %w", err)
-	}
-
-	return resultMap, nil
-}
 
 // registerTools registers all MCP tools with the SDK server.
 func (s *WisdomServerSDK) registerTools() error {
