@@ -376,3 +376,167 @@ func TestWisdomServer_HandleGetDailyBriefing(t *testing.T) {
 		t.Log("Response quotes array is empty (may be acceptable)")
 	}
 }
+
+// TestHandleToolsList tests the handleToolsList function
+func TestHandleToolsList(t *testing.T) {
+	server := NewWisdomServer()
+
+	req := &JSONRPCRequest{
+		JSONRPC: "2.0",
+		ID:      1,
+		Method:  "tools/list",
+		Params:  nil,
+	}
+
+	resp := server.handleToolsList(req)
+	if resp == nil {
+		t.Fatal("handleToolsList returned nil response")
+	}
+
+	if resp.Error != nil {
+		t.Fatalf("handleToolsList returned error: %v", resp.Error)
+	}
+
+	// Check response structure
+	result, ok := resp.Result.(map[string]interface{})
+	if !ok {
+		t.Fatalf("Response result is not map[string]interface{}: %T", resp.Result)
+	}
+
+	tools, ok := result["tools"].([]interface{})
+	if !ok {
+		t.Fatalf("Response tools is not []interface{}: %T", result["tools"])
+	}
+
+	if len(tools) == 0 {
+		t.Error("Response tools is empty")
+	}
+}
+
+// TestHandleResourcesList tests the handleResourcesList function
+func TestHandleResourcesList(t *testing.T) {
+	server := NewWisdomServer()
+
+	req := &JSONRPCRequest{
+		JSONRPC: "2.0",
+		ID:      1,
+		Method:  "resources/list",
+		Params:  nil,
+	}
+
+	resp := server.handleResourcesList(req)
+	if resp == nil {
+		t.Fatal("handleResourcesList returned nil response")
+	}
+
+	if resp.Error != nil {
+		t.Fatalf("handleResourcesList returned error: %v", resp.Error)
+	}
+
+	// Check response structure
+	result, ok := resp.Result.(map[string]interface{})
+	if !ok {
+		t.Fatalf("Response result is not map[string]interface{}: %T", resp.Result)
+	}
+
+	resources, ok := result["resources"].([]interface{})
+	if !ok {
+		t.Fatalf("Response resources is not []interface{}: %T", result["resources"])
+	}
+
+	if len(resources) == 0 {
+		t.Error("Response resources is empty")
+	}
+}
+
+// TestFormatRequestID tests the formatRequestID function
+func TestFormatRequestID(t *testing.T) {
+	tests := []struct {
+		name     string
+		id       interface{}
+		expected string
+	}{
+		{
+			name:     "string ID",
+			id:       "test-id",
+			expected: "test-id",
+		},
+		{
+			name:     "numeric ID",
+			id:       123,
+			expected: "123",
+		},
+		{
+			name:     "nil ID",
+			id:       nil,
+			expected: "null",
+		},
+		{
+			name:     "float ID",
+			id:       45.67,
+			expected: "45.67",
+		},
+		{
+			name:     "boolean ID",
+			id:       true,
+			expected: "true",
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			result := formatRequestID(tt.id)
+			if result != tt.expected {
+				t.Errorf("formatRequestID(%v) = %q, want %q", tt.id, result, tt.expected)
+			}
+		})
+	}
+}
+
+// TestHandleToolsResource tests the handleToolsResource function
+func TestHandleToolsResource(t *testing.T) {
+	server := NewWisdomServer()
+	if err := server.wisdom.Initialize(); err != nil {
+		t.Fatalf("Initialize failed: %v", err)
+	}
+
+	req := &JSONRPCRequest{
+		JSONRPC: "2.0",
+		ID:      1,
+		Method:  "resources/read",
+		Params: json.RawMessage(`{
+			"uri": "wisdom://tools"
+		}`),
+	}
+
+	resp := server.handleToolsResource(req)
+	if resp == nil {
+		t.Fatal("handleToolsResource returned nil response")
+	}
+
+	if resp.Error != nil {
+		t.Fatalf("handleToolsResource returned error: %v", resp.Error)
+	}
+
+	// Check response structure
+	result, ok := resp.Result.(map[string]interface{})
+	if !ok {
+		t.Fatalf("Response result is not map[string]interface{}: %T", resp.Result)
+	}
+
+	contents, ok := result["contents"].([]interface{})
+	if !ok {
+		// Try []map[string]interface{} as well
+		if contentsMap, ok := result["contents"].([]map[string]interface{}); ok {
+			if len(contentsMap) == 0 {
+				t.Error("Response contents is empty")
+			}
+			return
+		}
+		t.Fatalf("Response contents is not []interface{}: %T", result["contents"])
+	}
+
+	if len(contents) == 0 {
+		t.Error("Response contents is empty")
+	}
+}
