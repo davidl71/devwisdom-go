@@ -265,27 +265,18 @@ func (s *WisdomServerSDK) registerAllResources(handlers *WisdomHandlers) error {
 		Description: "Get details for a specific advisor",
 		MIMEType:    "application/json",
 	}
-	advisorTemplateHandler := func(ctx context.Context, req *mcp.ReadResourceRequest) (*mcp.ReadResourceResult, error) {
-		if req.Params == nil || req.Params.URI == "" {
-			return nil, fmt.Errorf("resource URI is required")
+	// Extract advisor ID (string parameter)
+	extractAdvisorID := func(suffix string) (string, error) {
+		if suffix == "" {
+			return "", fmt.Errorf("advisor ID is required")
 		}
-		uri := req.Params.URI
-
-		// Extract advisor ID from URI (wisdom://advisor/{id})
-		if !strings.HasPrefix(uri, "wisdom://advisor/") {
-			return nil, fmt.Errorf("invalid advisor URI format: %s", uri)
-		}
-		advisorID := strings.TrimPrefix(uri, "wisdom://advisor/")
-
-		mockReq := &JSONRPCRequest{
-			ID:     "resource",
-			Method: "resources/read",
-			Params: json.RawMessage(fmt.Sprintf(`{"uri": "%s"}`, uri)),
-		}
-
-		resp := handlers.HandleAdvisorResource(mockReq, advisorID)
-		return s.convertResourceResponse(resp, uri)
+		return suffix, nil
 	}
+	advisorTemplateHandler := s.createResourceTemplateHandler(
+		"wisdom://advisor/",
+		extractAdvisorID,
+		handlers.HandleAdvisorResource,
+	)
 	s.server.AddResourceTemplate(advisorTemplate, advisorTemplateHandler)
 
 	// Register wisdom://consultations/{days} - use ResourceTemplate for dynamic URI
@@ -295,33 +286,23 @@ func (s *WisdomServerSDK) registerAllResources(handlers *WisdomHandlers) error {
 		Description: "Get consultation log entries for the specified number of days",
 		MIMEType:    "application/json",
 	}
-	consultationsTemplateHandler := func(ctx context.Context, req *mcp.ReadResourceRequest) (*mcp.ReadResourceResult, error) {
-		if req.Params == nil || req.Params.URI == "" {
-			return nil, fmt.Errorf("resource URI is required")
+	// Extract days (int parameter with default value 7)
+	extractDays := func(suffix string) (int, error) {
+		if suffix == "" {
+			return 7, nil // Use default if empty
 		}
-		uri := req.Params.URI
-
-		// Extract days from URI (wisdom://consultations/{days})
-		if !strings.HasPrefix(uri, "wisdom://consultations/") {
-			return nil, fmt.Errorf("invalid consultations URI format: %s", uri)
+		days, err := strconv.Atoi(suffix)
+		if err != nil {
+			return 0, fmt.Errorf("invalid days value: %q", suffix)
 		}
-		daysStr := strings.TrimPrefix(uri, "wisdom://consultations/")
-		days := 7 // default
-		if daysStr != "" {
-			if d, err := strconv.Atoi(daysStr); err == nil {
-				days = d
-			}
-		}
-
-		mockReq := &JSONRPCRequest{
-			ID:     "resource",
-			Method: "resources/read",
-			Params: json.RawMessage(fmt.Sprintf(`{"uri": "%s"}`, uri)),
-		}
-
-		resp := handlers.HandleConsultationsResource(mockReq, days)
-		return s.convertResourceResponse(resp, uri)
+		return days, nil
 	}
+	consultationsTemplateHandler := s.createResourceTemplateHandlerInt(
+		"wisdom://consultations/",
+		extractDays,
+		7, // default value
+		handlers.HandleConsultationsResource,
+	)
 	s.server.AddResourceTemplate(consultationsTemplate, consultationsTemplateHandler)
 
 	return nil
@@ -337,6 +318,88 @@ func (s *WisdomServerSDK) createResourceHandler(uri string, handlerFunc func(*JS
 		}
 
 		resp := handlerFunc(mockReq)
+		return s.convertResourceResponse(resp, uri)
+	}
+}
+
+// createResourceTemplateHandler creates a resource template handler factory.
+// This eliminates duplication between advisor and consultations template handlers.
+// Parameters:
+//   - uriPrefix: The URI prefix to match (e.g., "wisdom://advisor/")
+//   - extractParam: Function to extract parameter from URI suffix (returns string, error)
+//   - handlerFunc: Handler function that takes mockReq and extracted parameter
+//
+// Returns a handler function compatible with SDK's ResourceTemplate handler signature.
+func (s *WisdomServerSDK) createResourceTemplateHandler(
+	uriPrefix string,
+	extractParam func(string) (string, error),
+	handlerFunc func(*JSONRPCRequest, string) *JSONRPCResponse,
+) func(context.Context, *mcp.ReadResourceRequest) (*mcp.ReadResourceResult, error) {
+	return func(ctx context.Context, req *mcp.ReadResourceRequest) (*mcp.ReadResourceResult, error) {
+		if req.Params == nil || req.Params.URI == "" {
+			return nil, fmt.Errorf("resource URI is required")
+		}
+		uri := req.Params.URI
+
+		// Validate URI prefix
+		if !strings.HasPrefix(uri, uriPrefix) {
+			return nil, fmt.Errorf("invalid URI format: expected prefix %q, got %q", uriPrefix, uri)
+		}
+
+		// Extract parameter from URI suffix
+		param, err := extractParam(strings.TrimPrefix(uri, uriPrefix))
+		if err != nil {
+			return nil, fmt.Errorf("failed to extract parameter from URI %q: %w", uri, err)
+		}
+
+		// Create mock JSON-RPC request
+		mockReq := &JSONRPCRequest{
+			ID:     "resource",
+			Method: "resources/read",
+			Params: json.RawMessage(fmt.Sprintf(`{"uri": "%s"}`, uri)),
+		}
+
+		// Call handler with extracted parameter
+		resp := handlerFunc(mockReq, param)
+		return s.convertResourceResponse(resp, uri)
+	}
+}
+
+// createResourceTemplateHandlerInt creates a resource template handler factory for int parameters.
+// Similar to createResourceTemplateHandler but handles int parameters with optional default value.
+func (s *WisdomServerSDK) createResourceTemplateHandlerInt(
+	uriPrefix string,
+	extractParam func(string) (int, error),
+	defaultValue int,
+	handlerFunc func(*JSONRPCRequest, int) *JSONRPCResponse,
+) func(context.Context, *mcp.ReadResourceRequest) (*mcp.ReadResourceResult, error) {
+	return func(ctx context.Context, req *mcp.ReadResourceRequest) (*mcp.ReadResourceResult, error) {
+		if req.Params == nil || req.Params.URI == "" {
+			return nil, fmt.Errorf("resource URI is required")
+		}
+		uri := req.Params.URI
+
+		// Validate URI prefix
+		if !strings.HasPrefix(uri, uriPrefix) {
+			return nil, fmt.Errorf("invalid URI format: expected prefix %q, got %q", uriPrefix, uri)
+		}
+
+		// Extract parameter from URI suffix
+		param, err := extractParam(strings.TrimPrefix(uri, uriPrefix))
+		if err != nil {
+			// Use default value if extraction fails
+			param = defaultValue
+		}
+
+		// Create mock JSON-RPC request
+		mockReq := &JSONRPCRequest{
+			ID:     "resource",
+			Method: "resources/read",
+			Params: json.RawMessage(fmt.Sprintf(`{"uri": "%s"}`, uri)),
+		}
+
+		// Call handler with extracted parameter
+		resp := handlerFunc(mockReq, param)
 		return s.convertResourceResponse(resp, uri)
 	}
 }
