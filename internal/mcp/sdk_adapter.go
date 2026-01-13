@@ -181,102 +181,27 @@ func (s *WisdomServerSDK) registerTools() {
 	// Create handlers instance to reuse business logic
 	handlers := NewWisdomHandlers(s.wisdom, s.logger, s.appLogger)
 
-	// Register consult_advisor tool
-	consultAdvisorTool := &mcp.Tool{
-		Name:        "consult_advisor",
-		Description: "Consult a wisdom advisor based on metric, tool, or stage",
-		InputSchema: map[string]interface{}{
-			"type": "object",
-			"properties": map[string]interface{}{
-				"metric": map[string]interface{}{
-					"type":        "string",
-					"description": "Metric name (e.g., 'security', 'testing')",
-				},
-				"tool": map[string]interface{}{
-					"type":        "string",
-					"description": "Tool name (e.g., 'project_scorecard')",
-				},
-				"stage": map[string]interface{}{
-					"type":        "string",
-					"description": "Stage name (e.g., 'daily_checkin')",
-				},
-				"score": map[string]interface{}{
-					"type":        "number",
-					"description": "Project health score (0-100)",
-				},
-				"context": map[string]interface{}{
-					"type":        "string",
-					"description": "Additional context for the consultation",
-				},
-			},
-		},
+	// Get tool definitions from shared function and convert to SDK format
+	toolDefs := getToolDefinitions()
+	sdkTools := ConvertToolsToSDK(toolDefs)
+
+	// Map tool names to handler functions
+	handlerMap := map[string]ToolHandlerFunc{
+		"consult_advisor":     handlers.handleConsultAdvisor,
+		"get_wisdom":          handlers.handleGetWisdom,
+		"get_daily_briefing": handlers.handleGetDailyBriefing,
+		"get_consultation_log": handlers.handleGetConsultationLog,
 	}
 
-	consultAdvisorHandler := wrapToolHandler(handlers.handleConsultAdvisor)
-
-	s.server.AddTool(consultAdvisorTool, consultAdvisorHandler)
-
-	// Register get_wisdom tool
-	getWisdomTool := &mcp.Tool{
-		Name:        "get_wisdom",
-		Description: "Get a wisdom quote based on project health score and source",
-		InputSchema: map[string]interface{}{
-			"type": "object",
-			"properties": map[string]interface{}{
-				"score": map[string]interface{}{
-					"type":        "number",
-					"description": "Project health score (0-100)",
-				},
-				"source": map[string]interface{}{
-					"type":        "string",
-					"description": "Wisdom source ID (e.g., 'pistis_sophia', 'stoic') or 'random' for date-seeded random selection",
-				},
-			},
-			"required": []string{"score"},
-		},
+	// Register all tools
+	for _, tool := range sdkTools {
+		handler, ok := handlerMap[tool.Name]
+		if !ok {
+			continue // Skip if handler not found (shouldn't happen)
+		}
+		wrappedHandler := wrapToolHandler(handler)
+		s.server.AddTool(tool, wrappedHandler)
 	}
-
-	getWisdomHandler := wrapToolHandler(handlers.handleGetWisdom)
-
-	s.server.AddTool(getWisdomTool, getWisdomHandler)
-
-	// Register get_daily_briefing tool
-	getDailyBriefingTool := &mcp.Tool{
-		Name:        "get_daily_briefing",
-		Description: "Get a daily wisdom briefing with quotes and guidance",
-		InputSchema: map[string]interface{}{
-			"type": "object",
-			"properties": map[string]interface{}{
-				"score": map[string]interface{}{
-					"type":        "number",
-					"description": "Project health score (0-100)",
-				},
-			},
-		},
-	}
-
-	getDailyBriefingHandler := wrapToolHandler(handlers.handleGetDailyBriefing)
-
-	s.server.AddTool(getDailyBriefingTool, getDailyBriefingHandler)
-
-	// Register get_consultation_log tool
-	getConsultationLogTool := &mcp.Tool{
-		Name:        "get_consultation_log",
-		Description: "Retrieve consultation log entries",
-		InputSchema: map[string]interface{}{
-			"type": "object",
-			"properties": map[string]interface{}{
-				"days": map[string]interface{}{
-					"type":        "number",
-					"description": "Number of days to retrieve (default: 7)",
-				},
-			},
-		},
-	}
-
-	getConsultationLogHandler := wrapToolHandler(handlers.handleGetConsultationLog)
-
-	s.server.AddTool(getConsultationLogTool, getConsultationLogHandler)
 }
 
 // registerResources registers all MCP resources with the SDK server.
