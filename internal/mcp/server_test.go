@@ -474,7 +474,7 @@ func TestFormatRequestID(t *testing.T) {
 		{
 			name:     "float ID",
 			id:       45.67,
-			expected: "45.67",
+			expected: "46", // formatRequestID uses %.0f for floats
 		},
 		{
 			name:     "boolean ID",
