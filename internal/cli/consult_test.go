@@ -1,8 +1,6 @@
 package cli
 
 import (
-	"bytes"
-	"os"
 	"strings"
 	"testing"
 )
@@ -68,39 +66,8 @@ func TestRunConsult(t *testing.T) {
 	}
 
 	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
-			// Capture output using a pipe
-			r, w, _ := os.Pipe()
-			oldStdout := os.Stdout
-			os.Stdout = w
-
-			var buf bytes.Buffer
-			done := make(chan bool)
-			go func() {
-				_, err := buf.ReadFrom(r)
-				if err != nil {
-					t.Errorf("buf.ReadFrom failed: %v", err)
-				}
-				done <- true
-			}()
-
-			err := app.runConsult(tt.args)
-
-			w.Close()
-			os.Stdout = oldStdout
-			<-done
-
-			if (err != nil) != tt.wantErr {
-				t.Errorf("runConsult() error = %v, wantErr %v", err, tt.wantErr)
-				return
-			}
-
-			if !tt.wantErr && tt.check != nil {
-				output := buf.String()
-				if !tt.check(output) {
-					t.Errorf("runConsult() output validation failed. Output: %s", output)
-				}
-			}
-		})
+		runCLITest(t, tt.name, func() error {
+			return app.runConsult(tt.args)
+		}, tt.wantErr, tt.check)
 	}
 }

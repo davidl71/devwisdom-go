@@ -29,9 +29,7 @@ func TestSDKAdapterToolsRegistration(t *testing.T) {
 	server := NewWisdomServerSDK()
 
 	// Try to register tools (this should not fail)
-	if err := server.registerTools(); err != nil {
-		t.Fatalf("registerTools failed: %v", err)
-	}
+	server.registerTools()
 }
 
 // TestSDKAdapterResourcesRegistration tests that resources are registered

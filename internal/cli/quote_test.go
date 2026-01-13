@@ -1,20 +1,8 @@
 package cli
 
 import (
-	"bytes"
-	"encoding/json"
-	"os"
 	"testing"
 )
-
-// validateJSONOutput validates that the output is valid JSON
-func validateJSONOutput(output string) bool {
-	if len(output) == 0 {
-		return false
-	}
-	var v interface{}
-	return json.Unmarshal([]byte(output), &v) == nil
-}
 
 func TestRunQuote(t *testing.T) {
 	app := NewApp("0.1.0")
@@ -50,40 +38,9 @@ func TestRunQuote(t *testing.T) {
 	}
 
 	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
-			// Capture output using a pipe
-			r, w, _ := os.Pipe()
-			oldStdout := os.Stdout
-			os.Stdout = w
-
-			var buf bytes.Buffer
-			done := make(chan bool)
-			go func() {
-				_, err := buf.ReadFrom(r)
-				if err != nil {
-					t.Errorf("buf.ReadFrom failed: %v", err)
-				}
-				done <- true
-			}()
-
-			err := app.runQuote(tt.args)
-
-			w.Close()
-			os.Stdout = oldStdout
-			<-done
-
-			if (err != nil) != tt.wantErr {
-				t.Errorf("runQuote() error = %v, wantErr %v", err, tt.wantErr)
-				return
-			}
-
-			if !tt.wantErr && tt.check != nil {
-				output := buf.String()
-				if !tt.check(output) {
-					t.Errorf("runQuote() output validation failed. Output: %s", output)
-				}
-			}
-		})
+		runCLITest(t, tt.name, func() error {
+			return app.runQuote(tt.args)
+		}, tt.wantErr, tt.check)
 	}
 }
 
