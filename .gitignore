@@ -62,6 +62,7 @@ alignment_report.md
 .cursor/rules/todo2-overview.mdc
 .cursor/rules/todo2.mdc
 .cursor/mcp.json
+.cursor/mcp.json.backup*
 .todo2/
 
 # OpenMemory - IDE/Assistant specific rules

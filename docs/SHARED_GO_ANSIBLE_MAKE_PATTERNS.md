@@ -321,3 +321,32 @@ So: **move MCP server list + generic mcp-configuration content** to a single sou
 | devwisdom-go MCP rule | `devwisdom-go/.cursor/rules/mcp-configuration.mdc` |
 
 This doc can live in both exarp-go and devwisdom-go (e.g. `docs/SHARED_GO_ANSIBLE_MAKE_PATTERNS.md`) and be updated when shared repos are created or layout changes.
+
+---
+
+## 10. Leftover / static cleanup (exarp-go ansible)
+
+**Done (2026-01):**
+
+- **Duplicate quick-start docs:** Merged `ansible/QUICK_START.md` (hardcoded paths) and `ansible/QUICKSTART.md` into a single `ansible/QUICKSTART.md` with generic paths and one script reference. Removed `QUICK_START.md`.
+- **Duplicate dev-setup scripts:** Kept `ansible/run-dev-setup.sh` (with confirmation + `--ask-become-pass`). Removed `ansible/start-dev-setup.sh`.
+- **Redundant service template:** Removed `ansible/roles/common/templates/exarp-go.service.j2`. The playbook uses `playbooks/templates/exarp-go.service.j2` only; the role copy was unused and an older variant.
+
+**Static / leftover checks:**
+
+- **No `static/` directories** in exarp-go or devwisdom-go (no static-asset trees to clean).
+- **No `.bak` / `.old` / `.orig`** leftover files in ansible; devwisdom-go only uses `.backup` in script logic (timestamped backup filenames), not as leftover files.
+- **Service template:** Only one copy remains: `exarp-go/ansible/playbooks/templates/exarp-go.service.j2` (used by `playbooks/production.yml`).
+
+### Cursor config leftovers (2026-01)
+
+**Removed:**
+
+- **devwisdom-go:** `.cursor/mcp.json.backup` — old MCP config backup (project should rely on user-level `~/.cursor/mcp.json` or `scripts/cursor/` install; no committed backup).
+- **exarp-go:** `.cursor/mcp.json.backup` and `.cursor/mcp.json.backup-20260108-162842` — same; dated backup was redundant.
+
+**Ignored going forward:**
+
+- Both repos: added `.cursor/mcp.json.backup*` to `.gitignore` so future backups from install scripts or manual copies are not committed.
+
+**Intent (per §8):** Project `.cursor/mcp.json` can be empty (rely on user-level) or a minimal override. Backups belong in `~/.cursor/` or local-only; they should not be tracked in the repo.
