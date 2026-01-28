@@ -248,8 +248,17 @@ If CI builds or tests on several OS/arch (e.g. GitHub Actions matrix: linux-amd6
 
 ### 8.1 MCP server list — single source of truth
 
+**Shared MCP server set (canonical):** The following four servers belong in the shared config (user-level `~/.cursor/mcp.json` or Ansible/template); projects do not duplicate them.
+
+| Server | Purpose |
+|--------|---------|
+| **devwisdom** | DevWisdom Go MCP Server — wisdom, advisors, guidance |
+| **exarp-go** | Exarp project management automation (Go MCP server) |
+| **tractatus_thinking** | Tractatus Thinking MCP — structured reasoning, logical analysis |
+| **context7** | Context7 MCP — advanced context and documentation retrieval |
+
 - **Today:** exarp-go `.cursor/mcp.json` has 4 servers with absolute paths (`/Users/davidl/Projects/...`); devwisdom-go `.cursor/mcp.json` is empty. Each project’s `mcp-configuration.mdc` documents a slightly different list (different server names, paths, or “current” section).
-- **Goal:** One list of MCP servers (name, command, args, env, description). Paths that depend on machine or project root are **templated** (e.g. `{{ projects_base }}/devwisdom-go/devwisdom`, `{{ projects_base }}/exarp-go/run_server.sh`).
+- **Goal:** One list of MCP servers (name, command, args, env, description). Paths that depend on machine or project root are **templated** (e.g. `{{ projects_base }}/devwisdom-go/devwisdom`, `{{ projects_base }}/exarp-go/run_server.sh`). **context7** and **tractatus_thinking** (npx-based) are part of this shared set and must be included in the same single source.
 
 **Options:**
 

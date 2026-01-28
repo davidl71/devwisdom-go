@@ -9,33 +9,16 @@ alwaysApply: true
 
 ## Current MCP Servers
 
-The workspace is configured with MCP servers in `.cursor/mcp.json`:
+Shared set (single source: `~/.cursor/mcp.json`, installed via `make install-mcp-config` from this repo). **No project-level override** — devwisdom-go uses the shared config only.
 
-1. **advisor** - DevWisdom Go MCP Server (Crew Role: Advisor)
-   - Command: `/Users/davidl/Projects/devwisdom-go/devwisdom`
-   - Provides: Wisdom quotes, trusted advisors, inspirational guidance
+| Server | Purpose |
+|--------|---------|
+| **devwisdom** | DevWisdom Go MCP Server — wisdom, advisors, guidance |
+| **exarp-go** | Exarp project management automation (Go MCP server) |
+| **tractatus_thinking** | Tractatus Thinking MCP — structured reasoning, logical analysis |
+| **context7** | Context7 MCP — advanced context and documentation retrieval |
 
-2. **coordinator** - Exarp Project Management Automation (Crew Role: Coordinator)
-   - Command: `/Users/davidl/Projects/project-management-automation/exarp-uvx-wrapper.sh`
-   - Args: `["--mcp"]`
-   - Provides: Project management automation tools
-
-3. **researcher** - Context7 MCP Server (Crew Role: Researcher)
-   - Command: `npx`
-   - Args: `["-y", "@upstash/context7-mcp"]`
-   - Provides: Advanced context management and retrieval
-
-4. **analyst** - Tractatus Thinking MCP Server (Crew Role: Analyst)
-   - Command: `npx`
-   - Args: `["-y", "tractatus_thinking"]`
-   - Provides: Structured reasoning and logical thinking
-
-5. **exarp-go** - Go-based MCP Server (Crew Role: Executor) ✅ **ACTIVE**
-   - Command: `/Users/davidl/Projects/mcp-stdio-tools/bin/exarp-go`
-   - Args: `[]`
-   - Env: `PROJECT_ROOT={{PROJECT_ROOT}}`
-   - Provides: 24 tools, 15 prompts, 6 resources
-   - Status: Native Go implementation with Python bridge for remaining tools
+To add or change servers, edit `scripts/cursor/mcp-servers.json.template` and run `make install-mcp-config` (or `REPLACE=1` to overwrite only the template set).
 
 ## Configuration Guidelines
 
@@ -131,7 +114,7 @@ The workspace is configured with MCP servers in `.cursor/mcp.json`:
 ## Best Practices
 
 ### Configuration Management
-- ✅ **Version control**: Commit `.cursor/mcp.json` to repository
+- ✅ **Single source**: Shared config in `~/.cursor/mcp.json` (from `scripts/cursor/` template); project `.cursor/mcp.json` is empty or minimal override
 - ✅ **Documentation**: Document each server's purpose and usage
 - ✅ **Validation**: Validate JSON syntax before committing
 - ✅ **Testing**: Test each server independently before adding to config

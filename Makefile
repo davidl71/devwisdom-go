@@ -168,5 +168,6 @@ clean-dist:
 	rm -rf $(DIST_DIR)
 
 # Install shared Cursor MCP config to ~/.cursor/mcp.json (single source: scripts/cursor/)
+# Use REPLACE=1 to overwrite with template only (removes openmemory, duplicates, etc.)
 install-mcp-config:
-	@./scripts/cursor/install-mcp-config.sh
+	@./scripts/cursor/install-mcp-config.sh $(if $(REPLACE),--replace)

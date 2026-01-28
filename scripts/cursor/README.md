@@ -7,11 +7,19 @@ Single source of truth for MCP servers used across devwisdom-go, exarp-go, and o
 From this directory or from devwisdom-go root:
 
 ```bash
-# Default: PROJECTS_BASE = $HOME/Projects
+# Default: merge with existing (template wins; extra servers kept)
 ./scripts/cursor/install-mcp-config.sh
 
-# Or set explicitly
+# Replace entirely: only the 4 template servers (removes openmemory, duplicates, etc.)
+./scripts/cursor/install-mcp-config.sh --replace
+
+# Or via make (from devwisdom-go root)
+make install-mcp-config              # merge
+make install-mcp-config REPLACE=1    # replace (template only)
+
+# Set PROJECTS_BASE explicitly
 ./scripts/cursor/install-mcp-config.sh /Users/you/Projects
+./scripts/cursor/install-mcp-config.sh --replace /Users/you/Projects
 
 # Or use env
 export CURSOR_PROJECTS_BASE=/path/to/Projects
