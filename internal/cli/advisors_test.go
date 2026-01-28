@@ -10,9 +10,9 @@ import (
 func TestRunAdvisors(t *testing.T) {
 	app := NewApp("test")
 
-	// Test JSON output
+	// Test JSON output.
 	t.Run("JSON output", func(t *testing.T) {
-		// Capture output
+		// Capture output.
 		oldStdout := os.Stdout
 		r, w, _ := os.Pipe()
 		os.Stdout = w
@@ -25,14 +25,14 @@ func TestRunAdvisors(t *testing.T) {
 			t.Fatalf("runAdvisors() error = %v", err)
 		}
 
-		// Read output
+		// Read output.
 		var output map[string]interface{}
 		decoder := json.NewDecoder(r)
 		if err := decoder.Decode(&output); err != nil {
 			t.Fatalf("Failed to decode JSON output: %v", err)
 		}
 
-		// Verify structure
+		// Verify structure.
 		if _, ok := output["metric_advisors"]; !ok {
 			t.Error("JSON output missing metric_advisors")
 		}
@@ -43,7 +43,7 @@ func TestRunAdvisors(t *testing.T) {
 			t.Error("JSON output missing stage_advisors")
 		}
 
-		// Verify metrics
+		// Verify metrics.
 		metrics, ok := output["metric_advisors"].([]interface{})
 		if !ok {
 			t.Fatal("metric_advisors is not an array")
@@ -52,7 +52,7 @@ func TestRunAdvisors(t *testing.T) {
 			t.Errorf("Expected at least 10 metric advisors, got %d", len(metrics))
 		}
 
-		// Verify first metric has required fields
+		// Verify first metric has required fields.
 		if len(metrics) > 0 {
 			firstMetric, ok := metrics[0].(map[string]interface{})
 			if !ok {
@@ -67,7 +67,7 @@ func TestRunAdvisors(t *testing.T) {
 		}
 	})
 
-	// Test human-readable output contains expected sections
+	// Test human-readable output contains expected sections.
 	t.Run("Human-readable output", func(t *testing.T) {
 		oldStdout := os.Stdout
 		r, w, _ := os.Pipe()
@@ -81,12 +81,12 @@ func TestRunAdvisors(t *testing.T) {
 			t.Fatalf("runAdvisors() error = %v", err)
 		}
 
-		// Read output
+		// Read output.
 		output := make([]byte, 4096)
 		n, _ := r.Read(output)
 		outputStr := string(output[:n])
 
-		// Verify sections exist
+		// Verify sections exist.
 		if !strings.Contains(outputStr, "Metric Advisors") {
 			t.Error("Output missing 'Metric Advisors' section")
 		}
@@ -97,7 +97,7 @@ func TestRunAdvisors(t *testing.T) {
 			t.Error("Output missing 'Stage Advisors' section")
 		}
 
-		// Verify some known advisors are mentioned
+		// Verify some known advisors are mentioned.
 		if !strings.Contains(outputStr, "security") && !strings.Contains(outputStr, "bofh") {
 			t.Error("Output missing known metric advisor (security/bofh)")
 		}
@@ -111,8 +111,6 @@ func TestRunAdvisors(t *testing.T) {
 }
 
 func TestRunAdvisors_EmptyLists(t *testing.T) {
-	// This test would require mocking the engine, which is complex
-	// For now, we assume engine initialization works (tested elsewhere)
-	// This is more of an integration test
+	// This is more of an integration test.
 	t.Skip("Requires engine mocking - integration test")
 }

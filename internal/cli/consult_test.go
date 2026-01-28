@@ -9,10 +9,10 @@ func TestRunConsult(t *testing.T) {
 	app := NewApp("0.1.0")
 
 	tests := []struct {
+		check   func(output string) bool
 		name    string
 		args    []string
 		wantErr bool
-		check   func(output string) bool
 	}{
 		{
 			name:    "consult with metric",
@@ -49,14 +49,14 @@ func TestRunConsult(t *testing.T) {
 			args:    []string{"--metric", "testing", "--quiet"},
 			wantErr: false,
 			check: func(output string) bool {
-				// Quiet mode should only output quote text
+				// Quiet mode should only output quote text.
 				return len(output) > 0 && !strings.Contains(output, "Advisor")
 			},
 		},
 		{
 			name:    "consult without metric/tool/stage",
 			args:    []string{"--score", "50"},
-			wantErr: true, // Should fail - need at least one
+			wantErr: true, wantErr: true, // Should fail - need at least one.
 		},
 		{
 			name:    "consult with invalid metric",

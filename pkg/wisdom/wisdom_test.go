@@ -14,8 +14,8 @@ func TestNewEngine(t *testing.T) {
 func TestGetAeonLevel(t *testing.T) {
 	tests := []struct {
 		name     string
-		score    float64
 		expected string
+		score    float64
 	}{
 		{"negative score", -10, "chaos"},
 		{"zero score", 0, "chaos"},
@@ -44,8 +44,8 @@ func TestGetAeonLevel(t *testing.T) {
 func TestGetConsultationMode(t *testing.T) {
 	tests := []struct {
 		name     string
-		score    float64
 		expected string
+		score    float64
 	}{
 		{"negative score", -10, "chaos"},
 		{"zero score", 0, "chaos"},
@@ -70,7 +70,7 @@ func TestGetConsultationMode(t *testing.T) {
 }
 
 func TestGetConsultationMode_Config(t *testing.T) {
-	// Test that GetConsultationMode returns valid configs
+	// Test that GetConsultationMode returns valid configs.
 	scores := []float64{-10, 0, 15, 30, 40, 50, 60, 70, 80, 90, 100, 150}
 
 	for _, score := range scores {

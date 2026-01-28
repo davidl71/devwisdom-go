@@ -8,10 +8,10 @@ func TestRunQuote(t *testing.T) {
 	app := NewApp("0.1.0")
 
 	tests := []struct {
+		check   func(output string) bool
 		name    string
 		args    []string
 		wantErr bool
-		check   func(output string) bool
 	}{
 		{
 			name:    "quote with quiet flag",
@@ -56,9 +56,9 @@ func TestRunQuote_InvalidSource(t *testing.T) {
 func TestRunQuote_InvalidScore(t *testing.T) {
 	app := NewApp("0.1.0")
 
-	// Test with negative score (should still work, just uses different aeon level)
+	// Test with negative score (should still work, just uses different aeon level).
 	err := app.runQuote([]string{"--score", "-10"})
-	// May fail if no sources, which is OK
+	// May fail if no sources, which is OK.
 	if err != nil {
 		t.Logf("Quote with negative score returned error (may be expected): %v", err)
 	}

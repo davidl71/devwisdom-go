@@ -3,6 +3,7 @@ package mcp
 import (
 	"context"
 	"encoding/json"
+	"errors"
 	"fmt"
 	"testing"
 	"time"
@@ -116,7 +117,7 @@ func TestSDKAdapter_Run(t *testing.T) {
 		t.Fatalf("Failed to register resources: %v", err)
 	}
 
-	// Create a context that will be cancelled quickly
+	// Create a context that will be canceled quickly
 	ctx, cancel := context.WithTimeout(context.Background(), 100*time.Millisecond)
 	defer cancel()
 
@@ -124,8 +125,8 @@ func TestSDKAdapter_Run(t *testing.T) {
 	err := server.Run(ctx)
 	if err == nil {
 		t.Log("Run completed without error (may be acceptable if server shuts down quickly)")
-	} else if err != context.DeadlineExceeded && err != context.Canceled {
-		// Accept deadline exceeded or cancelled, but log other errors
+	} else if !errors.Is(err, context.DeadlineExceeded) && !errors.Is(err, context.Canceled) {
+		// Accept deadline exceeded or canceled, but log other errors
 		t.Logf("Run returned error (may be expected): %v", err)
 	}
 }

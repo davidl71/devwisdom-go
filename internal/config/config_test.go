@@ -30,13 +30,13 @@ func TestNewConfig(t *testing.T) {
 }
 
 func TestConfig_Load_EnvironmentVariables(t *testing.T) {
-	// Save original values
+	// Save original values.
 	originalSource := os.Getenv("EXARP_WISDOM_SOURCE")
 	originalHebrew := os.Getenv("EXARP_WISDOM_HEBREW")
 	originalHebrewOnly := os.Getenv("EXARP_WISDOM_HEBREW_ONLY")
 	originalDisabled := os.Getenv("EXARP_DISABLE_WISDOM")
 
-	// Clean up after test
+	// Clean up after test.
 	defer func() {
 		if originalSource != "" {
 			os.Setenv("EXARP_WISDOM_SOURCE", originalSource)
@@ -178,7 +178,7 @@ func TestConfig_Load_ConfigFile(t *testing.T) {
 	cfg := NewConfig()
 	cfg.configPath = configPath
 
-	// Test with valid config file
+	// Test with valid config file.
 	configData := map[string]interface{}{
 		"source":         "stoic",
 		"hebrew_enabled": true,
@@ -216,7 +216,7 @@ func TestConfig_Load_MarkerFile(t *testing.T) {
 		t.Fatalf("Failed to change directory: %v", err)
 	}
 
-	// Create marker file
+	// Create marker file.
 	markerFile := ".exarp_no_wisdom"
 	if err := os.WriteFile(markerFile, []byte(""), 0644); err != nil {
 		t.Fatalf("Failed to create marker file: %v", err)
@@ -239,7 +239,7 @@ func TestConfig_Load_MissingConfigFile(t *testing.T) {
 	cfg := NewConfig()
 	cfg.configPath = configPath
 
-	// Should not error if config file doesn't exist
+	// Should not error if config file doesn't exist.
 	if err := cfg.Load(); err != nil {
 		t.Errorf("Load() error = %v, want nil (config file is optional)", err)
 	}
@@ -258,12 +258,12 @@ func TestConfig_Save(t *testing.T) {
 		t.Fatalf("Save() error = %v", err)
 	}
 
-	// Verify file was created
+	// Verify file was created.
 	if _, err := os.Stat(configPath); err != nil {
 		t.Fatalf("Config file was not created: %v", err)
 	}
 
-	// Verify file contents
+	// Verify file contents.
 	data, err := os.ReadFile(configPath)
 	if err != nil {
 		t.Fatalf("Failed to read config file: %v", err)
@@ -293,7 +293,7 @@ func TestConfig_Save_CreatesDirectory(t *testing.T) {
 		t.Fatalf("Save() error = %v", err)
 	}
 
-	// Verify directory was created
+	// Verify directory was created.
 	configDir := filepath.Dir(configPath)
 	if _, err := os.Stat(configDir); err != nil {
 		t.Fatalf("Config directory was not created: %v", err)
@@ -301,13 +301,13 @@ func TestConfig_Save_CreatesDirectory(t *testing.T) {
 }
 
 func TestGetConfigPath(t *testing.T) {
-	// Test that GetConfigPath returns a non-empty path
+	// Test that GetConfigPath returns a non-empty path.
 	path := GetConfigPath()
 	if path == "" {
 		t.Error("GetConfigPath() returned empty path")
 	}
 
-	// Should end with .exarp_wisdom_config
+	// Should end with .exarp_wisdom_config.
 	if filepath.Base(path) != ".exarp_wisdom_config" {
 		t.Errorf("GetConfigPath() = %q, want path ending with .exarp_wisdom_config", path)
 	}
@@ -317,7 +317,7 @@ func TestConfig_Load_EnvironmentOverridesFile(t *testing.T) {
 	tmpDir := t.TempDir()
 	configPath := filepath.Join(tmpDir, ".exarp_wisdom_config")
 
-	// Create config file with one value
+	// Create config file with one value.
 	configData := map[string]interface{}{
 		"source": "file_source",
 	}
@@ -329,7 +329,7 @@ func TestConfig_Load_EnvironmentOverridesFile(t *testing.T) {
 		t.Fatalf("Failed to write test config file: %v", err)
 	}
 
-	// Set environment variable (should override file)
+	// Set environment variable (should override file).
 	originalSource := os.Getenv("EXARP_WISDOM_SOURCE")
 	defer func() {
 		if originalSource != "" {
@@ -347,7 +347,7 @@ func TestConfig_Load_EnvironmentOverridesFile(t *testing.T) {
 		t.Fatalf("Load() error = %v", err)
 	}
 
-	// Environment should override file
+	// Environment should override file.
 	if cfg.Source != "env_source" {
 		t.Errorf("Source = %q, want %q (environment should override file)", cfg.Source, "env_source")
 	}

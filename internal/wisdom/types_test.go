@@ -5,8 +5,8 @@ import "testing"
 func TestGetAeonLevel(t *testing.T) {
 	tests := []struct {
 		name     string
-		score    float64
 		expected string
+		score    float64
 	}{
 		{"chaos - zero", 0.0, "chaos"},
 		{"chaos - low", 15.0, "chaos"},
@@ -112,8 +112,8 @@ func TestSource_GetQuote(t *testing.T) {
 					},
 				},
 			},
-			aeonLevel:      "chaos",
-			expectedQuote:  "", // Will check that it's one of the quotes
+			aeonLevel:     "chaos",
+			expectedQuote: "", expectedQuote: "", // Will check that it's one of the quotes.
 			expectFallback: false,
 		},
 	}
@@ -125,7 +125,7 @@ func TestSource_GetQuote(t *testing.T) {
 				t.Fatal("GetQuote returned nil")
 			}
 			if tt.expectedQuote == "" {
-				// For random selection test, verify it's one of the expected quotes
+				// For random selection test, verify it's one of the expected quotes.
 				validQuotes := []string{"Quote 1", "Quote 2", "Quote 3"}
 				found := false
 				for _, vq := range validQuotes {
@@ -145,7 +145,7 @@ func TestSource_GetQuote(t *testing.T) {
 }
 
 func TestSource_GetQuote_RandomSelection(t *testing.T) {
-	// Test that random selection works and is date-seeded (consistent within same day)
+	// Test that random selection works and is date-seeded (consistent within same day).
 	source := &Source{
 		Name: "Test Source",
 		Icon: "📜",
@@ -158,7 +158,7 @@ func TestSource_GetQuote_RandomSelection(t *testing.T) {
 		},
 	}
 
-	// Get quote multiple times - should return same quote (date-seeded)
+	// Get quote multiple times - should return same quote (date-seeded).
 	quote1 := source.GetQuote("chaos")
 	quote2 := source.GetQuote("chaos")
 	quote3 := source.GetQuote("chaos")
@@ -167,12 +167,12 @@ func TestSource_GetQuote_RandomSelection(t *testing.T) {
 		t.Fatal("GetQuote returned nil")
 	}
 
-	// All quotes should be the same (date-seeded consistency)
+	// All quotes should be the same (date-seeded consistency).
 	if quote1.Quote != quote2.Quote || quote2.Quote != quote3.Quote {
 		t.Errorf("Date-seeded random selection not consistent: got %q, %q, %q", quote1.Quote, quote2.Quote, quote3.Quote)
 	}
 
-	// Verify it's one of the valid quotes
+	// Verify it's one of the valid quotes.
 	validQuotes := []string{"Quote 1", "Quote 2", "Quote 3"}
 	found := false
 	for _, vq := range validQuotes {

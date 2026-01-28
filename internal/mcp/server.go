@@ -31,14 +31,14 @@ import (
 // Version is the devwisdom-go MCP server version (default).
 const Version = "0.1.0"
 
-// getServerName returns the server name from config or default
+// getServerName returns the server name from config or default.
 func getServerName() string {
-	// Try loading from environment first (backward compatibility)
+		// Try loading from environment first (backward compatibility).
 	if cfg, err := mcpconfig.LoadBaseConfig(); err == nil && cfg.Name != "" && cfg.Name != "mcp-server" {
 		return cfg.Name
 	}
 
-	// Use builder pattern with defaults
+		// Use builder pattern with defaults.
 	cfg, err := mcpconfig.NewConfigBuilder().
 		WithName("devwisdom").
 		Build()
@@ -49,14 +49,14 @@ func getServerName() string {
 	return "devwisdom"
 }
 
-// getServerVersion returns the server version from config or default
+// getServerVersion returns the server version from config or default.
 func getServerVersion() string {
-	// Try loading from environment first (backward compatibility)
+		// Try loading from environment first (backward compatibility).
 	if cfg, err := mcpconfig.LoadBaseConfig(); err == nil && cfg.Version != "" && cfg.Version != "1.0.0" {
 		return cfg.Version
 	}
 
-	// Use builder pattern with defaults
+		// Use builder pattern with defaults.
 	cfg, err := mcpconfig.NewConfigBuilder().
 		WithVersion(Version).
 		Build()
@@ -72,23 +72,21 @@ func getServerVersion() string {
 type WisdomServer struct {
 	wisdom      *wisdom.Engine
 	logger      *logging.ConsultationLogger
-	appLogger   *mcplogging.Logger // Structured logger for application logging
+	appLogger   *mcplogging.Logger 	appLogger   *mcplogging.Logger // Structured logger for application logging.
 	initialized bool
 }
 
 // NewWisdomServer creates a new wisdom MCP server instance.
 // The server must be started with Run() to begin processing requests.
 func NewWisdomServer() *WisdomServer {
-	// Initialize consultation logger (log directory: .devwisdom)
+		// Initialize consultation logger (log directory: .devwisdom).
 	logger, err := logging.NewConsultationLogger(".devwisdom")
 	if err != nil {
-		// Log initialization failure is non-fatal - server can still work without logging
-		// In production, you might want to log this to stderr or handle it differently
+				// In production, you might want to log this to stderr or handle it differently.
 		logger = nil
 	}
 
-	// Initialize structured application logger (supports both DEVWISDOM_DEBUG and MCP_DEBUG)
-	// Handle DEVWISDOM_DEBUG for backward compatibility
+		// Handle DEVWISDOM_DEBUG for backward compatibility.
 	if os.Getenv("DEVWISDOM_DEBUG") == "1" {
 		os.Setenv("MCP_DEBUG", "1")
 	}
@@ -101,25 +99,24 @@ func NewWisdomServer() *WisdomServer {
 	}
 }
 
-// Run starts the MCP server with stdio transport
+// Run starts the MCP server with stdio transport.
 func (s *WisdomServer) Run(ctx context.Context, stdin io.Reader, stdout io.Writer) error {
-	// Initialize wisdom engine first (before any output)
+		// Initialize wisdom engine first (before any output).
 	if err := s.wisdom.Initialize(); err != nil {
 		s.appLogger.Error("", "Failed to initialize wisdom engine: %v", err)
 		return fmt.Errorf("failed to initialize wisdom engine (check sources.json configuration and file permissions): %w", err)
 	}
 
-	// Log server startup
+		// Log server startup.
 	s.appLogger.Info("", "MCP server v%s starting", Version)
 
-	// Set up JSON-RPC 2.0 handlers
+		// Set up JSON-RPC 2.0 handlers.
 	decoder := json.NewDecoder(stdin)
 	encoder := json.NewEncoder(stdout)
-	// Use compact JSON (no indentation) for better compatibility with MCP clients
-	// Some clients have issues parsing indented JSON over stdio
-	encoder.SetIndent("", "") // Explicitly set to compact (no indentation)
+		// Some clients have issues parsing indented JSON over stdio.
+	encoder.SetIndent("", "") 	encoder.SetIndent("", "") // Explicitly set to compact (no indentation).
 
-	// Process messages
+		// Process messages.
 	for {
 		var req JSONRPCRequest
 		if err := decoder.Decode(&req); err != nil {
@@ -127,34 +124,32 @@ func (s *WisdomServer) Run(ctx context.Context, stdin io.Reader, stdout io.Write
 				s.appLogger.Info("", "EOF received, shutting down")
 				break
 			}
-			// Send parse error (id must be null for parse errors per JSON-RPC 2.0 spec)
+						// Send parse error (id must be null for parse errors per JSON-RPC 2.0 spec).
 			parseErrMsg := fmt.Sprintf("JSON parse error: invalid JSON-RPC request format (%v). Ensure request is valid JSON and follows JSON-RPC 2.0 specification", err)
 			s.appLogger.Error("", "JSON parse error: %v", err)
 			resp := NewErrorResponse(nil, ErrCodeParseError, parseErrMsg, nil)
 			if err := encoder.Encode(resp); err != nil {
 				return fmt.Errorf("failed to send parse error response to client: %w", err)
 			}
-			// After sending parse error, break to avoid infinite loop on invalid input
-			// The decoder can't recover from parse errors, so we must exit
+						// The decoder can't recover from parse errors, so we must exit.
 			break
 		}
 
-		// Handle request
-		// Skip notifications (requests without id) - per JSON-RPC 2.0 spec
+				// Skip notifications (requests without id) - per JSON-RPC 2.0 spec.
 		if req.ID == nil {
-			// Notifications don't get responses, just continue
+						// Notifications don't get responses, just continue.
 			s.appLogger.Debug("", "Received notification (no ID): %s", req.Method)
 			continue
 		}
 
-		// Log request start and measure duration
+				// Log request start and measure duration.
 		requestID := formatRequestID(req.ID)
 		startTime := time.Now()
 		s.appLogger.LogRequest(requestID, req.Method)
 
 		resp := s.handleRequest(&req)
 
-		// Log request completion with duration
+				// Log request completion with duration.
 		duration := time.Since(startTime)
 		s.appLogger.LogRequestComplete(requestID, req.Method, duration)
 
@@ -170,7 +165,7 @@ func (s *WisdomServer) Run(ctx context.Context, stdin io.Reader, stdout io.Write
 	return nil
 }
 
-// formatRequestID converts a JSON-RPC request ID to a string for logging
+// formatRequestID converts a JSON-RPC request ID to a string for logging.
 func formatRequestID(id interface{}) string {
 	if id == nil {
 		return "null"
@@ -179,7 +174,7 @@ func formatRequestID(id interface{}) string {
 	case string:
 		return v
 	case float64:
-		// JSON numbers are decoded as float64
+				// JSON numbers are decoded as float64.
 		if v == float64(int64(v)) {
 			return fmt.Sprintf("%d", int64(v))
 		}
@@ -193,14 +188,14 @@ func formatRequestID(id interface{}) string {
 	}
 }
 
-// handleRequest processes a JSON-RPC request
+// handleRequest processes a JSON-RPC request.
 func (s *WisdomServer) handleRequest(req *JSONRPCRequest) *JSONRPCResponse {
-	// Validate JSON-RPC version
+		// Validate JSON-RPC version.
 	if req.JSONRPC != "2.0" {
 		return NewErrorResponse(req.ID, ErrCodeInvalidRequest, fmt.Sprintf("Invalid JSON-RPC version: expected \"2.0\", got %q. Ensure client is using JSON-RPC 2.0 protocol", req.JSONRPC), nil)
 	}
 
-	// Handle different methods
+		// Handle different methods.
 	switch req.Method {
 	case "initialize":
 		return s.handleInitialize(req)
@@ -217,7 +212,7 @@ func (s *WisdomServer) handleRequest(req *JSONRPCRequest) *JSONRPCResponse {
 	}
 }
 
-// handleInitialize handles the initialize request
+// handleInitialize handles the initialize request.
 func (s *WisdomServer) handleInitialize(req *JSONRPCRequest) *JSONRPCResponse {
 	var params InitializeParams
 	if err := json.Unmarshal(req.Params, &params); err != nil {
@@ -227,7 +222,7 @@ func (s *WisdomServer) handleInitialize(req *JSONRPCRequest) *JSONRPCResponse {
 	s.initialized = true
 
 	result := InitializeResult{
-		ProtocolVersion: "2024-11-05", // MCP protocol version
+		ProtocolVersion: "2024-11-05", 		ProtocolVersion: "2024-11-05", // MCP protocol version.
 		Capabilities: ServerCapabilities{
 			Tools:     &ToolsCapability{},
 			Resources: &ResourcesCapability{},
@@ -241,7 +236,7 @@ func (s *WisdomServer) handleInitialize(req *JSONRPCRequest) *JSONRPCResponse {
 	return NewSuccessResponse(req.ID, result)
 }
 
-// handleToolsList returns the list of available tools
+// handleToolsList returns the list of available tools.
 func (s *WisdomServer) handleToolsList(req *JSONRPCRequest) *JSONRPCResponse {
 	tools := getToolDefinitions()
 
@@ -250,7 +245,7 @@ func (s *WisdomServer) handleToolsList(req *JSONRPCRequest) *JSONRPCResponse {
 	})
 }
 
-// handleToolCall processes a tool call request
+// handleToolCall processes a tool call request.
 func (s *WisdomServer) handleToolCall(req *JSONRPCRequest) *JSONRPCResponse {
 	var params ToolCallParams
 	requestID := formatRequestID(req.ID)
@@ -260,13 +255,13 @@ func (s *WisdomServer) handleToolCall(req *JSONRPCRequest) *JSONRPCResponse {
 		return NewInvalidParamsError(req.ID, fmt.Sprintf("invalid tool call params (failed to parse JSON from request): %v. Ensure params is valid JSON object", err))
 	}
 
-	// Log tool call start and measure duration
+		// Log tool call start and measure duration.
 	startTime := time.Now()
 	s.appLogger.LogToolCall(requestID, params.Name, params.Arguments)
 
 	result, err := s.HandleToolCall(params.Name, params.Arguments)
 
-	// Log tool call completion
+		// Log tool call completion.
 	duration := time.Since(startTime)
 	s.appLogger.LogToolCallComplete(requestID, params.Name, duration)
 
@@ -278,7 +273,7 @@ func (s *WisdomServer) handleToolCall(req *JSONRPCRequest) *JSONRPCResponse {
 	return NewSuccessResponse(req.ID, result)
 }
 
-// handleResourcesList returns the list of available resources
+// handleResourcesList returns the list of available resources.
 func (s *WisdomServer) handleResourcesList(req *JSONRPCRequest) *JSONRPCResponse {
 	resources := GetResourceList()
 
@@ -287,7 +282,7 @@ func (s *WisdomServer) handleResourcesList(req *JSONRPCRequest) *JSONRPCResponse
 	})
 }
 
-// handleResourceRead reads a resource
+// handleResourceRead reads a resource.
 func (s *WisdomServer) handleResourceRead(req *JSONRPCRequest) *JSONRPCResponse {
 	var params ResourceReadParams
 	requestID := formatRequestID(req.ID)
@@ -297,11 +292,11 @@ func (s *WisdomServer) handleResourceRead(req *JSONRPCRequest) *JSONRPCResponse 
 		return NewInvalidParamsError(req.ID, fmt.Sprintf("invalid resource read params (failed to parse JSON from request): %v. Ensure params contains valid 'uri' field", err))
 	}
 
-	// Log resource read
+		// Log resource read.
 	startTime := time.Now()
 	s.appLogger.Debug(requestID, "Reading resource: %s", params.URI)
 
-	// Parse resource URI
+		// Parse resource URI.
 	uri := params.URI
 	var resp *JSONRPCResponse
 
@@ -337,7 +332,7 @@ func (s *WisdomServer) handleResourceRead(req *JSONRPCRequest) *JSONRPCResponse 
 		resp = NewErrorResponse(req.ID, -32602, fmt.Sprintf("unknown resource URI %q. Use 'wisdom://sources', 'wisdom://advisors', 'wisdom://advisor/{id}', or 'wisdom://consultations/{days}'", uri), nil)
 	}
 
-	// Log resource read completion
+		// Log resource read completion.
 	duration := time.Since(startTime)
 	s.appLogger.LogPerformance(requestID, fmt.Sprintf("Resource read: %s", uri), duration)
 
@@ -351,50 +346,42 @@ func (s *WisdomServer) HandleToolCall(name string, params map[string]interface{}
 	return handlers.HandleToolCall(name, params)
 }
 
-// DEPRECATED: Handler methods moved to handlers.go. Keeping for reference only.
-// DEPRECATED: Handler methods moved to handlers.go. This delegates to handlers.go.
-// handleConsultAdvisor implements consult_advisor tool
+// handleConsultAdvisor implements consult_advisor tool.
 func (s *WisdomServer) handleConsultAdvisor(params map[string]interface{}) (interface{}, error) {
 	handlers := NewWisdomHandlers(s.wisdom, s.logger, s.appLogger)
 	return handlers.handleConsultAdvisor(params)
 }
 
-// Resource handlers
+// Resource handlers.
 
-// DEPRECATED: Handler methods moved to handlers.go. This delegates to handlers.go.
-// handleToolsResource returns all available tools
+// handleToolsResource returns all available tools.
 func (s *WisdomServer) handleToolsResource(req *JSONRPCRequest) *JSONRPCResponse {
 	handlers := NewWisdomHandlers(s.wisdom, s.logger, s.appLogger)
 	return handlers.HandleToolsResource(req)
 }
 
-// DEPRECATED: Handler methods moved to handlers.go. This delegates to handlers.go.
-// handleSourcesResource returns all wisdom sources
+// handleSourcesResource returns all wisdom sources.
 func (s *WisdomServer) handleSourcesResource(req *JSONRPCRequest) *JSONRPCResponse {
 	handlers := NewWisdomHandlers(s.wisdom, s.logger, s.appLogger)
 	return handlers.HandleSourcesResource(req)
 }
 
-// DEPRECATED: Handler methods moved to handlers.go. This delegates to handlers.go.
-// handleAdvisorsResource returns all advisors
+// handleAdvisorsResource returns all advisors.
 func (s *WisdomServer) handleAdvisorsResource(req *JSONRPCRequest) *JSONRPCResponse {
 	handlers := NewWisdomHandlers(s.wisdom, s.logger, s.appLogger)
 	return handlers.HandleAdvisorsResource(req)
 }
 
-// DEPRECATED: Handler methods moved to handlers.go. This delegates to handlers.go.
-// handleAdvisorResource returns a specific advisor
+// handleAdvisorResource returns a specific advisor.
 func (s *WisdomServer) handleAdvisorResource(req *JSONRPCRequest, advisorID string) *JSONRPCResponse {
 	handlers := NewWisdomHandlers(s.wisdom, s.logger, s.appLogger)
 	return handlers.HandleAdvisorResource(req, advisorID)
 }
 
-// DEPRECATED: Handler methods moved to handlers.go. This delegates to handlers.go.
-// handleConsultationsResource returns consultation log entries
+// handleConsultationsResource returns consultation log entries.
 func (s *WisdomServer) handleConsultationsResource(req *JSONRPCRequest, days int) *JSONRPCResponse {
 	handlers := NewWisdomHandlers(s.wisdom, s.logger, s.appLogger)
 	return handlers.HandleConsultationsResource(req, days)
 }
 
-// Helper functions
-// (formatRequestID is defined earlier in this file for backward compatibility)
+// (formatRequestID is defined earlier in this file for backward compatibility).

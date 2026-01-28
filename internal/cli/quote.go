@@ -9,7 +9,7 @@ import (
 	"github.com/davidl71/devwisdom-go/internal/wisdom"
 )
 
-// runQuote handles the quote command
+// runQuote handles the quote command.
 func (a *App) runQuote(args []string) error {
 	fs := flag.NewFlagSet("quote", flag.ExitOnError)
 	source := fs.String("source", "", "Wisdom source name (e.g., stoic, tao, pistis_sophia)")
@@ -21,16 +21,16 @@ func (a *App) runQuote(args []string) error {
 		return err
 	}
 
-	// Initialize wisdom engine
+	// Initialize wisdom engine.
 	engine := wisdom.NewEngine()
 	if err := engine.Initialize(); err != nil {
 		return fmt.Errorf("failed to initialize wisdom engine (check sources.json configuration): %w", err)
 	}
 
-	// Determine source
+	// Determine source.
 	selectedSource := *source
 	if selectedSource == "" {
-		// Use date-seeded random source selector for daily consistency
+		// Use date-seeded random source selector for daily consistency.
 		randomSource, err := engine.GetRandomSource(true)
 		if err != nil {
 			return fmt.Errorf("failed to get random source (no sources available): %w", err)
@@ -38,13 +38,13 @@ func (a *App) runQuote(args []string) error {
 		selectedSource = randomSource
 	}
 
-	// Get quote - if source is empty string, GetWisdom will fail, so we handle it above
+	// Get quote - if source is empty string, GetWisdom will fail, so we handle it above.
 	var quote *wisdom.Quote
 	var err error
 	if selectedSource != "" {
 		quote, err = engine.GetWisdom(*score, selectedSource)
 	} else {
-		// This shouldn't happen due to check above, but handle it
+		// This shouldn't happen due to check above, but handle it.
 		return fmt.Errorf("no source specified and no sources available: ensure sources.json exists and contains valid source definitions. Use 'devwisdom sources' to list available sources")
 	}
 	if err != nil {
@@ -55,7 +55,7 @@ func (a *App) runQuote(args []string) error {
 		return fmt.Errorf("failed to get wisdom quote (source: %q, score: %s): %w", selectedSource, scoreStr, err)
 	}
 
-	// Output based on format
+	// Output based on format.
 	if *quiet {
 		fmt.Println(quote.Quote)
 		return nil
@@ -67,7 +67,7 @@ func (a *App) runQuote(args []string) error {
 		return encoder.Encode(quote)
 	}
 
-	// Human-readable output
+	// Human-readable output.
 	if quote.WisdomIcon != "" {
 		fmt.Printf("%s ", quote.WisdomIcon)
 	}

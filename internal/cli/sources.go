@@ -10,7 +10,7 @@ import (
 	"github.com/davidl71/devwisdom-go/internal/wisdom"
 )
 
-// runSources handles the sources command
+// runSources handles the sources command.
 func (a *App) runSources(args []string) error {
 	fs := flag.NewFlagSet("sources", flag.ExitOnError)
 	jsonOutput := fs.Bool("json", false, "Output in JSON format")
@@ -19,17 +19,17 @@ func (a *App) runSources(args []string) error {
 		return err
 	}
 
-	// Initialize wisdom engine
+	// Initialize wisdom engine.
 	engine := wisdom.NewEngine()
 	if err := engine.Initialize(); err != nil {
 		return fmt.Errorf("failed to initialize wisdom engine: %w", err)
 	}
 
-	// Get sources
+	// Get sources.
 	sourceIDs := engine.ListSources()
 	sort.Strings(sourceIDs)
 
-	// Build source details
+	// Build source details.
 	sources := make([]map[string]interface{}, 0, len(sourceIDs))
 	for _, id := range sourceIDs {
 		source, exists := engine.GetSource(id)
@@ -47,14 +47,14 @@ func (a *App) runSources(args []string) error {
 		sources = append(sources, sourceInfo)
 	}
 
-	// Output
+	// Output.
 	if *jsonOutput {
 		encoder := json.NewEncoder(os.Stdout)
 		encoder.SetIndent("", "  ")
 		return encoder.Encode(sources)
 	}
 
-	// Human-readable output
+	// Human-readable output.
 	fmt.Printf("Available Wisdom Sources (%d):\n\n", len(sources))
 	for _, src := range sources {
 		icon := src["icon"].(string)

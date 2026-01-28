@@ -22,7 +22,7 @@ func TestNewAPISourceLoader(t *testing.T) {
 }
 
 func TestAPISourceLoader_LoadSource_Success(t *testing.T) {
-	// Create a test server
+		// Create a test server.
 	server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		if r.Method != "GET" {
 			t.Errorf("Expected GET request, got %s", r.Method)
@@ -80,9 +80,9 @@ func TestAPISourceLoader_LoadSource_NotFound(t *testing.T) {
 }
 
 func TestAPISourceLoader_LoadSource_Timeout(t *testing.T) {
-	// Create a slow server
+		// Create a slow server.
 	server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		time.Sleep(2 * time.Second) // Longer than timeout
+		time.Sleep(2 * time.Second) 		time.Sleep(2 * time.Second) // Longer than timeout.
 		w.WriteHeader(http.StatusOK)
 	}))
 	defer server.Close()

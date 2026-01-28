@@ -3,10 +3,10 @@ package wisdom
 import "testing"
 
 func TestSourceLoader_Fallback(t *testing.T) {
-	// Test that SourceLoader provides fallback behavior similar to old GetBuiltInSources
+	// Test that SourceLoader provides fallback behavior similar to old GetBuiltInSources.
 	loader := NewSourceLoader()
 
-	// Try to load (may fail if no config files exist, which is fine)
+	// Try to load (may fail if no config files exist, which is fine).
 	_ = loader.Load()
 
 	sources := loader.GetAllSources()
@@ -14,10 +14,9 @@ func TestSourceLoader_Fallback(t *testing.T) {
 		t.Fatal("SourceLoader.GetAllSources() returned nil")
 	}
 
-	// If no sources loaded, that's acceptable (fallback happens in engine)
-	// But if sources exist, verify structure
+	// But if sources exist, verify structure.
 	if len(sources) > 0 {
-		// Check that sources have proper structure
+		// Check that sources have proper structure.
 		for id, source := range sources {
 			if id == "" {
 				t.Error("Source has empty ID")
@@ -57,12 +56,12 @@ func TestSourceLoader_Structure(t *testing.T) {
 			continue
 		}
 
-		// Check that quotes exist for at least one aeon level
+		// Check that quotes exist for at least one aeon level.
 		hasQuotes := false
 		for level, quotes := range source.Quotes {
 			if len(quotes) > 0 {
 				hasQuotes = true
-				// Validate quote structure
+				// Validate quote structure.
 				for i, quote := range quotes {
 					if quote.Quote == "" {
 						t.Errorf("Source %q, level %q, quote %d has empty quote text", id, level, i)

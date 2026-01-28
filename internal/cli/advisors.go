@@ -11,7 +11,7 @@ import (
 	"github.com/davidl71/devwisdom-go/internal/wisdom"
 )
 
-// runAdvisors handles the advisors command
+// runAdvisors handles the advisors command.
 func (a *App) runAdvisors(args []string) error {
 	fs := flag.NewFlagSet("advisors", flag.ExitOnError)
 	jsonOutput := fs.Bool("json", false, "Output in JSON format")
@@ -20,23 +20,23 @@ func (a *App) runAdvisors(args []string) error {
 		return err
 	}
 
-	// Initialize wisdom engine
+	// Initialize wisdom engine.
 	engine := wisdom.NewEngine()
 	if err := engine.Initialize(); err != nil {
 		return fmt.Errorf("failed to initialize wisdom engine: %w", err)
 	}
 
-	// Get advisors registry
+	// Get advisors registry.
 	advisors := engine.GetAdvisors()
 
-	// Build comprehensive advisor listing
+	// Build comprehensive advisor listing.
 	advisorList := map[string]interface{}{
 		"metric_advisors": make([]map[string]interface{}, 0),
 		"tool_advisors":   make([]map[string]interface{}, 0),
 		"stage_advisors":  make([]map[string]interface{}, 0),
 	}
 
-	// Get all metric advisors
+	// Get all metric advisors.
 	metricAdvisors := advisors.GetAllMetricAdvisors()
 	metricList := make([]map[string]interface{}, 0, len(metricAdvisors))
 	metricKeys := make([]string, 0, len(metricAdvisors))
@@ -62,7 +62,7 @@ func (a *App) runAdvisors(args []string) error {
 	}
 	advisorList["metric_advisors"] = metricList
 
-	// Get all tool advisors
+	// Get all tool advisors.
 	toolAdvisors := advisors.GetAllToolAdvisors()
 	toolList := make([]map[string]interface{}, 0, len(toolAdvisors))
 	toolKeys := make([]string, 0, len(toolAdvisors))
@@ -84,7 +84,7 @@ func (a *App) runAdvisors(args []string) error {
 	}
 	advisorList["tool_advisors"] = toolList
 
-	// Get all stage advisors
+	// Get all stage advisors.
 	stageAdvisors := advisors.GetAllStageAdvisors()
 	stageList := make([]map[string]interface{}, 0, len(stageAdvisors))
 	stageKeys := make([]string, 0, len(stageAdvisors))
@@ -107,19 +107,19 @@ func (a *App) runAdvisors(args []string) error {
 	}
 	advisorList["stage_advisors"] = stageList
 
-	// Output
+	// Output.
 	if *jsonOutput {
 		encoder := json.NewEncoder(os.Stdout)
 		encoder.SetIndent("", "  ")
 		return encoder.Encode(advisorList)
 	}
 
-	// Human-readable output
+	// Human-readable output.
 	fmt.Println("Available Advisor Mappings")
 	fmt.Println(strings.Repeat("=", 80))
 	fmt.Println()
 
-	// Metric Advisors
+	// Metric Advisors.
 	fmt.Printf("📊 Metric Advisors (%d):\n\n", len(metricList))
 	for _, item := range metricList {
 		metric := item["metric"].(string)
@@ -140,7 +140,7 @@ func (a *App) runAdvisors(args []string) error {
 		fmt.Println()
 	}
 
-	// Tool Advisors
+	// Tool Advisors.
 	fmt.Printf("🔧 Tool Advisors (%d):\n\n", len(toolList))
 	for _, item := range toolList {
 		tool := item["tool"].(string)
@@ -157,7 +157,7 @@ func (a *App) runAdvisors(args []string) error {
 		fmt.Println()
 	}
 
-	// Stage Advisors
+	// Stage Advisors.
 	fmt.Printf("🎭 Stage Advisors (%d):\n\n", len(stageList))
 	for _, item := range stageList {
 		stage := item["stage"].(string)

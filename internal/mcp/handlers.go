@@ -31,7 +31,7 @@ func NewWisdomHandlers(wisdomEngine *wisdom.Engine, consultationLogger *logging.
 	}
 }
 
-// HandleToolCall processes MCP tool calls
+// HandleToolCall processes MCP tool calls.
 func (h *WisdomHandlers) HandleToolCall(name string, params map[string]interface{}) (interface{}, error) {
 	switch name {
 	case "consult_advisor":
@@ -48,9 +48,9 @@ func (h *WisdomHandlers) HandleToolCall(name string, params map[string]interface
 	}
 }
 
-// handleConsultAdvisor implements consult_advisor tool
+// handleConsultAdvisor implements consult_advisor tool.
 func (h *WisdomHandlers) handleConsultAdvisor(params map[string]interface{}) (interface{}, error) {
-	// Extract parameters
+		// Extract parameters.
 	var metric, tool, stage, context string
 	var score float64
 
@@ -71,14 +71,14 @@ func (h *WisdomHandlers) handleConsultAdvisor(params map[string]interface{}) (in
 	} else if sc, ok := params["score"].(int); ok {
 		score = float64(sc)
 	}
-	// Validate and clamp score to 0-100 range
+		// Validate and clamp score to 0-100 range.
 	if score < 0 {
 		score = 0
 	} else if score > 100 {
 		score = 100
 	}
 
-	// Determine advisor based on metric, tool, or stage
+		// Determine advisor based on metric, tool, or stage.
 	var advisorInfo *wisdom.AdvisorInfo
 	var err error
 
@@ -89,7 +89,7 @@ func (h *WisdomHandlers) handleConsultAdvisor(params map[string]interface{}) (in
 	} else if stage != "" {
 		advisorInfo, err = h.wisdom.GetAdvisors().GetAdvisorForStage(stage)
 	} else {
-		// Default advisor
+				// Default advisor.
 		advisorInfo = &wisdom.AdvisorInfo{
 			Advisor:   "pistis_sophia",
 			Icon:      "📜",
@@ -98,7 +98,7 @@ func (h *WisdomHandlers) handleConsultAdvisor(params map[string]interface{}) (in
 	}
 
 	if err != nil {
-		// Fallback to default
+				// Fallback to default.
 		advisorInfo = &wisdom.AdvisorInfo{
 			Advisor:   "pistis_sophia",
 			Icon:      "📜",
@@ -106,10 +106,10 @@ func (h *WisdomHandlers) handleConsultAdvisor(params map[string]interface{}) (in
 		}
 	}
 
-	// Get wisdom quote
+		// Get wisdom quote.
 	quote, err := h.wisdom.GetWisdom(score, advisorInfo.Advisor)
 	if err != nil {
-		// Fallback quote
+				// Fallback quote.
 		quote = &wisdom.Quote{
 			Quote:         "Wisdom comes from experience.",
 			Source:        "Unknown",
@@ -117,10 +117,10 @@ func (h *WisdomHandlers) handleConsultAdvisor(params map[string]interface{}) (in
 		}
 	}
 
-	// Get consultation mode based on score
+		// Get consultation mode based on score.
 	modeConfig := wisdom.GetConsultationMode(score)
 
-	// Create consultation
+		// Create consultation.
 	consultation := wisdom.Consultation{
 		Timestamp:        time.Now().Format(time.RFC3339),
 		ConsultationType: "advisor",
@@ -139,10 +139,10 @@ func (h *WisdomHandlers) handleConsultAdvisor(params map[string]interface{}) (in
 		Context:          context,
 	}
 
-	// Log consultation if logger is available
+		// Log consultation if logger is available.
 	if h.logger != nil {
 		if err := h.logger.Log(&consultation); err != nil {
-			// Logging failure is non-fatal
+						// Logging failure is non-fatal.
 			h.appLogger.Warn("", "Failed to log consultation: %v", err)
 		}
 	}
@@ -150,12 +150,12 @@ func (h *WisdomHandlers) handleConsultAdvisor(params map[string]interface{}) (in
 	return consultation, nil
 }
 
-// handleGetWisdom implements get_wisdom tool
+// handleGetWisdom implements get_wisdom tool.
 func (h *WisdomHandlers) handleGetWisdom(params map[string]interface{}) (interface{}, error) {
 	var score float64
 	var source string
 
-	// Score is required
+		// Score is required.
 	if sc, ok := params["score"].(float64); ok {
 		score = sc
 	} else if sc, ok := params["score"].(int); ok {
@@ -164,19 +164,19 @@ func (h *WisdomHandlers) handleGetWisdom(params map[string]interface{}) (interfa
 		return nil, fmt.Errorf("score parameter is required and must be a number between 0-100")
 	}
 
-	// Validate and clamp score
+		// Validate and clamp score.
 	if score < 0 {
 		score = 0
 	} else if score > 100 {
 		score = 100
 	}
 
-	// Source is optional
+		// Source is optional.
 	if s, ok := params["source"].(string); ok {
 		source = s
 	}
 
-	// Get wisdom quote
+		// Get wisdom quote.
 	quote, err := h.wisdom.GetWisdom(score, source)
 	if err != nil {
 		return nil, fmt.Errorf("failed to get wisdom quote: %w", err)
@@ -185,7 +185,7 @@ func (h *WisdomHandlers) handleGetWisdom(params map[string]interface{}) (interfa
 	return quote, nil
 }
 
-// handleGetDailyBriefing implements get_daily_briefing tool
+// handleGetDailyBriefing implements get_daily_briefing tool.
 func (h *WisdomHandlers) handleGetDailyBriefing(params map[string]interface{}) (interface{}, error) {
 	var score float64
 
@@ -195,14 +195,14 @@ func (h *WisdomHandlers) handleGetDailyBriefing(params map[string]interface{}) (
 		score = float64(sc)
 	}
 
-	// Validate and clamp score
+		// Validate and clamp score.
 	if score < 0 {
 		score = 0
 	} else if score > 100 {
 		score = 100
 	}
 
-	// Get multiple quotes from different sources
+		// Get multiple quotes from different sources.
 	sources := h.wisdom.ListSources()
 	briefing := map[string]interface{}{
 		"date":    time.Now().Format("2006-01-02"),
@@ -211,7 +211,7 @@ func (h *WisdomHandlers) handleGetDailyBriefing(params map[string]interface{}) (
 		"sources": sources,
 	}
 
-	// Get quotes from a few sources
+		// Get quotes from a few sources.
 	selectedSources := []string{"pistis_sophia", "stoic", "tao"}
 	if len(sources) > 0 {
 		selectedSources = sources
@@ -232,40 +232,39 @@ func (h *WisdomHandlers) handleGetDailyBriefing(params map[string]interface{}) (
 	return briefing, nil
 }
 
-// handleGetConsultationLog implements get_consultation_log tool
+// handleGetConsultationLog implements get_consultation_log tool.
 func (h *WisdomHandlers) handleGetConsultationLog(params map[string]interface{}) (interface{}, error) {
-	// Apply defaults using mcp-go-core utility
+		// Apply defaults using mcp-go-core utility.
 	request.ApplyDefaults(params, map[string]interface{}{
 		"days": 7,
 	})
 
-	// Extract days parameter (ApplyDefaults ensures it's set)
-	days := 7 // fallback
+		// Extract days parameter (ApplyDefaults ensures it's set).
+	days := 7 	days := 7 // fallback.
 	if d, ok := params["days"].(float64); ok {
 		days = int(d)
 	} else if d, ok := params["days"].(int); ok {
 		days = d
 	}
 
-	// Retrieve consultations from logger
+		// Retrieve consultations from logger.
 	var consultations []interface{}
 	if h.logger != nil {
 		logs, err := h.logger.GetLogs(days)
 		if err == nil {
-			// Convert to interface{} slice for JSON serialization
+						// Convert to interface{} slice for JSON serialization.
 			consultations = make([]interface{}, len(logs))
 			for i, consultation := range logs {
 				consultations[i] = consultation
 			}
 		}
-		// If logger is nil or error occurs, consultations remains empty array
+				// If logger is nil or error occurs, consultations remains empty array.
 	}
 
 	return consultations, nil
 }
 
-// getToolDefinitions returns the list of available tools
-// This is a shared function used by both handlers.go and server.go
+// This is a shared function used by both handlers.go and server.go.
 func getToolDefinitions() []Tool {
 	return []Tool{
 		{
@@ -345,14 +344,13 @@ func getToolDefinitions() []Tool {
 	}
 }
 
-// HandleToolsResource handles wisdom://tools resource
+// HandleToolsResource handles wisdom://tools resource.
 func (h *WisdomHandlers) HandleToolsResource(req *JSONRPCRequest) *JSONRPCResponse {
 	tools := getToolDefinitions()
 	return newResourceResponse(req.ID, "wisdom://tools", tools)
 }
 
-// newResourceResponse creates a JSON-RPC success response for a resource
-// This helper eliminates duplication in resource handler responses
+// This helper eliminates duplication in resource handler responses.
 func newResourceResponse(id interface{}, uri string, data interface{}) *JSONRPCResponse {
 	return NewSuccessResponse(id, map[string]interface{}{
 		"contents": []map[string]interface{}{
@@ -365,7 +363,7 @@ func newResourceResponse(id interface{}, uri string, data interface{}) *JSONRPCR
 	})
 }
 
-// HandleSourcesResource handles wisdom://sources resource
+// HandleSourcesResource handles wisdom://sources resource.
 func (h *WisdomHandlers) HandleSourcesResource(req *JSONRPCRequest) *JSONRPCResponse {
 	sourceIDs := h.wisdom.ListSources()
 	sourceDetails := make([]map[string]interface{}, 0, len(sourceIDs))
@@ -385,16 +383,16 @@ func (h *WisdomHandlers) HandleSourcesResource(req *JSONRPCRequest) *JSONRPCResp
 	return newResourceResponse(req.ID, "wisdom://sources", sourceDetails)
 }
 
-// HandleAdvisorsResource handles wisdom://advisors resource
+// HandleAdvisorsResource handles wisdom://advisors resource.
 func (h *WisdomHandlers) HandleAdvisorsResource(req *JSONRPCRequest) *JSONRPCResponse {
 	advisorRegistry := h.wisdom.GetAdvisors()
 
-	// Get all advisors
+		// Get all advisors.
 	metricAdvisors := advisorRegistry.GetAllMetricAdvisors()
 	toolAdvisors := advisorRegistry.GetAllToolAdvisors()
 	stageAdvisors := advisorRegistry.GetAllStageAdvisors()
 
-	// Build response
+		// Build response.
 	advisors := map[string]interface{}{
 		"metric_advisors": metricAdvisors,
 		"tool_advisors":   toolAdvisors,
@@ -404,32 +402,32 @@ func (h *WisdomHandlers) HandleAdvisorsResource(req *JSONRPCRequest) *JSONRPCRes
 	return newResourceResponse(req.ID, "wisdom://advisors", advisors)
 }
 
-// HandleAdvisorResource handles wisdom://advisor/{id} resource
+// HandleAdvisorResource handles wisdom://advisor/{id} resource.
 func (h *WisdomHandlers) HandleAdvisorResource(req *JSONRPCRequest, advisorID string) *JSONRPCResponse {
 	advisorRegistry := h.wisdom.GetAdvisors()
 
-	// Try to find advisor in metric, tool, or stage advisors
+		// Try to find advisor in metric, tool, or stage advisors.
 	var advisorInfo *wisdom.AdvisorInfo
 	var advisorType string
 
-	// Try metric advisors first
+		// Try metric advisors first.
 	if info, err := advisorRegistry.GetAdvisorForMetric(advisorID); err == nil {
 		advisorInfo = info
 		advisorType = "metric"
 	} else if info, err := advisorRegistry.GetAdvisorForTool(advisorID); err == nil {
-		// Try tool advisors
+				// Try tool advisors.
 		advisorInfo = info
 		advisorType = "tool"
 	} else if info, err := advisorRegistry.GetAdvisorForStage(advisorID); err == nil {
-		// Try stage advisors
+				// Try stage advisors.
 		advisorInfo = info
 		advisorType = "stage"
 	} else {
-		// Advisor not found
+				// Advisor not found.
 		return NewErrorResponse(req.ID, ErrCodeInvalidParams, fmt.Sprintf("advisor not found: %q. Use 'wisdom://advisors' resource to list available advisors", advisorID), nil)
 	}
 
-	// Build advisor response
+		// Build advisor response.
 	advisor := map[string]interface{}{
 		"id":        advisorID,
 		"type":      advisorType,
@@ -449,32 +447,30 @@ func (h *WisdomHandlers) HandleAdvisorResource(req *JSONRPCRequest, advisorID st
 	return newResourceResponse(req.ID, "wisdom://advisor/"+advisorID, advisor)
 }
 
-// HandleConsultationsResource handles wisdom://consultations/{days} resource
+// HandleConsultationsResource handles wisdom://consultations/{days} resource.
 func (h *WisdomHandlers) HandleConsultationsResource(req *JSONRPCRequest, days int) *JSONRPCResponse {
-	// Retrieve consultations from logger
+		// Retrieve consultations from logger.
 	var consultations []interface{}
 	if h.logger != nil {
 		logs, err := h.logger.GetLogs(days)
 		if err == nil {
-			// Convert to interface{} slice for JSON serialization
+						// Convert to interface{} slice for JSON serialization.
 			consultations = make([]interface{}, len(logs))
 			for i, consultation := range logs {
 				consultations[i] = consultation
 			}
 		}
-		// If logger is nil or error occurs, consultations remains empty array
+				// If logger is nil or error occurs, consultations remains empty array.
 	}
 
 	return newResourceResponse(req.ID, fmt.Sprintf("wisdom://consultations/%d", days), consultations)
 }
 
-// mustMarshalJSONCompact marshals to compact JSON (no indentation)
-// Used for embedding JSON strings in resource responses
+// Used for embedding JSON strings in resource responses.
 func mustMarshalJSONCompact(v interface{}) []byte {
 	data, err := json.Marshal(v)
 	if err != nil {
-		// Don't log to stderr in MCP server - it breaks stdio protocol
-		// Return empty JSON object on error
+				// Return empty JSON object on error.
 		return []byte("{}")
 	}
 	return data

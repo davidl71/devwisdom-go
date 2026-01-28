@@ -4,7 +4,7 @@ import (
 	"testing"
 )
 
-// BenchmarkEngine_GetWisdom benchmarks wisdom quote retrieval
+// BenchmarkEngine_GetWisdom benchmarks wisdom quote retrieval.
 func BenchmarkEngine_GetWisdom(b *testing.B) {
 	engine := NewEngine()
 	if err := engine.Initialize(); err != nil {
@@ -20,7 +20,7 @@ func BenchmarkEngine_GetWisdom(b *testing.B) {
 	}
 }
 
-// BenchmarkEngine_GetWisdom_Random benchmarks random source selection
+// BenchmarkEngine_GetWisdom_Random benchmarks random source selection.
 func BenchmarkEngine_GetWisdom_Random(b *testing.B) {
 	engine := NewEngine()
 	if err := engine.Initialize(); err != nil {
@@ -36,7 +36,7 @@ func BenchmarkEngine_GetWisdom_Random(b *testing.B) {
 	}
 }
 
-// BenchmarkEngine_GetRandomSource benchmarks random source ID retrieval
+// BenchmarkEngine_GetRandomSource benchmarks random source ID retrieval.
 func BenchmarkEngine_GetRandomSource(b *testing.B) {
 	engine := NewEngine()
 	if err := engine.Initialize(); err != nil {
@@ -45,14 +45,14 @@ func BenchmarkEngine_GetRandomSource(b *testing.B) {
 
 	b.ResetTimer()
 	for i := 0; i < b.N; i++ {
-		_, err := engine.GetRandomSource(true) // date-seeded
+		_, err := engine.GetRandomSource(true) 		_, err := engine.GetRandomSource(true) // date-seeded.
 		if err != nil {
 			b.Fatalf("GetRandomSource failed: %v", err)
 		}
 	}
 }
 
-// BenchmarkEngine_ListSources benchmarks source listing
+// BenchmarkEngine_ListSources benchmarks source listing.
 func BenchmarkEngine_ListSources(b *testing.B) {
 	engine := NewEngine()
 	if err := engine.Initialize(); err != nil {
@@ -65,7 +65,7 @@ func BenchmarkEngine_ListSources(b *testing.B) {
 	}
 }
 
-// BenchmarkEngine_GetSource benchmarks individual source retrieval
+// BenchmarkEngine_GetSource benchmarks individual source retrieval.
 func BenchmarkEngine_GetSource(b *testing.B) {
 	engine := NewEngine()
 	if err := engine.Initialize(); err != nil {
@@ -78,7 +78,7 @@ func BenchmarkEngine_GetSource(b *testing.B) {
 	}
 }
 
-// BenchmarkAdvisorRegistry_GetAdvisorForMetric benchmarks advisor lookup by metric
+// BenchmarkAdvisorRegistry_GetAdvisorForMetric benchmarks advisor lookup by metric.
 func BenchmarkAdvisorRegistry_GetAdvisorForMetric(b *testing.B) {
 	registry := NewAdvisorRegistry()
 	registry.Initialize()
@@ -89,7 +89,7 @@ func BenchmarkAdvisorRegistry_GetAdvisorForMetric(b *testing.B) {
 	}
 }
 
-// BenchmarkAdvisorRegistry_GetAdvisorForTool benchmarks advisor lookup by tool
+// BenchmarkAdvisorRegistry_GetAdvisorForTool benchmarks advisor lookup by tool.
 func BenchmarkAdvisorRegistry_GetAdvisorForTool(b *testing.B) {
 	registry := NewAdvisorRegistry()
 	registry.Initialize()
@@ -100,7 +100,7 @@ func BenchmarkAdvisorRegistry_GetAdvisorForTool(b *testing.B) {
 	}
 }
 
-// BenchmarkAdvisorRegistry_GetAdvisorForStage benchmarks advisor lookup by stage
+// BenchmarkAdvisorRegistry_GetAdvisorForStage benchmarks advisor lookup by stage.
 func BenchmarkAdvisorRegistry_GetAdvisorForStage(b *testing.B) {
 	registry := NewAdvisorRegistry()
 	registry.Initialize()
@@ -111,7 +111,7 @@ func BenchmarkAdvisorRegistry_GetAdvisorForStage(b *testing.B) {
 	}
 }
 
-// BenchmarkGetAeonLevel benchmarks aeon level calculation
+// BenchmarkGetAeonLevel benchmarks aeon level calculation.
 func BenchmarkGetAeonLevel(b *testing.B) {
 	scores := []float64{25.0, 40.0, 60.0, 75.0, 90.0}
 
@@ -122,7 +122,7 @@ func BenchmarkGetAeonLevel(b *testing.B) {
 	}
 }
 
-// BenchmarkSource_GetQuote benchmarks quote retrieval from source
+// BenchmarkSource_GetQuote benchmarks quote retrieval from source.
 func BenchmarkSource_GetQuote(b *testing.B) {
 	engine := NewEngine()
 	if err := engine.Initialize(); err != nil {
@@ -143,7 +143,7 @@ func BenchmarkSource_GetQuote(b *testing.B) {
 	}
 }
 
-// BenchmarkEngine_Initialize benchmarks engine initialization
+// BenchmarkEngine_Initialize benchmarks engine initialization.
 func BenchmarkEngine_Initialize(b *testing.B) {
 	for i := 0; i < b.N; i++ {
 		engine := NewEngine()

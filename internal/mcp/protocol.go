@@ -4,17 +4,16 @@ import (
 	"github.com/davidl71/mcp-go-core/pkg/mcp/protocol"
 )
 
-// Re-export types from mcp-go-core for convenience
-// This maintains backward compatibility while using standardized types
+// This maintains backward compatibility while using standardized types.
 
-// JSON-RPC types
+// JSON-RPC types.
 type (
 	JSONRPCRequest  = protocol.JSONRPCRequest
 	JSONRPCResponse = protocol.JSONRPCResponse
 	JSONRPCError    = protocol.JSONRPCError
 )
 
-// Error codes
+// Error codes.
 const (
 	ErrCodeParseError     = protocol.ErrCodeParseError
 	ErrCodeInvalidRequest = protocol.ErrCodeInvalidRequest
@@ -23,7 +22,7 @@ const (
 	ErrCodeInternalError  = protocol.ErrCodeInternalError
 )
 
-// Protocol types
+// Protocol types.
 type (
 	InitializeParams    = protocol.InitializeParams
 	ClientCapabilities  = protocol.ClientCapabilities
@@ -37,7 +36,7 @@ type (
 	Resource            = protocol.Resource
 )
 
-// Helper functions
+// Helper functions.
 var (
 	NewErrorResponse       = protocol.NewErrorResponse
 	NewSuccessResponse     = protocol.NewSuccessResponse
@@ -46,15 +45,13 @@ var (
 	NewInternalError       = protocol.NewInternalError
 )
 
-// ToolCallParams represents parameters for a tool call
-// This type is specific to devwisdom-go and not in mcp-go-core
+// This type is specific to devwisdom-go and not in mcp-go-core.
 type ToolCallParams struct {
-	Name      string                 `json:"name"`
 	Arguments map[string]interface{} `json:"arguments,omitempty"`
+	Name      string                 `json:"name"`
 }
 
-// ResourceReadParams represents parameters for reading a resource
-// This type is specific to devwisdom-go and not in mcp-go-core
+// This type is specific to devwisdom-go and not in mcp-go-core.
 type ResourceReadParams struct {
 	URI string `json:"uri"`
 }

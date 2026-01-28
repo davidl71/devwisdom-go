@@ -18,12 +18,12 @@ import (
 // ConsultationLogger handles consultation logging to JSONL file with date-based rotation.
 // It is thread-safe and automatically rotates log files when the date changes.
 type ConsultationLogger struct {
-	mu          sync.Mutex
-	logDir      string
-	filePath    string
 	file        *os.File
 	encoder     *json.Encoder
-	currentDate string // Track current date for rotation (YYYY-MM-DD format)
+	logDir      string
+	filePath    string
+	currentDate string
+	mu          sync.Mutex
 }
 
 // NewConsultationLogger creates a new consultation logger.
@@ -97,7 +97,7 @@ func (l *ConsultationLogger) rotateIfNeeded() error {
 		// If rename fails, try to reopen the file
 		file, err2 := os.OpenFile(l.filePath, os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0644)
 		if err2 != nil {
-			return fmt.Errorf("failed to rotate log file and failed to reopen: %w (original: %v)", err2, err)
+			return fmt.Errorf("failed to rotate log file and failed to reopen: %w (original: %w)", err2, err)
 		}
 		l.file = file
 		l.encoder = json.NewEncoder(file)

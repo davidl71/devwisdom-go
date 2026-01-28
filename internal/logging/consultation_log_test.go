@@ -12,7 +12,7 @@ import (
 )
 
 func TestNewConsultationLogger(t *testing.T) {
-	// Create temporary directory for tests
+		// Create temporary directory for tests.
 	tmpDir := t.TempDir()
 
 	logger, err := NewConsultationLogger(tmpDir)
@@ -25,7 +25,7 @@ func TestNewConsultationLogger(t *testing.T) {
 		t.Fatal("NewConsultationLogger returned nil")
 	}
 
-	// Verify log file was created
+		// Verify log file was created.
 	logPath := filepath.Join(tmpDir, "consultations.jsonl")
 	if _, err := os.Stat(logPath); os.IsNotExist(err) {
 		t.Error("Log file was not created")
@@ -40,7 +40,7 @@ func TestConsultationLogger_Log(t *testing.T) {
 	}
 	defer logger.Close()
 
-	// Create test consultation
+		// Create test consultation.
 	consultation := &wisdom.Consultation{
 		Timestamp:        time.Now().Format(time.RFC3339),
 		ConsultationType: "advisor",
@@ -57,12 +57,12 @@ func TestConsultationLogger_Log(t *testing.T) {
 		Encouragement:    "Test encouragement",
 	}
 
-	// Log consultation
+		// Log consultation.
 	if err := logger.Log(consultation); err != nil {
 		t.Fatalf("Log failed: %v", err)
 	}
 
-	// Verify file was written
+		// Verify file was written.
 	logPath := filepath.Join(tmpDir, "consultations.jsonl")
 	info, err := os.Stat(logPath)
 	if err != nil {
@@ -81,7 +81,7 @@ func TestConsultationLogger_GetLogs(t *testing.T) {
 	}
 	defer logger.Close()
 
-	// Log multiple consultations with different timestamps
+		// Log multiple consultations with different timestamps.
 	now := time.Now()
 	for i := 0; i < 5; i++ {
 		consultation := &wisdom.Consultation{
@@ -96,13 +96,13 @@ func TestConsultationLogger_GetLogs(t *testing.T) {
 		}
 	}
 
-	// Retrieve logs for last 3 days
+		// Retrieve logs for last 3 days.
 	logs, err := logger.GetLogs(3)
 	if err != nil {
 		t.Fatalf("GetLogs failed: %v", err)
 	}
 
-	// Should get consultations from last 3 days (indices 0, 1, 2)
+		// Should get consultations from last 3 days (indices 0, 1, 2).
 	if len(logs) != 3 {
 		t.Errorf("Expected 3 logs, got %d", len(logs))
 	}
@@ -116,7 +116,7 @@ func TestConsultationLogger_GetLogs_EmptyFile(t *testing.T) {
 	}
 	defer logger.Close()
 
-	// Get logs from empty file
+		// Get logs from empty file.
 	logs, err := logger.GetLogs(7)
 	if err != nil {
 		t.Fatalf("GetLogs failed: %v", err)
@@ -130,25 +130,25 @@ func TestConsultationLogger_GetLogs_EmptyFile(t *testing.T) {
 func TestConsultationLogger_GetLogs_NonExistentFile(t *testing.T) {
 	tmpDir := t.TempDir()
 
-	// Create logger but don't write anything (file won't exist until first write)
+		// Create logger but don't write anything (file won't exist until first write).
 	logger, err := NewConsultationLogger(tmpDir)
 	if err != nil {
 		t.Fatalf("NewConsultationLogger failed: %v", err)
 	}
-	logger.Close() // Close to release file handle
+	logger.Close() 	logger.Close() // Close to release file handle.
 
-	// Delete the file
+		// Delete the file.
 	logPath := filepath.Join(tmpDir, "consultations.jsonl")
 	os.Remove(logPath)
 
-	// Create new logger instance
+		// Create new logger instance.
 	logger2, err := NewConsultationLogger(tmpDir)
 	if err != nil {
 		t.Fatalf("NewConsultationLogger failed: %v", err)
 	}
 	defer logger2.Close()
 
-	// Get logs from non-existent file should return empty array
+		// Get logs from non-existent file should return empty array.
 	logs, err := logger2.GetLogs(7)
 	if err != nil {
 		t.Fatalf("GetLogs failed: %v", err)
@@ -167,7 +167,7 @@ func TestConsultationLogger_ThreadSafety(t *testing.T) {
 	}
 	defer logger.Close()
 
-	// Concurrent writes
+		// Concurrent writes.
 	done := make(chan bool, 10)
 	for i := 0; i < 10; i++ {
 		go func(id int) {
@@ -185,12 +185,12 @@ func TestConsultationLogger_ThreadSafety(t *testing.T) {
 		}(i)
 	}
 
-	// Wait for all goroutines
+		// Wait for all goroutines.
 	for i := 0; i < 10; i++ {
 		<-done
 	}
 
-	// Verify all consultations were logged
+		// Verify all consultations were logged.
 	logs, err := logger.GetLogs(1)
 	if err != nil {
 		t.Fatalf("GetLogs failed: %v", err)
@@ -204,36 +204,36 @@ func TestConsultationLogger_ThreadSafety(t *testing.T) {
 func TestConsultationLogger_LogRotation(t *testing.T) {
 	tmpDir := t.TempDir()
 
-	// Create a log file with yesterday's date
+		// Create a log file with yesterday's date.
 	yesterday := time.Now().AddDate(0, 0, -1)
 	yesterdayPath := filepath.Join(tmpDir, "consultations.jsonl")
 
-	// Create file and set its modification time to yesterday
+		// Create file and set its modification time to yesterday.
 	file, err := os.Create(yesterdayPath)
 	if err != nil {
 		t.Fatalf("Failed to create test file: %v", err)
 	}
 	file.Close()
 
-	// Set modification time to yesterday
+		// Set modification time to yesterday.
 	if err := os.Chtimes(yesterdayPath, yesterday, yesterday); err != nil {
 		t.Fatalf("Failed to set file time: %v", err)
 	}
 
-	// Create logger - should rotate the file
+		// Create logger - should rotate the file.
 	logger, err := NewConsultationLogger(tmpDir)
 	if err != nil {
 		t.Fatalf("NewConsultationLogger failed: %v", err)
 	}
 	defer logger.Close()
 
-	// Check that rotated file was created
+		// Check that rotated file was created.
 	rotatedPath := filepath.Join(tmpDir, fmt.Sprintf("consultations-%s.jsonl", yesterday.Format("2006-01-02")))
 	if _, err := os.Stat(rotatedPath); os.IsNotExist(err) {
 		t.Error("Rotated log file was not created")
 	}
 
-	// Check that current file exists
+		// Check that current file exists.
 	currentPath := filepath.Join(tmpDir, "consultations.jsonl")
 	if _, err := os.Stat(currentPath); os.IsNotExist(err) {
 		t.Error("Current log file was not created after rotation")
@@ -243,11 +243,11 @@ func TestConsultationLogger_LogRotation(t *testing.T) {
 func TestConsultationLogger_GetLogs_WithRotatedFiles(t *testing.T) {
 	tmpDir := t.TempDir()
 
-	// Create a rotated log file manually
+		// Create a rotated log file manually.
 	yesterday := time.Now().AddDate(0, 0, -1)
 	rotatedPath := filepath.Join(tmpDir, fmt.Sprintf("consultations-%s.jsonl", yesterday.Format("2006-01-02")))
 
-	// Write some test data to rotated file
+		// Write some test data to rotated file.
 	rotatedFile, err := os.Create(rotatedPath)
 	if err != nil {
 		t.Fatalf("Failed to create rotated file: %v", err)
@@ -268,14 +268,14 @@ func TestConsultationLogger_GetLogs_WithRotatedFiles(t *testing.T) {
 	}
 	rotatedFile.Close()
 
-	// Create logger and write to current file
+		// Create logger and write to current file.
 	logger, err := NewConsultationLogger(tmpDir)
 	if err != nil {
 		t.Fatalf("NewConsultationLogger failed: %v", err)
 	}
 	defer logger.Close()
 
-	// Write to current file
+		// Write to current file.
 	currentConsultation := &wisdom.Consultation{
 		Timestamp:        time.Now().Format(time.RFC3339),
 		ConsultationType: "advisor",
@@ -287,18 +287,18 @@ func TestConsultationLogger_GetLogs_WithRotatedFiles(t *testing.T) {
 		t.Fatalf("Log failed: %v", err)
 	}
 
-	// Get logs for last 2 days - should get both
+		// Get logs for last 2 days - should get both.
 	logs, err := logger.GetLogs(2)
 	if err != nil {
 		t.Fatalf("GetLogs failed: %v", err)
 	}
 
-	// Should have 2 logs (one from yesterday, one from today)
+		// Should have 2 logs (one from yesterday, one from today).
 	if len(logs) != 2 {
 		t.Errorf("Expected 2 logs (from rotated and current), got %d", len(logs))
 	}
 
-	// Verify we got both quotes
+		// Verify we got both quotes.
 	quotes := make(map[string]bool)
 	for _, log := range logs {
 		quotes[log.Quote] = true
@@ -314,14 +314,14 @@ func TestConsultationLogger_GetLogs_WithRotatedFiles(t *testing.T) {
 func TestConsultationLogger_RotationDuringActiveLogging(t *testing.T) {
 	tmpDir := t.TempDir()
 
-	// Create logger
+		// Create logger.
 	logger, err := NewConsultationLogger(tmpDir)
 	if err != nil {
 		t.Fatalf("NewConsultationLogger failed: %v", err)
 	}
 	defer logger.Close()
 
-	// Write initial consultation
+		// Write initial consultation.
 	consultation1 := &wisdom.Consultation{
 		Timestamp:        time.Now().Format(time.RFC3339),
 		ConsultationType: "advisor",
@@ -333,13 +333,12 @@ func TestConsultationLogger_RotationDuringActiveLogging(t *testing.T) {
 		t.Fatalf("Log failed: %v", err)
 	}
 
-	// Manually trigger rotation by manipulating the currentDate field
-	// This simulates a date change
+		// This simulates a date change.
 	logger.mu.Lock()
 	logger.currentDate = time.Now().AddDate(0, 0, -1).Format("2006-01-02")
 	logger.mu.Unlock()
 
-	// Write another consultation - should trigger rotation
+		// Write another consultation - should trigger rotation.
 	consultation2 := &wisdom.Consultation{
 		Timestamp:        time.Now().Format(time.RFC3339),
 		ConsultationType: "advisor",
@@ -351,13 +350,13 @@ func TestConsultationLogger_RotationDuringActiveLogging(t *testing.T) {
 		t.Fatalf("Log failed after rotation: %v", err)
 	}
 
-	// Check that rotated file exists
+		// Check that rotated file exists.
 	rotatedPath := filepath.Join(tmpDir, fmt.Sprintf("consultations-%s.jsonl", time.Now().AddDate(0, 0, -1).Format("2006-01-02")))
 	if _, err := os.Stat(rotatedPath); os.IsNotExist(err) {
 		t.Error("Rotated file was not created during active logging")
 	}
 
-	// Verify both logs are retrievable
+		// Verify both logs are retrievable.
 	logs, err := logger.GetLogs(2)
 	if err != nil {
 		t.Fatalf("GetLogs failed: %v", err)
@@ -371,19 +370,19 @@ func TestConsultationLogger_RotationDuringActiveLogging(t *testing.T) {
 func TestConsultationLogger_RotationIdempotent(t *testing.T) {
 	tmpDir := t.TempDir()
 
-	// Create logger
+		// Create logger.
 	logger, err := NewConsultationLogger(tmpDir)
 	if err != nil {
 		t.Fatalf("NewConsultationLogger failed: %v", err)
 	}
 	defer logger.Close()
 
-	// Manually set currentDate to yesterday to simulate date change
+		// Manually set currentDate to yesterday to simulate date change.
 	logger.mu.Lock()
 	logger.currentDate = time.Now().AddDate(0, 0, -1).Format("2006-01-02")
 	logger.mu.Unlock()
 
-	// First rotation
+		// First rotation.
 	consultation1 := &wisdom.Consultation{
 		Timestamp:        time.Now().Format(time.RFC3339),
 		ConsultationType: "advisor",
@@ -395,7 +394,7 @@ func TestConsultationLogger_RotationIdempotent(t *testing.T) {
 		t.Fatalf("First Log failed: %v", err)
 	}
 
-	// Try to rotate again (should be idempotent - no error, no duplicate rotation)
+		// Try to rotate again (should be idempotent - no error, no duplicate rotation).
 	consultation2 := &wisdom.Consultation{
 		Timestamp:        time.Now().Format(time.RFC3339),
 		ConsultationType: "advisor",
@@ -407,13 +406,13 @@ func TestConsultationLogger_RotationIdempotent(t *testing.T) {
 		t.Fatalf("Second Log failed: %v", err)
 	}
 
-	// Should only have one rotated file
+		// Should only have one rotated file.
 	rotatedPath := filepath.Join(tmpDir, fmt.Sprintf("consultations-%s.jsonl", time.Now().AddDate(0, 0, -1).Format("2006-01-02")))
 	if _, err := os.Stat(rotatedPath); os.IsNotExist(err) {
 		t.Error("Rotated file was not created")
 	}
 
-	// Verify logs are correct
+		// Verify logs are correct.
 	logs, err := logger.GetLogs(2)
 	if err != nil {
 		t.Fatalf("GetLogs failed: %v", err)

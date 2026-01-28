@@ -34,7 +34,7 @@ func TestAdvisorRegistry_Initialize_Twice(t *testing.T) {
 	registry := NewAdvisorRegistry()
 	registry.Initialize()
 
-	// Second initialize should not error
+	// Second initialize should not error.
 	registry.Initialize()
 	if !registry.initialized {
 		t.Error("Registry not marked as initialized after second call")
@@ -47,8 +47,8 @@ func TestAdvisorRegistry_GetAdvisorForMetric(t *testing.T) {
 
 	tests := []struct {
 		metric  string
-		wantErr bool
 		checkID string
+		wantErr bool
 	}{
 		{"security", false, "bofh"},
 		{"testing", false, "stoic"},
@@ -80,8 +80,8 @@ func TestAdvisorRegistry_GetAdvisorForTool(t *testing.T) {
 
 	tests := []struct {
 		tool    string
-		wantErr bool
 		checkID string
+		wantErr bool
 	}{
 		{"project_scorecard", false, "pistis_sophia"},
 		{"nonexistent", true, ""},
@@ -112,8 +112,8 @@ func TestAdvisorRegistry_GetAdvisorForStage(t *testing.T) {
 
 	tests := []struct {
 		stage   string
-		wantErr bool
 		checkID string
+		wantErr bool
 	}{
 		{"daily_checkin", false, "pistis_sophia"},
 		{"nonexistent", true, ""},
@@ -140,10 +140,10 @@ func TestAdvisorRegistry_GetAdvisorForStage(t *testing.T) {
 
 func TestGetConsultationMode(t *testing.T) {
 	tests := []struct {
-		score    float64
 		wantMode string
 		wantIcon string
 		wantFreq string
+		score    float64
 		boundary bool
 	}{
 		{0, "chaos", "🔥", "every_action", true},
@@ -158,8 +158,8 @@ func TestGetConsultationMode(t *testing.T) {
 		{80, "mastery", "🎯", "weekly", true},
 		{90, "mastery", "🎯", "weekly", false},
 		{100, "mastery", "🎯", "weekly", true},
-		{150, "mastery", "🎯", "weekly", false},    // Edge case: score > 100
-		{-10, "chaos", "🔥", "every_action", true}, // Edge case: negative score (should default to chaos)
+		{150, "mastery", "🎯", "weekly", false}, {150, "mastery", "🎯", "weekly", false}, // Edge case: score > 100.
+		{-10, "chaos", "🔥", "every_action", true}, {-10, "chaos", "🔥", "every_action", true}, // Edge case: negative score (should default to chaos).
 	}
 
 	for _, tt := range tests {
@@ -186,13 +186,13 @@ func TestGetConsultationMode(t *testing.T) {
 func TestGetModeConfig(t *testing.T) {
 	tests := []struct {
 		mode         SessionMode
-		wantAdvisors int
 		wantTone     string
+		wantAdvisors int
 	}{
 		{SessionModeAgent, 3, "strategic"},
 		{SessionModeAsk, 3, "direct"},
 		{SessionModeManual, 3, "observational"},
-		{SessionMode("UNKNOWN"), 0, ""}, // Should return nil
+		{SessionMode("UNKNOWN"), 0, ""}, {SessionMode("UNKNOWN"), 0, ""}, // Should return nil.
 	}
 
 	for _, tt := range tests {
@@ -224,9 +224,9 @@ func TestAdjustAdvisorForMode(t *testing.T) {
 		name             string
 		sessionMode      SessionMode
 		consultationType string
-		availableSources []string
 		wantAdvisor      string
 		wantRationale    string
+		availableSources []string
 		shouldAdjust     bool
 	}{
 		{
@@ -234,18 +234,18 @@ func TestAdjustAdvisorForMode(t *testing.T) {
 			sessionMode:      SessionModeAgent,
 			consultationType: "random",
 			availableSources: availableSources,
-			wantAdvisor:      "art_of_war", // First available preferred
-			wantRationale:    "Mode-aware selection for AGENT",
-			shouldAdjust:     true,
+			wantAdvisor:      "art_of_war", wantAdvisor: "art_of_war", // First available preferred.
+			wantRationale: "Mode-aware selection for AGENT",
+			shouldAdjust:  true,
 		},
 		{
 			name:             "random consultation with ASK mode",
 			sessionMode:      SessionModeAsk,
 			consultationType: "random",
 			availableSources: availableSources,
-			wantAdvisor:      "confucius", // First available preferred
-			wantRationale:    "Mode-aware selection for ASK",
-			shouldAdjust:     true,
+			wantAdvisor:      "confucius", wantAdvisor: "confucius", // First available preferred.
+			wantRationale: "Mode-aware selection for ASK",
+			shouldAdjust:  true,
 		},
 		{
 			name:             "metric consultation should not adjust",
@@ -260,10 +260,10 @@ func TestAdjustAdvisorForMode(t *testing.T) {
 			name:             "no available preferred advisors",
 			sessionMode:      SessionModeManual,
 			consultationType: "random",
-			availableSources: []string{"bofh", "stoic"}, // No preferred advisors available
-			wantAdvisor:      "",
-			wantRationale:    "",
-			shouldAdjust:     false,
+			availableSources: []string{"bofh", "stoic"}, availableSources: []string{"bofh", "stoic"}, // No preferred advisors available.
+			wantAdvisor:   "",
+			wantRationale: "",
+			shouldAdjust:  false,
 		},
 	}
 
@@ -304,7 +304,7 @@ func TestAdvisorRegistry_GetAllMetricAdvisors(t *testing.T) {
 		t.Error("GetAllMetricAdvisors returned empty map")
 	}
 
-	// Check that known metrics exist
+	// Check that known metrics exist.
 	if _, exists := advisors["security"]; !exists {
 		t.Error("GetAllMetricAdvisors missing security advisor")
 	}
@@ -325,7 +325,7 @@ func TestAdvisorRegistry_GetAllToolAdvisors(t *testing.T) {
 		t.Error("GetAllToolAdvisors returned empty map")
 	}
 
-	// Check that known tools exist
+	// Check that known tools exist.
 	if _, exists := advisors["project_scorecard"]; !exists {
 		t.Error("GetAllToolAdvisors missing project_scorecard advisor")
 	}
@@ -343,7 +343,7 @@ func TestAdvisorRegistry_GetAllStageAdvisors(t *testing.T) {
 		t.Error("GetAllStageAdvisors returned empty map")
 	}
 
-	// Check that known stages exist
+	// Check that known stages exist.
 	if _, exists := advisors["daily_checkin"]; !exists {
 		t.Error("GetAllStageAdvisors missing daily_checkin advisor")
 	}

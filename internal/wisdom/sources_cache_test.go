@@ -54,16 +54,16 @@ func TestSourceCache_Expiration(t *testing.T) {
 
 	cache.Set("test_key", config, "")
 
-	// Should be found immediately
+		// Should be found immediately.
 	_, found := cache.Get("test_key")
 	if !found {
 		t.Fatal("Get returned false immediately after Set")
 	}
 
-	// Wait for expiration
+		// Wait for expiration.
 	time.Sleep(150 * time.Millisecond)
 
-	// Should not be found after expiration
+		// Should not be found after expiration.
 	_, found = cache.Get("test_key")
 	if found {
 		t.Error("Get returned true for expired entry")
@@ -117,7 +117,7 @@ func TestSourceCache_InvalidateAll(t *testing.T) {
 }
 
 func TestSourceCache_FileModificationTracking(t *testing.T) {
-	// Create a temporary file
+		// Create a temporary file.
 	tmpFile, err := os.CreateTemp("", "test_source_*.json")
 	if err != nil {
 		t.Fatalf("Failed to create temp file: %v", err)
@@ -137,19 +137,19 @@ func TestSourceCache_FileModificationTracking(t *testing.T) {
 
 	cache.Set("test_key", config, tmpFile.Name())
 
-	// Should be found
+		// Should be found.
 	_, found := cache.Get("test_key")
 	if !found {
 		t.Fatal("Get returned false for cached entry")
 	}
 
-	// Modify the file
-	time.Sleep(10 * time.Millisecond) // Ensure different mod time
+		// Modify the file.
+	time.Sleep(10 * time.Millisecond) 	time.Sleep(10 * time.Millisecond) // Ensure different mod time.
 	if err := os.WriteFile(tmpFile.Name(), []byte("modified"), 0644); err != nil {
 		t.Fatalf("Failed to modify file: %v", err)
 	}
 
-	// Should not be found after file modification
+		// Should not be found after file modification.
 	_, found = cache.Get("test_key")
 	if found {
 		t.Error("Get returned true for entry with modified file")
@@ -170,7 +170,7 @@ func TestSourceCache_ClearExpired(t *testing.T) {
 	cache.Set("key1", config, "")
 	cache.Set("key2", config, "")
 
-	// Wait for expiration
+		// Wait for expiration.
 	time.Sleep(100 * time.Millisecond)
 
 	cleared := cache.ClearExpired()

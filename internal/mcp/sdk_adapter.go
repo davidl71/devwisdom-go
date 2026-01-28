@@ -30,17 +30,16 @@ type WisdomServerSDK struct {
 
 // NewWisdomServerSDK creates a new wisdom MCP server instance using the official SDK.
 func NewWisdomServerSDK() *WisdomServerSDK {
-	// Load server configuration using builder pattern (with environment variable support)
-	// Try loading from environment first (backward compatibility)
+		// Try loading from environment first (backward compatibility).
 	cfg, err := mcpconfig.LoadBaseConfig()
 	if err != nil || cfg.Name == "" || cfg.Name == "mcp-server" || cfg.Version == "" || cfg.Version == "1.0.0" {
-		// Use builder pattern with defaults
+				// Use builder pattern with defaults.
 		cfg, err = mcpconfig.NewConfigBuilder().
 			WithName("devwisdom").
 			WithVersion(Version).
 			Build()
 		if err != nil {
-			// Fallback to hardcoded defaults if builder fails
+						// Fallback to hardcoded defaults if builder fails.
 			cfg = &mcpconfig.BaseConfig{
 				Name:    "devwisdom",
 				Version: Version,
@@ -48,21 +47,20 @@ func NewWisdomServerSDK() *WisdomServerSDK {
 		}
 	}
 
-	// Initialize consultation logger (log directory: .devwisdom)
+		// Initialize consultation logger (log directory: .devwisdom).
 	logger, err := logging.NewConsultationLogger(".devwisdom")
 	if err != nil {
-		// Log initialization failure is non-fatal - server can still work without logging
+				// Log initialization failure is non-fatal - server can still work without logging.
 		logger = nil
 	}
 
-	// Initialize structured application logger (supports both DEVWISDOM_DEBUG and MCP_DEBUG)
-	// Handle DEVWISDOM_DEBUG for backward compatibility
+		// Handle DEVWISDOM_DEBUG for backward compatibility.
 	if os.Getenv("DEVWISDOM_DEBUG") == "1" {
 		os.Setenv("MCP_DEBUG", "1")
 	}
 	appLogger := mcplogging.NewLogger()
 
-	// Create SDK server with config
+		// Create SDK server with config.
 	sdkServer := mcp.NewServer(&mcp.Implementation{
 		Name:    cfg.Name,
 		Version: cfg.Version,
@@ -78,24 +76,24 @@ func NewWisdomServerSDK() *WisdomServerSDK {
 
 // Run starts the MCP server with stdio transport using the SDK.
 func (s *WisdomServerSDK) Run(ctx context.Context) error {
-	// Initialize wisdom engine first (before any output)
+		// Initialize wisdom engine first (before any output).
 	if err := s.wisdom.Initialize(); err != nil {
 		s.appLogger.Error("", "Failed to initialize wisdom engine: %v", err)
 		return fmt.Errorf("failed to initialize wisdom engine (check sources.json configuration and file permissions): %w", err)
 	}
 
-	// Log server startup
+		// Log server startup.
 	s.appLogger.Info("", "MCP server v%s starting (SDK)", Version)
 
-	// Register tools
+		// Register tools.
 	s.registerTools()
 
-	// Register resources
+		// Register resources.
 	if err := s.registerResources(); err != nil {
 		return fmt.Errorf("failed to register resources: %w", err)
 	}
 
-	// Run with stdio transport
+		// Run with stdio transport.
 	transport := &mcp.StdioTransport{}
 	if err := s.server.Run(ctx, transport); err != nil {
 		return fmt.Errorf("server run failed: %w", err)
@@ -104,10 +102,10 @@ func (s *WisdomServerSDK) Run(ctx context.Context) error {
 	return nil
 }
 
-// ToolHandlerFunc is a function type for handling tool execution
+// ToolHandlerFunc is a function type for handling tool execution.
 type ToolHandlerFunc func(map[string]interface{}) (interface{}, error)
 
-// newErrorResult creates a CallToolResult with an error message
+// newErrorResult creates a CallToolResult with an error message.
 func newErrorResult(message string) *mcp.CallToolResult {
 	return &mcp.CallToolResult{
 		IsError: true,
@@ -120,15 +118,10 @@ func newErrorResult(message string) *mcp.CallToolResult {
 }
 
 
-// wrapToolHandler wraps a tool handler function to work with SDK's CallToolRequest
-// This eliminates duplication across all tool handlers by providing:
-// - Argument unmarshaling
-// - Error handling and result marshaling
-// - Consistent error response format
-// - Standardized response formatting using mcp-go-core utilities
+// - Standardized response formatting using mcp-go-core utilities.
 func wrapToolHandler(handler ToolHandlerFunc) func(context.Context, *mcp.CallToolRequest) (*mcp.CallToolResult, error) {
 	return func(ctx context.Context, req *mcp.CallToolRequest) (*mcp.CallToolResult, error) {
-		// Extract and unmarshal arguments
+				// Extract and unmarshal arguments.
 		args := make(map[string]interface{})
 		if req.Params != nil && len(req.Params.Arguments) > 0 {
 			if err := json.Unmarshal(req.Params.Arguments, &args); err != nil {
@@ -136,31 +129,31 @@ func wrapToolHandler(handler ToolHandlerFunc) func(context.Context, *mcp.CallToo
 			}
 		}
 
-		// Call the actual handler
+				// Call the actual handler.
 		result, err := handler(args)
 		if err != nil {
 			return newErrorResult(fmt.Sprintf("Tool execution error: %v", err)), nil
 		}
 
-		// Convert result to map[string]interface{} for response.FormatResult()
+				// Convert result to map[string]interface{} for response.FormatResult().
 		resultMap, err := mcpresponse.ConvertToMap(result)
 		if err != nil {
 			return newErrorResult(fmt.Sprintf("Failed to convert result to map: %v", err)), nil
 		}
 
-		// Extract output_path from args if present
+				// Extract output_path from args if present.
 		outputPath := ""
 		if path, ok := args["output_path"].(string); ok && path != "" {
 			outputPath = path
 		}
 
-		// Use mcp-go-core response formatter for standardized formatting
+				// Use mcp-go-core response formatter for standardized formatting.
 		textContents, err := mcpresponse.FormatResult(resultMap, outputPath)
 		if err != nil {
 			return newErrorResult(fmt.Sprintf("Failed to format result: %v", err)), nil
 		}
 
-		// Convert []types.TextContent to []mcp.Content ([]mcp.TextContent)
+				// Convert []types.TextContent to []mcp.Content ([]mcp.TextContent).
 		contents := make([]mcp.Content, len(textContents))
 		for i, tc := range textContents {
 			contents[i] = &mcp.TextContent{
@@ -168,7 +161,7 @@ func wrapToolHandler(handler ToolHandlerFunc) func(context.Context, *mcp.CallToo
 			}
 		}
 
-		// Return success result with formatted content
+				// Return success result with formatted content.
 		return &mcp.CallToolResult{
 			Content: contents,
 		}, nil
@@ -178,14 +171,14 @@ func wrapToolHandler(handler ToolHandlerFunc) func(context.Context, *mcp.CallToo
 
 // registerTools registers all MCP tools with the SDK server.
 func (s *WisdomServerSDK) registerTools() {
-	// Create handlers instance to reuse business logic
+		// Create handlers instance to reuse business logic.
 	handlers := NewWisdomHandlers(s.wisdom, s.logger, s.appLogger)
 
-	// Get tool definitions from shared function and convert to SDK format
+		// Get tool definitions from shared function and convert to SDK format.
 	toolDefs := getToolDefinitions()
 	sdkTools := ConvertToolsToSDK(toolDefs)
 
-	// Map tool names to handler functions
+		// Map tool names to handler functions.
 	handlerMap := map[string]ToolHandlerFunc{
 		"consult_advisor":     handlers.handleConsultAdvisor,
 		"get_wisdom":          handlers.handleGetWisdom,
@@ -193,11 +186,11 @@ func (s *WisdomServerSDK) registerTools() {
 		"get_consultation_log": handlers.handleGetConsultationLog,
 	}
 
-	// Register all tools
+		// Register all tools.
 	for _, tool := range sdkTools {
 		handler, ok := handlerMap[tool.Name]
 		if !ok {
-			continue // Skip if handler not found (shouldn't happen)
+			continue 			continue // Skip if handler not found (shouldn't happen).
 		}
 		wrappedHandler := wrapToolHandler(handler)
 		s.server.AddTool(tool, wrappedHandler)
@@ -206,10 +199,10 @@ func (s *WisdomServerSDK) registerTools() {
 
 // registerResources registers all MCP resources with the SDK server.
 func (s *WisdomServerSDK) registerResources() error {
-	// Create handlers instance to reuse business logic
+		// Create handlers instance to reuse business logic.
 	handlers := NewWisdomHandlers(s.wisdom, s.logger, s.appLogger)
 
-	// Register wisdom://tools resource
+		// Register wisdom://tools resource.
 	toolsResource := &mcp.Resource{
 		URI:         "wisdom://tools",
 		Name:        "Available Tools",
@@ -229,9 +222,7 @@ func (s *WisdomServerSDK) registerResources() error {
 
 	s.server.AddResource(toolsResource, toolsHandler)
 
-	// Register other resources similarly...
-	// (wisdom://sources, wisdom://advisors, wisdom://advisor/{id}, wisdom://consultations/{days})
-	// For brevity, I'll add a helper function to register all resources
+		// For brevity, I'll add a helper function to register all resources.
 
 	return s.registerAllResources(handlers)
 }
@@ -258,14 +249,14 @@ func (s *WisdomServerSDK) registerAllResources(handlers *WisdomHandlers) error {
 	advisorsHandler := s.createResourceHandler("wisdom://advisors", handlers.HandleAdvisorsResource)
 	s.server.AddResource(advisorsResource, advisorsHandler)
 
-	// Register wisdom://advisor/{id} - use ResourceTemplate for dynamic URI
+		// Register wisdom://advisor/{id} - use ResourceTemplate for dynamic URI.
 	advisorTemplate := &mcp.ResourceTemplate{
 		URITemplate: "wisdom://advisor/{id}",
 		Name:        "Advisor Details",
 		Description: "Get details for a specific advisor",
 		MIMEType:    "application/json",
 	}
-	// Extract advisor ID (string parameter)
+		// Extract advisor ID (string parameter).
 	extractAdvisorID := func(suffix string) (string, error) {
 		if suffix == "" {
 			return "", fmt.Errorf("advisor ID is required")
@@ -279,17 +270,17 @@ func (s *WisdomServerSDK) registerAllResources(handlers *WisdomHandlers) error {
 	)
 	s.server.AddResourceTemplate(advisorTemplate, advisorTemplateHandler)
 
-	// Register wisdom://consultations/{days} - use ResourceTemplate for dynamic URI
+		// Register wisdom://consultations/{days} - use ResourceTemplate for dynamic URI.
 	consultationsTemplate := &mcp.ResourceTemplate{
 		URITemplate: "wisdom://consultations/{days}",
 		Name:        "Consultation Log",
 		Description: "Get consultation log entries for the specified number of days",
 		MIMEType:    "application/json",
 	}
-	// Extract days (int parameter with default value 7)
+		// Extract days (int parameter with default value 7).
 	extractDays := func(suffix string) (int, error) {
 		if suffix == "" {
-			return 7, nil // Use default if empty
+			return 7, nil 			return 7, nil // Use default if empty.
 		}
 		days, err := strconv.Atoi(suffix)
 		if err != nil {
@@ -300,7 +291,7 @@ func (s *WisdomServerSDK) registerAllResources(handlers *WisdomHandlers) error {
 	consultationsTemplateHandler := s.createResourceTemplateHandlerInt(
 		"wisdom://consultations/",
 		extractDays,
-		7, // default value
+		7, 		7, // default value.
 		handlers.HandleConsultationsResource,
 	)
 	s.server.AddResourceTemplate(consultationsTemplate, consultationsTemplateHandler)
@@ -341,25 +332,25 @@ func (s *WisdomServerSDK) createResourceTemplateHandler(
 		}
 		uri := req.Params.URI
 
-		// Validate URI prefix
+				// Validate URI prefix.
 		if !strings.HasPrefix(uri, uriPrefix) {
 			return nil, fmt.Errorf("invalid URI format: expected prefix %q, got %q", uriPrefix, uri)
 		}
 
-		// Extract parameter from URI suffix
+				// Extract parameter from URI suffix.
 		param, err := extractParam(strings.TrimPrefix(uri, uriPrefix))
 		if err != nil {
 			return nil, fmt.Errorf("failed to extract parameter from URI %q: %w", uri, err)
 		}
 
-		// Create mock JSON-RPC request
+				// Create mock JSON-RPC request.
 		mockReq := &JSONRPCRequest{
 			ID:     "resource",
 			Method: "resources/read",
 			Params: json.RawMessage(fmt.Sprintf(`{"uri": "%s"}`, uri)),
 		}
 
-		// Call handler with extracted parameter
+				// Call handler with extracted parameter.
 		resp := handlerFunc(mockReq, param)
 		return s.convertResourceResponse(resp, uri)
 	}
@@ -379,26 +370,26 @@ func (s *WisdomServerSDK) createResourceTemplateHandlerInt(
 		}
 		uri := req.Params.URI
 
-		// Validate URI prefix
+				// Validate URI prefix.
 		if !strings.HasPrefix(uri, uriPrefix) {
 			return nil, fmt.Errorf("invalid URI format: expected prefix %q, got %q", uriPrefix, uri)
 		}
 
-		// Extract parameter from URI suffix
+				// Extract parameter from URI suffix.
 		param, err := extractParam(strings.TrimPrefix(uri, uriPrefix))
 		if err != nil {
-			// Use default value if extraction fails
+						// Use default value if extraction fails.
 			param = defaultValue
 		}
 
-		// Create mock JSON-RPC request
+				// Create mock JSON-RPC request.
 		mockReq := &JSONRPCRequest{
 			ID:     "resource",
 			Method: "resources/read",
 			Params: json.RawMessage(fmt.Sprintf(`{"uri": "%s"}`, uri)),
 		}
 
-		// Call handler with extracted parameter
+				// Call handler with extracted parameter.
 		resp := handlerFunc(mockReq, param)
 		return s.convertResourceResponse(resp, uri)
 	}
@@ -414,11 +405,11 @@ func (s *WisdomServerSDK) convertResourceResponse(resp *JSONRPCResponse, uri str
 		contentsValue := result["contents"]
 		var contentMap map[string]interface{}
 
-		// Try []map[string]interface{} first (actual type from newResourceResponse)
+				// Try []map[string]interface{} first (actual type from newResourceResponse).
 		if contents, ok := contentsValue.([]map[string]interface{}); ok && len(contents) > 0 {
 			contentMap = contents[0]
 		} else if contents, ok := contentsValue.([]interface{}); ok && len(contents) > 0 {
-			// Fallback to []interface{}
+						// Fallback to []interface{}.
 			var ok2 bool
 			contentMap, ok2 = contents[0].(map[string]interface{})
 			if !ok2 {

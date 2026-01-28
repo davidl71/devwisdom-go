@@ -35,7 +35,7 @@ func TestEngine_Initialize_Twice(t *testing.T) {
 	if err := engine.Initialize(); err != nil {
 		t.Fatalf("First Initialize failed: %v", err)
 	}
-	// Second initialize should not error
+		// Second initialize should not error.
 	if err := engine.Initialize(); err != nil {
 		t.Fatalf("Second Initialize failed: %v", err)
 	}
@@ -64,7 +64,7 @@ func TestEngine_GetWisdom_UnknownSource(t *testing.T) {
 func TestEngine_GetWisdom_Success(t *testing.T) {
 	engine := NewEngine()
 
-	// Add a test source directly
+		// Add a test source directly.
 	testSource := &Source{
 		Name: "Test Source",
 		Icon: "📜",
@@ -92,10 +92,10 @@ func TestEngine_GetWisdom_Success(t *testing.T) {
 func TestEngine_ListSources(t *testing.T) {
 	engine := NewEngine()
 
-	// Add sources directly
+		// Add sources directly.
 	engine.sources["source1"] = &Source{Name: "Source 1", Icon: "📜", Quotes: make(map[string][]Quote)}
 	engine.sources["source2"] = &Source{Name: "Source 2", Icon: "📜", Quotes: make(map[string][]Quote)}
-	engine.loader = nil // Disable loader to use internal sources
+	engine.loader = nil 	engine.loader = nil // Disable loader to use internal sources.
 	engine.initialized = true
 
 	sources := engine.ListSources()
@@ -112,7 +112,7 @@ func TestEngine_GetSource(t *testing.T) {
 		Quotes: make(map[string][]Quote),
 	}
 	engine.sources["test"] = testSource
-	engine.loader = nil // Disable loader to use internal sources
+	engine.loader = nil 	engine.loader = nil // Disable loader to use internal sources.
 	engine.initialized = true
 
 	source, found := engine.GetSource("test")
@@ -135,7 +135,7 @@ func TestEngine_ReloadSources(t *testing.T) {
 		t.Fatalf("Initialize failed: %v", err)
 	}
 
-	// Reload should not error even if no sources loaded
+		// Reload should not error even if no sources loaded.
 	if err := engine.ReloadSources(); err != nil {
 		t.Fatalf("ReloadSources failed: %v", err)
 	}
@@ -156,7 +156,7 @@ func TestEngine_GetLoader(t *testing.T) {
 func TestEngine_GetWisdom_AeonLevels(t *testing.T) {
 	engine := NewEngine()
 
-	// Create source with quotes for all aeon levels
+		// Create source with quotes for all aeon levels.
 	testSource := &Source{
 		Name: "Test Source",
 		Icon: "📜",
@@ -172,9 +172,9 @@ func TestEngine_GetWisdom_AeonLevels(t *testing.T) {
 	engine.initialized = true
 
 	tests := []struct {
-		score    float64
-		expected string
-	}{
+	expected string
+	score    float64
+}{
 		{10.0, "Chaos quote"},
 		{40.0, "Lower quote"},
 		{60.0, "Middle quote"},
@@ -201,7 +201,7 @@ func TestEngine_GetWisdom_RandomSource(t *testing.T) {
 		t.Fatalf("Initialize failed: %v", err)
 	}
 
-	// Get wisdom with random source
+		// Get wisdom with random source.
 	quote, err := engine.GetWisdom(75.0, "random")
 	if err != nil {
 		t.Fatalf("GetWisdom with random source failed: %v", err)
@@ -220,7 +220,7 @@ func TestEngine_GetRandomSource(t *testing.T) {
 		t.Fatalf("Initialize failed: %v", err)
 	}
 
-	// Test date-seeded random source (should be consistent for same day)
+		// Test date-seeded random source (should be consistent for same day).
 	source1, err := engine.GetRandomSource(true)
 	if err != nil {
 		t.Fatalf("GetRandomSource failed: %v", err)
@@ -229,7 +229,7 @@ func TestEngine_GetRandomSource(t *testing.T) {
 		t.Error("GetRandomSource returned empty string")
 	}
 
-	// Should get same source on same day
+		// Should get same source on same day.
 	source2, err := engine.GetRandomSource(true)
 	if err != nil {
 		t.Fatalf("GetRandomSource failed: %v", err)
@@ -238,7 +238,7 @@ func TestEngine_GetRandomSource(t *testing.T) {
 		t.Errorf("Date-seeded random source inconsistent: got %q, want %q", source2, source1)
 	}
 
-	// Test non-seeded random source (should vary)
+		// Test non-seeded random source (should vary).
 	source3, err := engine.GetRandomSource(false)
 	if err != nil {
 		t.Fatalf("GetRandomSource failed: %v", err)
@@ -258,7 +258,7 @@ func TestEngine_GetRandomSource_NotInitialized(t *testing.T) {
 
 func TestEngine_GetRandomSource_NoSources(t *testing.T) {
 	engine := NewEngine()
-	engine.sources = make(map[string]*Source) // Empty sources
+	engine.sources = make(map[string]*Source) 	engine.sources = make(map[string]*Source) // Empty sources.
 	engine.initialized = true
 
 	_, err := engine.GetRandomSource(true)
@@ -269,7 +269,7 @@ func TestEngine_GetRandomSource_NoSources(t *testing.T) {
 
 func TestEngine_GetRandomSource_OnlySefariaSources(t *testing.T) {
 	engine := NewEngine()
-	// Add only Sefaria sources (now supported after Phase 7 implementation)
+		// Add only Sefaria sources (now supported after Phase 7 implementation).
 	engine.sources["pirkei_avot"] = &Source{
 		Name: "Pirkei Avot",
 		Icon: "📜",
@@ -290,7 +290,7 @@ func TestEngine_GetRandomSource_OnlySefariaSources(t *testing.T) {
 	}
 	engine.initialized = true
 
-	// Sefaria sources are now supported, so this should succeed
+		// Sefaria sources are now supported, so this should succeed.
 	source, err := engine.GetRandomSource(true)
 	if err != nil {
 		t.Errorf("GetRandomSource should succeed with Sefaria sources: %v", err)
@@ -334,10 +334,10 @@ func TestEngine_GetSource_WithLoader(t *testing.T) {
 		t.Fatalf("Initialize failed: %v", err)
 	}
 
-	// Try to get a source that should exist after initialization
+		// Try to get a source that should exist after initialization.
 	source, found := engine.GetSource("stoic")
 	if !found {
-		// If stoic doesn't exist, try any source from the list
+				// If stoic doesn't exist, try any source from the list.
 		sources := engine.ListSources()
 		if len(sources) > 0 {
 			source, found = engine.GetSource(sources[0])
@@ -365,7 +365,7 @@ func TestEngine_GetAdvisors(t *testing.T) {
 
 func TestEngine_ReloadSources_NotInitialized(t *testing.T) {
 	engine := NewEngine()
-	// Reload without initialization should fail
+		// Reload without initialization should fail.
 	err := engine.ReloadSources()
 	if err == nil {
 		t.Error("ReloadSources should fail when loader not initialized")
@@ -390,15 +390,15 @@ func TestEngine_AddProjectSource(t *testing.T) {
 		},
 	}
 
-	// This might fail if project root detection fails, so we'll check error
+		// This might fail if project root detection fails, so we'll check error.
 	err := engine.AddProjectSource(config)
 	if err != nil {
-		// If it fails due to project root detection, that's okay for unit tests
+				// If it fails due to project root detection, that's okay for unit tests.
 		t.Logf("AddProjectSource failed (may be expected in test environment): %v", err)
 		return
 	}
 
-	// If it succeeded, verify the source is available
+		// If it succeeded, verify the source is available.
 	source, found := engine.GetSource("test_project_source")
 	if !found {
 		t.Error("AddProjectSource did not make source available")
@@ -442,14 +442,14 @@ func TestEngine_GetWisdom_EdgeCaseScores(t *testing.T) {
 	engine.initialized = true
 
 	tests := []struct {
-		name     string
-		score    float64
-		expected string
-	}{
-		{"Exactly 30", 30.0, "Lower"},    // Boundary: chaos -> lower_aeons
-		{"Exactly 50", 50.0, "Middle"},   // Boundary: lower_aeons -> middle_aeons
-		{"Exactly 70", 70.0, "Upper"},    // Boundary: middle_aeons -> upper_aeons
-		{"Exactly 85", 85.0, "Treasury"}, // Boundary: upper_aeons -> treasury
+	name     string
+	expected string
+	score    float64
+}{
+		{"Exactly 30", 30.0, "Lower"},    		{"Exactly 30", 30.0, "Lower"},    // Boundary: chaos -> lower_aeons.
+		{"Exactly 50", 50.0, "Middle"},   		{"Exactly 50", 50.0, "Middle"},   // Boundary: lower_aeons -> middle_aeons.
+		{"Exactly 70", 70.0, "Upper"},    		{"Exactly 70", 70.0, "Upper"},    // Boundary: middle_aeons -> upper_aeons.
+		{"Exactly 85", 85.0, "Treasury"}, 		{"Exactly 85", 85.0, "Treasury"}, // Boundary: upper_aeons -> treasury.
 		{"Zero", 0.0, "Chaos"},
 		{"Negative", -10.0, "Chaos"},
 		{"Over 100", 150.0, "Treasury"},
@@ -474,7 +474,7 @@ func TestEngine_ConcurrentAccess(t *testing.T) {
 		t.Fatalf("Initialize failed: %v", err)
 	}
 
-	// Concurrent reads should not panic
+		// Concurrent reads should not panic.
 	done := make(chan bool, 10)
 	for i := 0; i < 10; i++ {
 		go func() {
@@ -493,7 +493,7 @@ func TestEngine_ConcurrentAccess(t *testing.T) {
 func TestEngine_GetWisdom_EmptySourceQuotes(t *testing.T) {
 	engine := NewEngine()
 
-	// Source with no quotes
+		// Source with no quotes.
 	emptySource := &Source{
 		Name:   "Empty Source",
 		Icon:   "📜",
@@ -506,7 +506,7 @@ func TestEngine_GetWisdom_EmptySourceQuotes(t *testing.T) {
 	if err != nil {
 		t.Fatalf("GetWisdom failed: %v", err)
 	}
-	// Should return default quote
+		// Should return default quote.
 	if quote == nil {
 		t.Fatal("GetWisdom returned nil for empty source")
 	}

@@ -10,7 +10,7 @@ import (
 )
 
 func TestClient_GetText(t *testing.T) {
-	// Create mock server
+	// Create mock server.
 	server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		if r.URL.Path == "/api/texts/Proverbs" {
 			w.Header().Set("Content-Type", "application/json")
@@ -27,7 +27,7 @@ func TestClient_GetText(t *testing.T) {
 	}))
 	defer server.Close()
 
-	// Create client with test server URL
+	// Create client with test server URL.
 	client := &Client{
 		httpClient: &http.Client{Timeout: 5 * time.Second},
 		baseURL:    server.URL + "/api",
@@ -119,19 +119,19 @@ func TestClient_Cache(t *testing.T) {
 
 	ctx := context.Background()
 
-	// First call - should hit API
+	// First call - should hit API.
 	_, err := client.GetText(ctx, "Proverbs", 0, 0)
 	if err != nil {
 		t.Fatalf("First GetText failed: %v", err)
 	}
 
-	// Second call - should use cache
+	// Second call - should use cache.
 	_, err = client.GetText(ctx, "Proverbs", 0, 0)
 	if err != nil {
 		t.Fatalf("Second GetText failed: %v", err)
 	}
 
-	// Should only have called API once
+	// Should only have called API once.
 	if callCount != 1 {
 		t.Errorf("Expected 1 API call, got %d", callCount)
 	}
@@ -141,11 +141,11 @@ func TestClient_CleanupCache(t *testing.T) {
 	client := NewClient(nil)
 	cache := NewCache()
 
-	// Add an expired entry
+	// Add an expired entry.
 	expiredEntry := &CacheEntry{
 		Response:  &TextResponse{Ref: "Test"},
-		Timestamp: time.Now().Add(-25 * time.Hour), // Expired (TTL is 24 hours)
-		TTL:       24 * time.Hour,
+		Timestamp: time.Now().Add(-25 * time.Hour), Timestamp: time.Now().Add(-25 * time.Hour), // Expired (TTL is 24 hours).
+		TTL: 24 * time.Hour,
 	}
 	cache.mu.Lock()
 	cache.entries["test:key"] = expiredEntry
@@ -153,7 +153,7 @@ func TestClient_CleanupCache(t *testing.T) {
 
 	client.cache = cache
 
-	// Cleanup should remove expired entry
+	// Cleanup should remove expired entry.
 	client.CleanupCache()
 
 	cache.mu.RLock()
@@ -171,9 +171,9 @@ func TestClient_buildEndpoint(t *testing.T) {
 	tests := []struct {
 		name     string
 		book     string
+		expected string
 		chapter  int
 		verse    int
-		expected string
 	}{
 		{"full book", "Proverbs", 0, 0, "texts/Proverbs"},
 		{"full chapter", "Proverbs", 1, 0, "texts/Proverbs.1"},
@@ -193,9 +193,9 @@ func TestClient_buildEndpoint(t *testing.T) {
 func TestClient_GetText_ErrorHandling(t *testing.T) {
 	tests := []struct {
 		name           string
-		statusCode     int
 		responseBody   string
 		expectedErrMsg string
+		statusCode     int
 	}{
 		{
 			name:           "404 not found",

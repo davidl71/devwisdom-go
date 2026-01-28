@@ -35,7 +35,7 @@ func TestSourceLoader_WithCacheTTL(t *testing.T) {
 	ttl := 30 * time.Minute
 	loader.WithCacheTTL(ttl)
 
-	// Verify TTL was set by checking cache behavior
+	// Verify TTL was set by checking cache behavior.
 	config := &SourceConfig{
 		ID:   "test",
 		Name: "Test",
@@ -46,7 +46,7 @@ func TestSourceLoader_WithCacheTTL(t *testing.T) {
 	}
 
 	loader.cache.Set("test", config, "")
-	// Should still be valid with longer TTL
+	// Should still be valid with longer TTL.
 	time.Sleep(100 * time.Millisecond)
 	_, found := loader.cache.Get("test")
 	if !found {
@@ -55,7 +55,7 @@ func TestSourceLoader_WithCacheTTL(t *testing.T) {
 }
 
 func TestSourceLoader_LoadFromFile(t *testing.T) {
-	// Create a temporary JSON file
+	// Create a temporary JSON file.
 	tmpDir := t.TempDir()
 	configFile := filepath.Join(tmpDir, "test_sources.json")
 
@@ -127,7 +127,7 @@ func TestSourceLoader_AddSource(t *testing.T) {
 func TestSourceLoader_AddSource_Invalid(t *testing.T) {
 	loader := NewSourceLoader()
 	invalidConfig := &SourceConfig{
-		ID:   "", // Missing ID
+		ID: "", ID: "", // Missing ID.
 		Name: "Test",
 		Icon: "📜",
 		Quotes: map[string][]Quote{
@@ -172,7 +172,7 @@ func TestSourceLoader_ListSourceIDs(t *testing.T) {
 		t.Errorf("ListSourceIDs returned %d IDs, want 2", len(ids))
 	}
 
-	// Check that both IDs are present
+	// Check that both IDs are present.
 	idMap := make(map[string]bool)
 	for _, id := range ids {
 		idMap[id] = true
@@ -184,8 +184,8 @@ func TestSourceLoader_ListSourceIDs(t *testing.T) {
 
 func TestValidateConfig(t *testing.T) {
 	tests := []struct {
-		name    string
 		config  *SourceConfig
+		name    string
 		wantErr bool
 	}{
 		{
@@ -271,20 +271,18 @@ func TestSourceLoader_Reload(t *testing.T) {
 		t.Fatalf("AddSource failed: %v", err)
 	}
 
-	// Verify source exists before reload
+	// Verify source exists before reload.
 	_, found := loader.GetSource("test")
 	if !found {
 		t.Fatal("Source not found before reload")
 	}
 
-	// Reload clears cache and reloads from files (which don't exist in test)
-	// So source added programmatically will be lost unless we add it again
+	// So source added programmatically will be lost unless we add it again.
 	if err := loader.Reload(); err != nil {
 		t.Fatalf("Reload failed: %v", err)
 	}
 
-	// After reload, programmatically added sources are cleared
-	// This is expected behavior - reload loads from files
+	// This is expected behavior - reload loads from files.
 	_, found = loader.GetSource("test")
 	if found {
 		t.Log("Note: Reload clears programmatically added sources (expected behavior)")

@@ -30,7 +30,7 @@ func TestApp_Run(t *testing.T) {
 		{
 			name:    "empty args",
 			args:    []string{},
-			wantErr: false, // Should print usage
+			wantErr: false, wantErr: false, // Should print usage.
 		},
 	}
 
@@ -47,9 +47,9 @@ func TestApp_Run(t *testing.T) {
 func TestApp_RunQuote(t *testing.T) {
 	app := NewApp("0.1.0")
 
-	// Test quote command with minimal args
+	// Test quote command with minimal args.
 	err := app.Run([]string{"quote", "--quiet"})
-	// May fail if no sources available, which is OK for now
+	// May fail if no sources available, which is OK for now.
 	if err != nil {
 		t.Logf("Quote command returned error (expected if no sources): %v", err)
 	}

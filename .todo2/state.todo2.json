@@ -10,22 +10,8 @@
         "cleanup",
         "documentation",
         "migration"
-      ]
-    },
-    {
-      "id": "T-32",
-      "content": "",
-      "long_description": "🎯 **Objective:** Add exarp-go MCP server configuration to the devwisdom-go workspace `.cursor/mcp.json` file.\n\n📋 **Acceptance Criteria:**\n- Verify exarp-go binary location and wrapper script exist\n- Add exarp-go configuration to `.cursor/mcp.json` in devwisdom-go\n- Use wrapper script pattern similar to exarp-go project\n- Ensure PROJECT_ROOT environment variable is properly set\n- Verify configuration follows same pattern as devwisdom configuration\n\n🚫 **Scope Boundaries (CRITICAL):**\n- **Included:** MCP configuration update, verification of exarp-go binary/wrapper\n- **Excluded:** Modifying exarp-go server code, changing exarp-go project structure\n- **Clarification Required:** None - standard MCP configuration task\n\n🔧 **Technical Requirements:**\n- Wrapper script path: `/Users/davidl/Projects/exarp-go/run_server.sh` (or similar)\n- Binary path: `/Users/davidl/Projects/exarp-go/bin/exarp-go`\n- JSON configuration format for `.cursor/mcp.json`\n- Environment variable substitution (`{{PROJECT_ROOT}}`)\n\n📁 **Files/Components:**\n- Update: `.cursor/mcp.json` (in devwisdom-go project)\n- Verify: Exarp-go wrapper script exists\n- Verify: Exarp-go binary location\n\n🧪 **Testing Requirements:**\n- Validate JSON syntax\n- Verify wrapper script exists and is executable\n- Check binary path exists\n- Confirm environment variable substitution\n\n⚠️ **Edge Cases:**\n- Exarp-go may use different wrapper script name\n- Configuration may already exist in mcp.json\n- Multiple workspace paths to consider\n\n📚 **Dependencies:** None",
-      "status": "Done",
-      "priority": "medium",
-      "tags": [
-        "cursor",
-        "devwisdom-go",
-        "exarp-go",
-        "mcp-config",
-        "workspace-config",
-        "wrapper"
-      ]
+      ],
+      "created": "1970-01-01T00:00:00.000Z"
     },
     {
       "id": "T-20251211192348-7",
@@ -39,7 +25,8 @@
       ],
       "dependencies": [
         "T-20251211192348-6"
-      ]
+      ],
+      "created": "1970-01-01T00:00:00.000Z"
     },
     {
       "id": "T-5",
@@ -54,7 +41,8 @@
       ],
       "dependencies": [
         "T-3"
-      ]
+      ],
+      "created": "1970-01-01T00:00:00.000Z"
     },
     {
       "id": "T-20251211192348-10",
@@ -68,7 +56,8 @@
       ],
       "dependencies": [
         "T-20251211192348-6"
-      ]
+      ],
+      "created": "1970-01-01T00:00:00.000Z"
     },
     {
       "id": "T-10",
@@ -80,12 +69,13 @@
         "context",
         "session",
         "setup"
-      ]
+      ],
+      "created": "1970-01-01T00:00:00.000Z"
     },
     {
       "id": "T-19",
       "content": "",
-      "long_description": "🎯 **Objective:** Profile the application, identify bottlenecks, and optimize performance to meet targets (\u003c 50ms startup, \u003c 10ms per tool call).\n\n📋 **Acceptance Criteria:**\n- Profile application startup time\n- Profile tool call response times\n- Identify performance bottlenecks\n- Optimize hot paths (quote retrieval, source loading)\n- Reduce memory allocations where possible\n- Optimize source loading and caching\n- Verify performance targets are met\n- Document performance improvements\n\n🚫 **Scope Boundaries (CRITICAL):**\n- **Included:** Performance profiling, optimization of identified bottlenecks\n- **Excluded:** Premature optimization, changing architecture\n- **Clarification Required:** None\n\n🔧 **Technical Requirements:**\n- Use Go profiling tools (pprof)\n- Benchmark critical paths\n- Optimize without breaking functionality\n- Maintain code readability\n\n📁 **Files/Components:**\n- Profile: cmd/server/main.go, internal/wisdom/engine.go\n- Optimize: Source loading, quote retrieval, caching\n- Add: Benchmark tests\n\n🧪 **Testing Requirements:**\n- Run benchmarks before and after optimization\n- Verify performance improvements\n- Ensure no functionality regressions\n- Test startup time meets \u003c 50ms target\n- Test tool call time meets \u003c 10ms target\n\n⚠️ **Edge Cases:**\n- First-time source loading may be slower\n- Large source files may impact performance\n- Caching should improve subsequent calls\n\n📚 **Dependencies:** None",
+      "long_description": "🎯 **Objective:** Profile the application, identify bottlenecks, and optimize performance to meet targets (< 50ms startup, < 10ms per tool call).\n\n📋 **Acceptance Criteria:**\n- Profile application startup time\n- Profile tool call response times\n- Identify performance bottlenecks\n- Optimize hot paths (quote retrieval, source loading)\n- Reduce memory allocations where possible\n- Optimize source loading and caching\n- Verify performance targets are met\n- Document performance improvements\n\n🚫 **Scope Boundaries (CRITICAL):**\n- **Included:** Performance profiling, optimization of identified bottlenecks\n- **Excluded:** Premature optimization, changing architecture\n- **Clarification Required:** None\n\n🔧 **Technical Requirements:**\n- Use Go profiling tools (pprof)\n- Benchmark critical paths\n- Optimize without breaking functionality\n- Maintain code readability\n\n📁 **Files/Components:**\n- Profile: cmd/server/main.go, internal/wisdom/engine.go\n- Optimize: Source loading, quote retrieval, caching\n- Add: Benchmark tests\n\n🧪 **Testing Requirements:**\n- Run benchmarks before and after optimization\n- Verify performance improvements\n- Ensure no functionality regressions\n- Test startup time meets < 50ms target\n- Test tool call time meets < 10ms target\n\n⚠️ **Edge Cases:**\n- First-time source loading may be slower\n- Large source files may impact performance\n- Caching should improve subsequent calls\n\n📚 **Dependencies:** None",
       "status": "Done",
       "priority": "medium",
       "tags": [
@@ -93,7 +83,8 @@
         "performance",
         "phase-10",
         "polish"
-      ]
+      ],
+      "created": "1970-01-01T00:00:00.000Z"
     },
     {
       "id": "T-13",
@@ -106,44 +97,8 @@
         "golangci-lint",
         "linting",
         "staticcheck"
-      ]
-    },
-    {
-      "id": "T-34",
-      "content": "",
-      "long_description": "🎯 **Objective:** Execute the exarp-go daily automation tool to conduct a daily meeting/briefing session.\n\n📋 **Acceptance Criteria:**\n- Successfully invoke the exarp-go automation tool with \"daily\" action\n- Review and document the results/output from the daily meeting\n- Ensure all automation outputs are captured and reviewed\n\n🚫 **Scope Boundaries (CRITICAL):**\n- **Included:** Running the daily automation tool, reviewing results\n- **Excluded:** Making changes to codebase, implementing new features\n- **Clarification Required:** None - straightforward tool invocation\n\n🔧 **Technical Requirements:**\n- Use exarp-go MCP server automation tool\n- Action parameter: \"daily\"\n- Review output format and results\n\n📁 **Files/Components:**\n- No files to be created/modified (tool execution only)\n\n🧪 **Testing Requirements:**\n- Verify tool executes successfully\n- Confirm output is received and readable\n\n⚠️ **Edge Cases:**\n- Tool may require project context or configuration\n- Output format may vary based on project state\n\n📚 **Dependencies:** None",
-      "status": "In Progress",
-      "priority": "medium",
-      "tags": [
-        "automation",
-        "daily-meeting",
-        "exarp-go"
-      ]
-    },
-    {
-      "id": "T-47",
-      "content": "",
-      "long_description": "🎯 **Objective:** Test the newly implemented native Go approve action to verify it works correctly.\n\n📋 **Acceptance Criteria:**\n- Approve action executes without errors\n- Filtering by status works correctly\n- Dry-run mode works\n- Task status updates correctly\n- Fallback mechanisms work if needed\n\n🚫 **Scope Boundaries (CRITICAL):**\n- **Included:** Testing approve action with various filters, dry-run mode, actual approval\n- **Excluded:** Production task modifications (use test tasks only)\n- **Clarification Required:** None\n\n🔧 **Technical Requirements:**\n- Use exarp-go MCP task_workflow tool\n- Test with Review status tasks\n- Verify dry-run output\n- Test actual approval\n\n📁 **Files/Components:**\n- Tool: task_workflow(action=\"approve\")\n- Test with existing Review status tasks\n\n🧪 **Testing Requirements:**\n- Verify approve action executes\n- Check filtering logic\n- Validate status updates\n- Confirm fallback works\n\n⚠️ **Edge Cases:**\n- No Review tasks available\n- All tasks need clarification\n- Empty filter results\n\n📚 **Dependencies:** None",
-      "status": "Done",
-      "priority": "high",
-      "tags": [
-        "approve",
-        "native-go",
-        "testing"
-      ]
-    },
-    {
-      "id": "T-40",
-      "content": "",
-      "long_description": "🎯 **Objective:** Execute pre-sprint cleanup workflow to ensure clean task list and aligned goals before starting new work.\n\n📋 **Acceptance Criteria:**\n- Duplicate tasks identified and consolidated\n- Task alignment with project goals verified\n- Documentation health check completed\n- All findings documented\n\n🚫 **Scope Boundaries (CRITICAL):**\n- **Included:** Running task_analysis(duplicates), analyze_alignment(todo2), health(docs)\n- **Excluded:** Actual task modifications (will be previewed/documented first)\n- **Clarification Required:** None\n\n🔧 **Technical Requirements:**\n- Use exarp-go MCP tools for analysis\n- Run tools in sequence as per pre_sprint workflow\n- Document results for review\n\n📁 **Files/Components:**\n- Tools: task_analysis, analyze_alignment, health\n- Output: Analysis results and recommendations\n\n🧪 **Testing Requirements:**\n- Verify all tools execute successfully\n- Confirm findings are actionable\n- Ensure recommendations are clear\n\n⚠️ **Edge Cases:**\n- No duplicates found\n- Perfect alignment (no issues)\n- Documentation already up to date\n\n📚 **Dependencies:** None",
-      "status": "Done",
-      "priority": "high",
-      "tags": [
-        "analysis",
-        "cleanup",
-        "pre-sprint",
-        "workflow"
-      ]
+      ],
+      "created": "1970-01-01T00:00:00.000Z"
     },
     {
       "id": "T-7",
@@ -158,7 +113,8 @@
       ],
       "dependencies": [
         "T-3"
-      ]
+      ],
+      "created": "1970-01-01T00:00:00.000Z"
     },
     {
       "id": "T-26",
@@ -174,7 +130,8 @@
       ],
       "dependencies": [
         "T-25"
-      ]
+      ],
+      "created": "1970-01-01T00:00:00.000Z"
     },
     {
       "id": "T-20251211192348-23",
@@ -184,20 +141,8 @@
       "tags": [
         "cli",
         "commands"
-      ]
-    },
-    {
-      "id": "T-53",
-      "content": "",
-      "long_description": "🎯 **Objective:** Understand what task case normalization means in the exarp-go project context and identify all areas requiring case normalization.\n\n📋 **Acceptance Criteria:**\n- Searched codebase for task-related code and case handling\n- Identified all locations where task cases are handled\n- Documented current case inconsistencies\n- Clarified what normalization format should be used (Title Case, camelCase, etc.)\n- Identified affected files and components\n\n🚫 **Scope Boundaries (CRITICAL):**\n- **Included:** Code analysis, case pattern identification, requirements gathering\n- **Excluded:** Actual implementation of normalization (follow-up task)\n- **Clarification Required:** What specific case format is desired (Title Case, camelCase, kebab-case, etc.)\n\n🔧 **Technical Requirements:**\n- Search exarp-go codebase for task-related code\n- Analyze task data structures and naming conventions\n- Check for existing case normalization utilities\n- Review task management system (if any)\n\n📁 **Files/Components:**\n- Search: /Users/davidl/Projects/exarp-go/ directory\n- Look for: task-related files, case normalization code, naming conventions\n\n🧪 **Testing Requirements:**\n- Verify understanding by documenting findings\n- List all locations requiring changes\n\n⚠️ **Edge Cases:**\n- Multiple task systems or formats in the codebase\n- Mixed case conventions currently in use\n- Special characters or international characters in task names\n\n📚 **Dependencies:** None",
-      "status": "Todo",
-      "priority": "high",
-      "tags": [
-        "case-handling",
-        "exarp-go",
-        "research",
-        "task-normalization"
-      ]
+      ],
+      "created": "1970-01-01T00:00:00.000Z"
     },
     {
       "id": "T-12",
@@ -210,7 +155,8 @@
         "phase-2",
         "random",
         "selector"
-      ]
+      ],
+      "created": "1970-01-01T00:00:00.000Z"
     },
     {
       "id": "T-48",
@@ -222,7 +168,8 @@
         "github",
         "mcp-go-sdk",
         "research"
-      ]
+      ],
+      "created": "1970-01-01T00:00:00.000Z"
     },
     {
       "id": "T-49",
@@ -235,20 +182,8 @@
         "fastmcp",
         "go",
         "package-analysis"
-      ]
-    },
-    {
-      "id": "T-46",
-      "content": "",
-      "long_description": "🎯 **Objective:** Search GitHub for Go FastMCP libraries, implementations, and related projects to understand available options and current state of Go-based FastMCP implementations.\n\n📋 **Acceptance Criteria:**\n- Search GitHub for \"go fastmcp\" and related terms\n- Identify relevant repositories and libraries\n- Document findings with verified GitHub repository links\n- Analyze repository status (active, stars, recent commits)\n- Note any patterns or common implementations\n\n🚫 **Scope Boundaries (CRITICAL):**\n- **Included:** GitHub search, repository discovery, link collection, basic analysis\n- **Excluded:** Code implementation, library integration, detailed code review\n- **Clarification Required:** None - straightforward search task\n\n🔧 **Technical Requirements:**\n- Use web search tools to find GitHub repositories\n- Verify all links are real GitHub URLs\n- Document repository metadata (stars, language, last updated)\n\n📁 **Files/Components:**\n- No files to create or modify\n- Results documented in research comment\n\n🧪 **Testing Requirements:**\n- All links must be verified and accessible\n- Repository information must be accurate\n\n⚠️ **Edge Cases:**\n- No results found → document search terms tried\n- Multiple similar projects → document all relevant ones\n- Outdated projects → note last update date\n\n📚 **Dependencies:** None",
-      "status": "Todo",
-      "priority": "low",
-      "tags": [
-        "fastmcp",
-        "github",
-        "go",
-        "research"
-      ]
+      ],
+      "created": "1970-01-01T00:00:00.000Z"
     },
     {
       "id": "T-4",
@@ -260,7 +195,8 @@
         "foundation",
         "logging",
         "phase-5"
-      ]
+      ],
+      "created": "1970-01-01T00:00:00.000Z"
     },
     {
       "id": "T-33",
@@ -273,7 +209,8 @@
         "mcp-config",
         "npx",
         "tractatus-thinking"
-      ]
+      ],
+      "created": "1970-01-01T00:00:00.000Z"
     },
     {
       "id": "T-15",
@@ -285,20 +222,8 @@
         "bugfix",
         "engine",
         "testing"
-      ]
-    },
-    {
-      "id": "T-43",
-      "content": "",
-      "long_description": "🎯 **Objective:** Check the GitHub remote repository status, verify if it's still referenced elsewhere, and determine if safe to delete.\n\n📋 **Acceptance Criteria:**\n- GitHub remote repository URL and status verified\n- Check if repository is referenced in other projects or documentation\n- Verify no active issues, PRs, or dependencies\n- Determine deletion safety with clear recommendation\n- Document any risks or considerations\n\n🚫 **Scope Boundaries (CRITICAL):**\n- **Included:** Remote repo analysis, reference checking, safety assessment\n- **Excluded:** Actual deletion (requires user confirmation)\n- **Clarification Required:** None\n\n🔧 **Technical Requirements:**\n- Check git remote configuration\n- Search for references to the repo in other projects\n- Verify GitHub repository status\n- Check for any external dependencies\n\n📁 **Files/Components:**\n- Analyze: [/Users/davidl/Projects/mcp-generic-tools/.git/config]\n- Search: Other project repositories for references\n\n🧪 **Testing Requirements:**\n- Verify remote URL is accessible\n- Confirm no critical references found\n- Validate deletion would not break dependencies\n\n⚠️ **Edge Cases:**\n- Repository might be referenced in documentation\n- Other projects might depend on it\n- GitHub Actions or CI/CD might reference it\n\n📚 **Dependencies:** T-53, T-54",
-      "status": "Done",
-      "priority": "high",
-      "tags": [
-        "cleanup",
-        "git",
-        "migration",
-        "safety"
-      ]
+      ],
+      "created": "1970-01-01T00:00:00.000Z"
     },
     {
       "id": "T-16",
@@ -311,7 +236,8 @@
         "hebrew",
         "phase-2",
         "porting"
-      ]
+      ],
+      "created": "1970-01-01T00:00:00.000Z"
     },
     {
       "id": "T-3",
@@ -324,7 +250,8 @@
         "logging",
         "persistence",
         "phase-5"
-      ]
+      ],
+      "created": "1970-01-01T00:00:00.000Z"
     },
     {
       "id": "T-22",
@@ -337,19 +264,8 @@
         "phase-8",
         "research",
         "testing"
-      ]
-    },
-    {
-      "id": "T-39",
-      "content": "",
-      "long_description": "🎯 **Objective:** Add a `lint-fix` target to the Makefile that automatically fixes linting issues, then execute it.\n\n📋 **Acceptance Criteria:**\n- `lint-fix` target added to Makefile\n- Target runs `golangci-lint run --fix ./...`\n- Target successfully fixes auto-fixable linting issues\n- Makefile remains valid and follows existing patterns\n\n🚫 **Scope Boundaries (CRITICAL):**\n- **Included:** Adding lint-fix target, running it once\n- **Excluded:** Manual linting fixes, changing other Makefile targets, running other lint commands\n- **Clarification Required:** None\n\n🔧 **Technical Requirements:**\n- Use golangci-lint with --fix flag\n- Follow existing Makefile pattern (similar to lint target)\n- Add to .PHONY declaration\n\n📁 **Files/Components:**\n- Update: [/Users/davidl/Projects/devwisdom-go/Makefile] (add lint-fix target)\n\n🧪 **Testing Requirements:**\n- Verify Makefile syntax is valid\n- Confirm lint-fix target executes successfully\n- Check that auto-fixable issues are resolved\n\n⚠️ **Edge Cases:**\n- If golangci-lint is not installed, provide clear error message\n- Some linting issues may require manual fixes\n\n📚 **Dependencies:** None",
-      "status": "In Progress",
-      "priority": "medium",
-      "tags": [
-        "code-quality",
-        "linting",
-        "makefile"
-      ]
+      ],
+      "created": "1970-01-01T00:00:00.000Z"
     },
     {
       "id": "T-20251211192348-11",
@@ -360,34 +276,8 @@
         "documentation",
         "godoc",
         "phase-9"
-      ]
-    },
-    {
-      "id": "T-45",
-      "content": "",
-      "long_description": "🎯 **Objective:** Execute sprint start workflow to prepare a clean, prioritized backlog before starting sprint work.\n\n📋 **Acceptance Criteria:**\n- Duplicate tasks cleaned up\n- Tasks aligned with project goals verified\n- Ready tasks approved and queued for automation\n- Blocked tasks identified\n- Strategic planning guidance received from advisor\n\n🚫 **Scope Boundaries (CRITICAL):**\n- **Included:** Running task_analysis(duplicates), analyze_alignment(todo2), task_workflow(approve), task_workflow(clarify), consult_advisor(planning)\n- **Excluded:** Actual task execution (workflow prepares backlog for work)\n- **Clarification Required:** None\n\n🔧 **Technical Requirements:**\n- Use exarp-go MCP tools for analysis and workflow\n- Run tools in sequence as per sprint_start workflow\n- Document results for review\n\n📁 **Files/Components:**\n- Tools: task_analysis, analyze_alignment, task_workflow, consult_advisor\n- Output: Clean backlog, approved tasks, blocked task list, planning guidance\n\n🧪 **Testing Requirements:**\n- Verify all tools execute successfully\n- Confirm backlog is clean and prioritized\n- Ensure blocked tasks are clearly identified\n\n⚠️ **Edge Cases:**\n- No duplicates found\n- Perfect alignment (no issues)\n- No tasks ready for approval\n- No blocked tasks\n\n📚 **Dependencies:** None",
-      "status": "Done",
-      "priority": "high",
-      "tags": [
-        "planning",
-        "sprint-start",
-        "workflow"
-      ]
-    },
-    {
-      "id": "T-35",
-      "content": "",
-      "long_description": "🎯 **Objective:** Analyze duplicate task detection report and recommend which tasks should be consolidated or merged.\n\n📋 **Acceptance Criteria:**\n- Review all 237 duplicate matches identified in the report\n- Analyze task similarities and differences\n- Recommend specific consolidation actions\n- Document recommendations with clear reasoning\n\n🚫 **Scope Boundaries (CRITICAL):**\n- **Included:** Analysis of duplicates, recommendations for consolidation\n- **Excluded:** Actually deleting/merging tasks (that will be a separate task)\n- **Clarification Required:** None\n\n🔧 **Technical Requirements:**\n- Review duplicate detection report\n- Compare task details using get_todo_details\n- Analyze similarity patterns\n\n📁 **Files/Components:**\n- Review: `/Users/davidl/Projects/exarp-go/docs/TODO2_DUPLICATE_DETECTION_REPORT.md`\n- May create: Analysis document with recommendations\n\n🧪 **Testing Requirements:**\n- Verify recommendations are based on actual task content\n- Ensure recommendations preserve important task history\n\n⚠️ **Edge Cases:**\n- Tasks with dependencies may need special handling\n- Completed tasks vs active tasks may have different consolidation strategies\n\n📚 **Dependencies:** T-34",
-      "status": "In Progress",
-      "priority": "medium",
-      "tags": [
-        "analysis",
-        "duplicate-detection",
-        "task-consolidation"
       ],
-      "dependencies": [
-        "T-34"
-      ]
+      "created": "1970-01-01T00:00:00.000Z"
     },
     {
       "id": "T-20251211192348-6",
@@ -399,7 +289,8 @@
         "json-rpc",
         "mcp",
         "phase-4"
-      ]
+      ],
+      "created": "1970-01-01T00:00:00.000Z"
     },
     {
       "id": "T-17",
@@ -411,7 +302,8 @@
         "error-handling",
         "phase-10",
         "polish"
-      ]
+      ],
+      "created": "1970-01-01T00:00:00.000Z"
     },
     {
       "id": "T-0",
@@ -422,7 +314,8 @@
       "tags": [
         "configuration",
         "workspace"
-      ]
+      ],
+      "created": "1970-01-01T00:00:00.000Z"
     },
     {
       "id": "T-25",
@@ -435,7 +328,8 @@
         "phase-7",
         "research",
         "sefaria"
-      ]
+      ],
+      "created": "1970-01-01T00:00:00.000Z"
     },
     {
       "id": "T-1",
@@ -447,7 +341,8 @@
         "assessment",
         "project-health",
         "scorecard"
-      ]
+      ],
+      "created": "1970-01-01T00:00:00.000Z"
     },
     {
       "id": "T-20251211192348-20",
@@ -457,7 +352,8 @@
       "tags": [
         "documentation",
         "zsh-plugin"
-      ]
+      ],
+      "created": "1970-01-01T00:00:00.000Z"
     },
     {
       "id": "T-20251211192348-9",
@@ -468,7 +364,8 @@
         "optional",
         "phase-7",
         "sefaria"
-      ]
+      ],
+      "created": "1970-01-01T00:00:00.000Z"
     },
     {
       "id": "T-11",
@@ -480,7 +377,8 @@
         "analysis",
         "parallelization",
         "tasks"
-      ]
+      ],
+      "created": "1970-01-01T00:00:00.000Z"
     },
     {
       "id": "T-18",
@@ -492,7 +390,8 @@
         "logging",
         "phase-10",
         "polish"
-      ]
+      ],
+      "created": "1970-01-01T00:00:00.000Z"
     },
     {
       "id": "T-20251211192348-15",
@@ -504,7 +403,8 @@
         "hebrew",
         "phase-2",
         "porting"
-      ]
+      ],
+      "created": "1970-01-01T00:00:00.000Z"
     },
     {
       "id": "T-20251211192348-24",
@@ -516,32 +416,8 @@
         "foundation",
         "phase-new",
         "zsh-plugin"
-      ]
-    },
-    {
-      "id": "T-37",
-      "content": "",
-      "long_description": "🎯 **Objective:** Diagnose why tasks are not visible in the Todo2 dashboard and resolve the issue.\n\n📋 **Acceptance Criteria:**\n- Identify why tasks are not appearing in dashboard\n- Check Todo2 configuration and project context\n- Verify task storage location\n- Resolve any configuration or path issues\n- Verify tasks appear in dashboard after fix\n\n🚫 **Scope Boundaries (CRITICAL):**\n- **Included:** Configuration check, path verification, dashboard troubleshooting\n- **Excluded:** Creating new tasks (unless needed for testing)\n- **Clarification Required:** None\n\n🔧 **Technical Requirements:**\n- Check Todo2 state file location\n- Verify project root configuration\n- Check dashboard configuration\n- Verify MCP server connection\n\n📁 **Files/Components:**\n- Check: `.todo2/state.todo2.json`\n- Check: Todo2 dashboard configuration\n- Check: MCP server configuration\n\n🧪 **Testing Requirements:**\n- Verify tasks appear in dashboard after fix\n- Test task creation and visibility\n\n⚠️ **Edge Cases:**\n- Tasks might be in different project\n- Dashboard might be looking at wrong directory\n- MCP server might not be connected\n\n📚 **Dependencies:** None",
-      "status": "In Progress",
-      "priority": "high",
-      "tags": [
-        "dashboard",
-        "todo2",
-        "troubleshooting"
-      ]
-    },
-    {
-      "id": "T-38",
-      "content": "",
-      "long_description": "🎯 **Objective:** Resolve the ServiceWorker registration error that prevents webview loading in Cursor IDE.\n\n📋 **Acceptance Criteria:**\n- ServiceWorker registration error is resolved\n- Webviews load successfully in Cursor IDE\n- No residual VS Code processes interfering\n- Service Worker cache is cleared if corrupted\n\n🚫 **Scope Boundaries (CRITICAL):**\n- **Included:** Troubleshooting Cursor IDE webview issues, clearing Service Worker cache, terminating processes, testing webview functionality\n- **Excluded:** Code changes to any project codebase (this is an IDE configuration issue, not a code issue)\n- **Clarification Required:** None - this is a well-documented VS Code/Cursor IDE issue\n\n🔧 **Technical Requirements:**\n- Terminal access to run process termination commands\n- File system access to Service Worker cache directories\n- Ability to restart Cursor IDE\n\n📁 **Files/Components:**\n- System directories: `~/.config/Code/Service Worker` (Linux) or `%APPDATA%\\Code\\Service Worker` (Windows)\n- Terminal commands: `pkill code` or process termination\n- Cursor IDE launch command: `code --no-sandbox` (if needed)\n\n🧪 **Testing Requirements:**\n- Verify webview loads without ServiceWorker errors\n- Test that extensions using webviews work correctly\n- Confirm no error messages in Cursor IDE console\n\n⚠️ **Edge Cases:**\n- Multiple VS Code processes running simultaneously\n- Corrupted Service Worker cache preventing deletion\n- Extension-specific webview issues requiring extension disable\n- macOS-specific path variations for cache directory\n\n📚 **Dependencies:** None",
-      "status": "In Progress",
-      "priority": "high",
-      "tags": [
-        "cursor-ide",
-        "serviceworker",
-        "troubleshooting",
-        "webview"
-      ]
+      ],
+      "created": "1970-01-01T00:00:00.000Z"
     },
     {
       "id": "T-20251211192348-5",
@@ -552,7 +428,8 @@
         "advisors",
         "mappings",
         "phase-3"
-      ]
+      ],
+      "created": "1970-01-01T00:00:00.000Z"
     },
     {
       "id": "T-23",
@@ -566,7 +443,8 @@
         "resources",
         "testing",
         "tools"
-      ]
+      ],
+      "created": "1970-01-01T00:00:00.000Z"
     },
     {
       "id": "T-6",
@@ -581,19 +459,8 @@
       ],
       "dependencies": [
         "T-3"
-      ]
-    },
-    {
-      "id": "T-30",
-      "content": "",
-      "long_description": "🎯 **Objective:** Provide comprehensive context about the exarp-go project including its purpose, architecture, current state, and key components.\n\n📋 **Acceptance Criteria:**\n- Document project purpose and main functionality\n- Identify project structure and key directories\n- List main components and their roles\n- Describe current implementation status\n- Identify any configuration files or build setup\n\n🚫 **Scope Boundaries (CRITICAL):**\n- **Included:** Project overview, structure, main components, configuration, current state\n- **Excluded:** Deep code analysis, implementation changes, detailed API documentation\n- **Clarification Required:** None - gathering existing information only\n\n🔧 **Technical Requirements:**\n- Read project files (README, go.mod, main.go, etc.)\n- Explore directory structure\n- Review configuration files\n- Identify key packages and components\n\n📁 **Files/Components:**\n- Read: README.md, go.mod, main entry points\n- Explore: cmd/, internal/, bridge/ directories\n- Review: Configuration files, build files\n\n🧪 **Testing Requirements:**\n- Verify all information is accurate based on actual files\n- Cross-reference multiple sources for consistency\n\n⚠️ **Edge Cases:**\n- Missing README or documentation\n- Project may be in early stages\n- Some components may be partially implemented\n\n📚 **Dependencies:** None",
-      "status": "Done",
-      "priority": "low",
-      "tags": [
-        "context",
-        "exarp-go",
-        "exploration"
-      ]
+      ],
+      "created": "1970-01-01T00:00:00.000Z"
     },
     {
       "id": "T-14",
@@ -606,7 +473,8 @@
         "cli",
         "review",
         "zsh-plugin"
-      ]
+      ],
+      "created": "1970-01-01T00:00:00.000Z"
     },
     {
       "id": "T-NaN",
@@ -617,7 +485,8 @@
       "tags": [
         "cleanup",
         "workspace"
-      ]
+      ],
+      "created": "1970-01-01T00:00:00.000Z"
     },
     {
       "id": "T-2",
@@ -629,7 +498,8 @@
         "integration",
         "mcp",
         "servers"
-      ]
+      ],
+      "created": "1970-01-01T00:00:00.000Z"
     },
     {
       "id": "T-20251211192348-21",
@@ -639,7 +509,8 @@
       "tags": [
         "cli",
         "commands"
-      ]
+      ],
+      "created": "1970-01-01T00:00:00.000Z"
     },
     {
       "id": "T-9",
@@ -651,7 +522,8 @@
         "analysis",
         "exarp",
         "tasks"
-      ]
+      ],
+      "created": "1970-01-01T00:00:00.000Z"
     },
     {
       "id": "T-8",
@@ -664,7 +536,8 @@
         "go",
         "investigation",
         "testing"
-      ]
+      ],
+      "created": "1970-01-01T00:00:00.000Z"
     },
     {
       "id": "T-51",
@@ -679,31 +552,8 @@
         "fastmcp",
         "go",
         "planning"
-      ]
-    },
-    {
-      "id": "T-42",
-      "content": "",
-      "long_description": "🎯 **Objective:** Compare mcp-generic-tools codebase with exarp-go to determine if all functionality has been successfully migrated.\n\n📋 **Acceptance Criteria:**\n- Side-by-side comparison of components from both repositories\n- List of migrated components with verification\n- List of any missing or incomplete migrations\n- Identification of deprecated or unused code in mcp-generic-tools\n- Documentation of any differences in implementation\n\n🚫 **Scope Boundaries (CRITICAL):**\n- **Included:** Component comparison, migration status verification, gap analysis\n- **Excluded:** Actual migration work, code modifications\n- **Clarification Required:** None\n\n🔧 **Technical Requirements:**\n- Compare file structures\n- Compare functionality and features\n- Verify tool implementations match\n- Check for any unique patterns or utilities\n\n📁 **Files/Components:**\n- Compare: [/Users/davidl/Projects/mcp-generic-tools/] vs [/Users/davidl/Projects/exarp-go/]\n\n🧪 **Testing Requirements:**\n- Verify all tools from mcp-generic-tools exist in exarp-go\n- Confirm all features are implemented\n- Validate no critical functionality is missing\n\n⚠️ **Edge Cases:**\n- Functionality that was intentionally removed or deprecated\n- Code that was refactored during migration\n- Configuration differences that might be intentional\n\n📚 **Dependencies:** T-53",
-      "status": "Done",
-      "priority": "high",
-      "tags": [
-        "analysis",
-        "comparison",
-        "migration"
-      ]
-    },
-    {
-      "id": "T-41",
-      "content": "",
-      "long_description": "🎯 **Objective:** Understand the complete structure, components, and functionality of the mcp-generic-tools repository to determine what needs to be migrated.\n\n📋 **Acceptance Criteria:**\n- Complete inventory of all files and directories in mcp-generic-tools\n- Documentation of all components, tools, and features\n- Identification of any unique functionality not yet migrated\n- List of dependencies and configuration files\n\n🚫 **Scope Boundaries (CRITICAL):**\n- **Included:** File structure analysis, component inventory, feature documentation\n- **Excluded:** Actual migration work, code modifications\n- **Clarification Required:** None\n\n🔧 **Technical Requirements:**\n- Analyze directory structure\n- Review README and documentation\n- Identify all source files, configs, and dependencies\n- Document any unique features or patterns\n\n📁 **Files/Components:**\n- Analyze: [/Users/davidl/Projects/mcp-generic-tools/] (entire repository)\n\n🧪 **Testing Requirements:**\n- Verify complete file listing\n- Confirm all components documented\n- Validate no hidden or ignored files missed\n\n⚠️ **Edge Cases:**\n- Git-ignored files that might contain important config\n- Hidden files or dotfiles\n- Documentation that might not be in main directories\n\n📚 **Dependencies:** None",
-      "status": "Done",
-      "priority": "high",
-      "tags": [
-        "analysis",
-        "migration",
-        "research"
-      ]
+      ],
+      "created": "1970-01-01T00:00:00.000Z"
     },
     {
       "id": "T-20251211192348-19",
@@ -713,7 +563,8 @@
       "tags": [
         "cli",
         "commands"
-      ]
+      ],
+      "created": "1970-01-01T00:00:00.000Z"
     },
     {
       "id": "T-20251211192348-22",
@@ -723,7 +574,8 @@
       "tags": [
         "cli",
         "commands"
-      ]
+      ],
+      "created": "1970-01-01T00:00:00.000Z"
     },
     {
       "id": "T-20251211192348-16",
@@ -734,7 +586,8 @@
         "phase-2",
         "random",
         "selector"
-      ]
+      ],
+      "created": "1970-01-01T00:00:00.000Z"
     },
     {
       "id": "T-20251211192348-18",
@@ -744,7 +597,8 @@
       "tags": [
         "integration",
         "zsh-plugin"
-      ]
+      ],
+      "created": "1970-01-01T00:00:00.000Z"
     },
     {
       "id": "T-20251211192348-12",
@@ -760,7 +614,8 @@
       "dependencies": [
         "T-20251211192348-5",
         "T-20251211192348-6"
-      ]
+      ],
+      "created": "1970-01-01T00:00:00.000Z"
     },
     {
       "id": "T-20",
@@ -773,7 +628,8 @@
         "cross-compilation",
         "deployment",
         "phase-10"
-      ]
+      ],
+      "created": "1970-01-01T00:00:00.000Z"
     },
     {
       "id": "T-20251211192348-25",
@@ -783,33 +639,8 @@
       "tags": [
         "build",
         "documentation"
-      ]
-    },
-    {
-      "id": "T-52",
-      "content": "",
-      "long_description": "🎯 **Objective:** Deep dive into the third-party Go FastMCP package (`github.com/SetiabudiResearch/mcp-go-sdk/pkg/mcp/fastmcp`) to learn about advanced features, especially context handling, and incorporate best practices into our design.\n\n📋 **Acceptance Criteria:**\n- Access and analyze pkg.go.dev documentation for the package\n- Examine source code if available (via pkg.go.dev or other means)\n- Document context handling patterns\n- Identify advanced features (middleware, validation, error handling)\n- Analyze transport implementations\n- Document handler signature patterns\n- Update design document with findings\n\n🚫 **Scope Boundaries (CRITICAL):**\n- **Included:** Package analysis, feature documentation, design updates\n- **Excluded:** Code implementation, testing\n- **Clarification Required:** None\n\n🔧 **Technical Requirements:**\n- Use web search and pkg.go.dev to access package documentation\n- Analyze code examples and API patterns\n- Document findings with code snippets\n- Update design document with advanced features\n\n📁 **Files/Components:**\n- Update: [docs/FASTMCP_GO_DESIGN.md] (add advanced features section)\n- Create: [research notes] (if needed)\n\n🧪 **Testing Requirements:**\n- All documentation links must be verified\n- Code examples must be accurate\n- Analysis must be comprehensive\n\n⚠️ **Edge Cases:**\n- Package documentation incomplete → note limitations\n- Source code not available → work with available documentation\n- Features not documented → note as unknown\n\n📚 **Dependencies:** T-51 (design document must exist first)",
-      "status": "Todo",
-      "priority": "high",
-      "tags": [
-        "advanced-features",
-        "context",
-        "fastmcp",
-        "go",
-        "research"
-      ]
-    },
-    {
-      "id": "T-36",
-      "content": "",
-      "long_description": "🎯 **Objective:** Configure the agentic-tools MCP server in the devwisdom-go workspace MCP configuration file.\n\n📋 **Acceptance Criteria:**\n- Agentic-tools MCP server is added to `.cursor/mcp.json`\n- Configuration uses correct command and arguments\n- Project ID `039bb05a-6f78-492b-88b5-28fdfa3ebce7` is properly configured\n- Server is accessible and functional after configuration\n\n🚫 **Scope Boundaries (CRITICAL):**\n- **Included:** MCP configuration file update, command/args setup, project ID configuration\n- **Excluded:** Server implementation, tool development, testing beyond basic connectivity\n- **Clarification Required:** Determine exact command/args format for agentic-tools MCP\n\n🔧 **Technical Requirements:**\n- Use standard MCP server configuration format\n- Follow existing MCP server patterns in workspace\n- Support stdio transport protocol\n- Configure project root environment variable if needed\n\n📁 **Files/Components:**\n- Update: `.cursor/mcp.json` (add agentic-tools server configuration)\n\n🧪 **Testing Requirements:**\n- Verify MCP configuration JSON is valid\n- Confirm server can be started by Cursor\n- Check that server appears in Cursor MCP status\n\n⚠️ **Edge Cases:**\n- Server binary not found - provide clear error message\n- Invalid configuration format - validate JSON structure\n- Missing environment variables - handle gracefully\n\n📚 **Dependencies:** None",
-      "status": "In Progress",
-      "priority": "medium",
-      "tags": [
-        "agentic-tools",
-        "mcp-config",
-        "workspace-setup"
-      ]
+      ],
+      "created": "1970-01-01T00:00:00.000Z"
     },
     {
       "id": "T-21",
@@ -825,7 +656,208 @@
       ],
       "dependencies": [
         "T-20"
-      ]
+      ],
+      "created": "1970-01-01T00:00:00.000Z"
+    }
+  ],
+  "lastModified": "2026-01-28T21:42:44.996Z",
+  "comments": [],
+  "activities": [
+    {
+      "id": "activity-1769636009095-3bpbscb9u",
+      "type": "description_changed",
+      "todoId": "T-53",
+      "timestamp": "2026-01-28T21:33:29.095Z",
+      "details": {
+        "field": "long_description",
+        "oldValue": "🎯 **Objective:** Understand what task case normalization means in the exarp-go project context and identify all areas requiring case normalization.\n\n📋 **Acceptance Criteria:**\n- Searched codebase for task-related code and case handling\n- Identified all locations where task cases are handled\n- Documented current case inconsistencies\n- Clarified what normalization format should be used (Title Case, camelCase, etc.)\n- Identified affected files and components\n\n🚫 **Scope Boundaries (CRITICAL):**\n- **Included:** Code analysis, case pattern identification, requirements gathering\n- **Excluded:** Actual implementation of normalization (follow-up task)\n- **Clarification Required:** What specific case format is desired (Title Case, camelCase, kebab-case, etc.)\n\n🔧 **Technical Requirements:**\n- Search exarp-go codebase for task-related code\n- Analyze task data structures and naming conventions\n- Check for existing case normalization utilities\n- Review task management system (if any)\n\n📁 **Files/Components:**\n- Search: /Users/davidl/Projects/exarp-go/ directory\n- Look for: task-related files, case normalization code, naming conventions\n\n🧪 **Testing Requirements:**\n- Verify understanding by documenting findings\n- List all locations requiring changes\n\n⚠️ **Edge Cases:**\n- Multiple task systems or formats in the codebase\n- Mixed case conventions currently in use\n- Special characters or international characters in task names\n\n📚 **Dependencies:** None",
+        "newValue": "🎯 **Objective:** Understand what task case normalization means in the devwisdom-go project context and identify all areas requiring case normalization.\n\n📋 **Acceptance Criteria:**\n- Searched codebase for task-related code and case handling\n- Identified all locations where task cases are handled\n- Documented current case inconsistencies\n- Clarified what normalization format should be used (Title Case, camelCase, etc.)\n- Identified affected files and components\n\n🚫 **Scope Boundaries (CRITICAL):**\n- **Included:** Code analysis, case pattern identification, requirements gathering\n- **Excluded:** Actual implementation of normalization (follow-up task)\n- **Clarification Required:** What specific case format is desired (Title Case, camelCase, kebab-case, etc.)\n\n🔧 **Technical Requirements:**\n- Search devwisdom-go codebase for task-related code\n- Analyze task data structures and naming conventions\n- Check for existing case normalization utilities\n- Review task management system (if any)\n\n📁 **Files/Components:**\n- Search: /Users/davidl/Projects/devwisdom-go/ directory\n- Look for: task-related files, case normalization code, naming conventions\n\n🧪 **Testing Requirements:**\n- Verify understanding by documenting findings\n- List all locations requiring changes\n\n⚠️ **Edge Cases:**\n- Multiple task systems or formats in the codebase\n- Mixed case conventions currently in use\n- Special characters or international characters in task names\n\n📚 **Dependencies:** None"
+      }
+    },
+    {
+      "id": "activity-1769636009095-0q3p44nrk",
+      "type": "tags_changed",
+      "todoId": "T-53",
+      "timestamp": "2026-01-28T21:33:29.095Z",
+      "details": {
+        "field": "tags",
+        "oldValue": [
+          "case-handling",
+          "exarp-go",
+          "research",
+          "task-normalization"
+        ],
+        "newValue": [
+          "case-handling",
+          "devwisdom-go",
+          "research",
+          "task-normalization"
+        ]
+      }
+    },
+    {
+      "id": "activity-1769636178822-aiz6tx8kj",
+      "type": "todo_deleted",
+      "todoId": "T-30",
+      "timestamp": "2026-01-28T21:36:18.822Z",
+      "details": {
+        "associatedCommentsCount": 0
+      }
+    },
+    {
+      "id": "activity-1769636178822-yznmm9mjy",
+      "type": "todo_deleted",
+      "todoId": "T-34",
+      "timestamp": "2026-01-28T21:36:18.822Z",
+      "details": {
+        "associatedCommentsCount": 0
+      }
+    },
+    {
+      "id": "activity-1769636178822-3sfu64j99",
+      "type": "todo_deleted",
+      "todoId": "T-35",
+      "timestamp": "2026-01-28T21:36:18.822Z",
+      "details": {
+        "associatedCommentsCount": 0
+      }
+    },
+    {
+      "id": "activity-1769636178822-zj3zjb4l2",
+      "type": "todo_deleted",
+      "todoId": "T-38",
+      "timestamp": "2026-01-28T21:36:18.822Z",
+      "details": {
+        "associatedCommentsCount": 0
+      }
+    },
+    {
+      "id": "activity-1769636178822-hg0oihpb0",
+      "type": "todo_deleted",
+      "todoId": "T-40",
+      "timestamp": "2026-01-28T21:36:18.822Z",
+      "details": {
+        "associatedCommentsCount": 0
+      }
+    },
+    {
+      "id": "activity-1769636178822-1nr820xis",
+      "type": "todo_deleted",
+      "todoId": "T-41",
+      "timestamp": "2026-01-28T21:36:18.822Z",
+      "details": {
+        "associatedCommentsCount": 0
+      }
+    },
+    {
+      "id": "activity-1769636178822-z9ufvnxbk",
+      "type": "todo_deleted",
+      "todoId": "T-42",
+      "timestamp": "2026-01-28T21:36:18.822Z",
+      "details": {
+        "associatedCommentsCount": 0
+      }
+    },
+    {
+      "id": "activity-1769636178822-z02nw6aml",
+      "type": "todo_deleted",
+      "todoId": "T-43",
+      "timestamp": "2026-01-28T21:36:18.822Z",
+      "details": {
+        "associatedCommentsCount": 0
+      }
+    },
+    {
+      "id": "activity-1769636178822-6sfujlw4u",
+      "type": "todo_deleted",
+      "todoId": "T-45",
+      "timestamp": "2026-01-28T21:36:18.822Z",
+      "details": {
+        "associatedCommentsCount": 0
+      }
+    },
+    {
+      "id": "activity-1769636178822-gtp7pvgw7",
+      "type": "todo_deleted",
+      "todoId": "T-47",
+      "timestamp": "2026-01-28T21:36:18.822Z",
+      "details": {
+        "associatedCommentsCount": 0
+      }
+    },
+    {
+      "id": "activity-1769636212217-e80lnmwh0",
+      "type": "todo_deleted",
+      "todoId": "T-32",
+      "timestamp": "2026-01-28T21:36:52.217Z",
+      "details": {
+        "associatedCommentsCount": 0
+      }
+    },
+    {
+      "id": "activity-1769636325229-8epbwhyw0",
+      "type": "todo_deleted",
+      "todoId": "T-37",
+      "timestamp": "2026-01-28T21:38:45.229Z",
+      "details": {
+        "associatedCommentsCount": 0
+      }
+    },
+    {
+      "id": "activity-1769636382502-rq06ozwku",
+      "type": "comment_added",
+      "todoId": "T-39",
+      "timestamp": "2026-01-28T21:39:42.502Z",
+      "details": {
+        "commentType": "research_with_links",
+        "commentPreview": "**Shared patterns & exarp-go (for T-39 lint-fix):**\n\n**Local — SHARED_GO_ANSIBLE_MAKE_PATTERNS.md:**...",
+        "commentId": "T-39-C-1"
+      }
+    },
+    {
+      "id": "activity-1769636521687-t5ntg4o5a",
+      "type": "todo_deleted",
+      "todoId": "T-36",
+      "timestamp": "2026-01-28T21:42:01.687Z",
+      "details": {
+        "associatedCommentsCount": 0
+      }
+    },
+    {
+      "id": "activity-1769636529801-ef7vcrl37",
+      "type": "todo_deleted",
+      "todoId": "T-46",
+      "timestamp": "2026-01-28T21:42:09.801Z",
+      "details": {
+        "associatedCommentsCount": 0
+      }
+    },
+    {
+      "id": "activity-1769636535258-bh29ci54r",
+      "type": "todo_deleted",
+      "todoId": "T-52",
+      "timestamp": "2026-01-28T21:42:15.258Z",
+      "details": {
+        "associatedCommentsCount": 0
+      }
+    },
+    {
+      "id": "activity-1769636542463-nawsj6gse",
+      "type": "todo_deleted",
+      "todoId": "T-53",
+      "timestamp": "2026-01-28T21:42:22.463Z",
+      "details": {
+        "associatedCommentsCount": 0
+      }
+    },
+    {
+      "id": "activity-1769636564996-8po4m96il",
+      "type": "todo_deleted",
+      "todoId": "T-39",
+      "timestamp": "2026-01-28T21:42:44.996Z",
+      "details": {
+        "associatedCommentsCount": 1
+      }
     }
   ]
 }

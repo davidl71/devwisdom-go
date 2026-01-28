@@ -52,7 +52,7 @@ func (a *App) Run(args []string) error {
 	}
 }
 
-// printUsage prints the help message
+// printUsage prints the help message.
 func (a *App) printUsage() {
 	fmt.Fprintf(os.Stderr, `devwisdom - Wisdom quotes and advisor consultations
 

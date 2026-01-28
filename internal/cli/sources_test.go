@@ -9,10 +9,10 @@ func TestRunSources(t *testing.T) {
 	app := NewApp("0.1.0")
 
 	tests := []struct {
+		check   func(output string) bool
 		name    string
 		args    []string
 		wantErr bool
-		check   func(output string) bool
 	}{
 		{
 			name:    "sources default output",

@@ -45,13 +45,13 @@ func TestWisdomServer_HandleInitialize(t *testing.T) {
 		t.Fatalf("handleRequest returned error: %v", resp.Error)
 	}
 
-	// Check response structure - result is InitializeResult struct
+		// Check response structure - result is InitializeResult struct.
 	result, ok := resp.Result.(InitializeResult)
 	if !ok {
 		t.Fatalf("Response result is not InitializeResult: %T", resp.Result)
 	}
 
-	// Check server info
+		// Check server info.
 	if result.ServerInfo.Name != "devwisdom" {
 		t.Errorf("serverInfo name = %q, want %q", result.ServerInfo.Name, "devwisdom")
 	}
@@ -87,7 +87,7 @@ func TestWisdomServer_HandleGetWisdom(t *testing.T) {
 		t.Fatalf("handleRequest returned error: %v", resp.Error)
 	}
 
-	// Check response structure - result is *wisdom.Quote pointer
+		// Check response structure - result is *wisdom.Quote pointer.
 	result, ok := resp.Result.(*wisdom.Quote)
 	if !ok {
 		t.Fatalf("Response result is not *wisdom.Quote: %T", resp.Result)
@@ -131,10 +131,10 @@ func TestWisdomServer_HandleConsultAdvisor(t *testing.T) {
 		t.Fatalf("handleRequest returned error: %v", resp.Error)
 	}
 
-	// Check response structure - result is wisdom.Consultation (value type, not pointer)
+		// Check response structure - result is wisdom.Consultation (value type, not pointer).
 	result, ok := resp.Result.(wisdom.Consultation)
 	if !ok {
-		// Try pointer type in case server returns pointer
+				// Try pointer type in case server returns pointer.
 		if resultPtr, okPtr := resp.Result.(*wisdom.Consultation); okPtr {
 			if resultPtr == nil {
 				t.Fatal("Response result is nil pointer")
@@ -229,40 +229,39 @@ func TestWisdomServer_HandleResourcesRead(t *testing.T) {
 		t.Fatalf("handleRequest returned error: %v", resp.Error)
 	}
 
-	// Check response structure - result is map[string]interface{} with contents array
+		// Check response structure - result is map[string]interface{} with contents array.
 	result, ok := resp.Result.(map[string]interface{})
 	if !ok {
 		t.Fatalf("Response result is not map[string]interface{}: %T", resp.Result)
 	}
 
-	// Server returns []map[string]interface{} for contents
-	// Type assertion: try []map[string]interface{} first (actual type)
+		// Type assertion: try []map[string]interface{} first (actual type).
 	contentsValue := result["contents"]
 
-	// Try []map[string]interface{} first (actual server return type)
+		// Try []map[string]interface{} first (actual server return type).
 	if contents, ok := contentsValue.([]map[string]interface{}); ok {
 		if len(contents) == 0 {
 			t.Error("Response contents is empty")
 		}
-		return // Successfully validated
+		return 		return // Successfully validated.
 	}
 
-	// Fallback: try []interface{} (may contain maps)
+		// Fallback: try []interface{} (may contain maps).
 	if contentsInterface, ok := contentsValue.([]interface{}); ok {
 		if len(contentsInterface) == 0 {
 			t.Error("Response contents is empty")
 		}
-		return // Successfully validated
+		return 		return // Successfully validated.
 	}
 
-	// Neither type matched
+		// Neither type matched.
 	t.Fatalf("Response contents is not []map[string]interface{} or []interface{}: %T", contentsValue)
 }
 
 func TestWisdomServer_Run_InitializeAndTools(t *testing.T) {
 	server := NewWisdomServer()
 
-	// Create test input with initialize and get_wisdom requests
+		// Create test input with initialize and get_wisdom requests.
 	input := strings.NewReader(`{"jsonrpc":"2.0","id":1,"method":"initialize","params":{"protocolVersion":"2024-11-05","capabilities":{},"clientInfo":{"name":"test","version":"1.0.0"}}}
 {"jsonrpc":"2.0","id":2,"method":"tools/call","params":{"name":"get_wisdom","arguments":{"score":75.0,"source":"stoic"}}}
 `)
@@ -270,23 +269,23 @@ func TestWisdomServer_Run_InitializeAndTools(t *testing.T) {
 	var output bytes.Buffer
 	ctx := context.Background()
 
-	// Run server in a goroutine since it blocks
+		// Run server in a goroutine since it blocks.
 	errChan := make(chan error, 1)
 	go func() {
 		errChan <- server.Run(ctx, input, &output)
 	}()
 
-	// Wait a bit for processing
+		// Wait a bit for processing.
 	select {
 	case err := <-errChan:
 		if err != nil {
 			t.Fatalf("Server Run failed: %v", err)
 		}
 	case <-ctx.Done():
-		t.Fatal("Context cancelled")
+		t.Fatal("Context canceled")
 	}
 
-	// Check output contains responses
+		// Check output contains responses.
 	outputStr := output.String()
 	if !strings.Contains(outputStr, "jsonrpc") {
 		t.Error("Output does not contain JSON-RPC response")
@@ -297,12 +296,12 @@ func TestWisdomServer_HandleNotification(t *testing.T) {
 	server := NewWisdomServer()
 	if err := server.wisdom.Initialize(); err != nil {
 		t.Fatalf("Initialize failed: %v", err)
-	} // Initialize engine to avoid "engine not initialized" error
+	} 	} // Initialize engine to avoid "engine not initialized" error.
 
-	// Notification (no ID) - per JSON-RPC 2.0 spec, notifications don't get responses
+		// Notification (no ID) - per JSON-RPC 2.0 spec, notifications don't get responses.
 	req := &JSONRPCRequest{
 		JSONRPC: "2.0",
-		ID:      nil, // Notification (no ID)
+		ID:      nil, 		ID:      nil, // Notification (no ID).
 		Method:  "tools/call",
 		Params: json.RawMessage(`{
 			"name": "get_wisdom",
@@ -311,16 +310,10 @@ func TestWisdomServer_HandleNotification(t *testing.T) {
 	}
 
 	resp := server.handleRequest(req)
-	// Per JSON-RPC 2.0 spec, notifications (requests without ID) should not get responses
-	// However, handleRequest processes them and may return an error response
-	// The key is that handleRequest doesn't crash and handles the notification gracefully
-	// In the Run() method, notifications are skipped (see server.go line 88-90)
-	// But handleRequest itself may still process and return error responses
-	// We accept either nil or a non-error response, but error responses indicate a problem
+		// We accept either nil or a non-error response, but error responses indicate a problem.
 	if resp != nil {
 		if resp.Error != nil {
-			// Error responses for notifications are acceptable per JSON-RPC 2.0
-			// but we log it for visibility
+						// but we log it for visibility.
 			t.Logf("Notification returned error response (acceptable): %v", resp.Error)
 		}
 	}
@@ -352,7 +345,7 @@ func TestWisdomServer_HandleGetDailyBriefing(t *testing.T) {
 		t.Fatalf("handleRequest returned error: %v", resp.Error)
 	}
 
-	// Check response structure - result is map[string]interface{}
+		// Check response structure - result is map[string]interface{}.
 	result, ok := resp.Result.(map[string]interface{})
 	if !ok {
 		t.Fatalf("Response result is not map[string]interface{}: %T", resp.Result)
@@ -368,7 +361,7 @@ func TestWisdomServer_HandleGetDailyBriefing(t *testing.T) {
 		t.Error("Response missing quotes field")
 	}
 
-	// Validate quotes is an array
+		// Validate quotes is an array.
 	quotes, ok := result["quotes"].([]interface{})
 	if !ok {
 		t.Errorf("Response quotes is not []interface{}: %T", result["quotes"])
@@ -377,7 +370,7 @@ func TestWisdomServer_HandleGetDailyBriefing(t *testing.T) {
 	}
 }
 
-// TestHandleToolsList tests the handleToolsList function
+// TestHandleToolsList tests the handleToolsList function.
 func TestHandleToolsList(t *testing.T) {
 	server := NewWisdomServer()
 
@@ -397,19 +390,19 @@ func TestHandleToolsList(t *testing.T) {
 		t.Fatalf("handleToolsList returned error: %v", resp.Error)
 	}
 
-	// Check response structure
+		// Check response structure.
 	result, ok := resp.Result.(map[string]interface{})
 	if !ok {
 		t.Fatalf("Response result is not map[string]interface{}: %T", resp.Result)
 	}
 
-	// Tools can be []Tool or []interface{} depending on JSON marshaling
+		// Tools can be []Tool or []interface{} depending on JSON marshaling.
 	toolsValue := result["tools"]
 	if toolsValue == nil {
 		t.Fatal("Response tools is nil")
 	}
 
-	// Try []Tool first (actual type)
+		// Try []Tool first (actual type).
 	if tools, ok := toolsValue.([]Tool); ok {
 		if len(tools) == 0 {
 			t.Error("Response tools is empty")
@@ -423,7 +416,7 @@ func TestHandleToolsList(t *testing.T) {
 	}
 }
 
-// TestHandleResourcesList tests the handleResourcesList function
+// TestHandleResourcesList tests the handleResourcesList function.
 func TestHandleResourcesList(t *testing.T) {
 	server := NewWisdomServer()
 
@@ -443,19 +436,19 @@ func TestHandleResourcesList(t *testing.T) {
 		t.Fatalf("handleResourcesList returned error: %v", resp.Error)
 	}
 
-	// Check response structure
+		// Check response structure.
 	result, ok := resp.Result.(map[string]interface{})
 	if !ok {
 		t.Fatalf("Response result is not map[string]interface{}: %T", resp.Result)
 	}
 
-	// Resources can be []Resource or []interface{} depending on JSON marshaling
+		// Resources can be []Resource or []interface{} depending on JSON marshaling.
 	resourcesValue := result["resources"]
 	if resourcesValue == nil {
 		t.Fatal("Response resources is nil")
 	}
 
-	// Try []Resource first (actual type)
+		// Try []Resource first (actual type).
 	if resources, ok := resourcesValue.([]Resource); ok {
 		if len(resources) == 0 {
 			t.Error("Response resources is empty")
@@ -469,7 +462,7 @@ func TestHandleResourcesList(t *testing.T) {
 	}
 }
 
-// TestFormatRequestID tests the formatRequestID function
+// TestFormatRequestID tests the formatRequestID function.
 func TestFormatRequestID(t *testing.T) {
 	tests := []struct {
 		name     string
@@ -494,7 +487,7 @@ func TestFormatRequestID(t *testing.T) {
 		{
 			name:     "float ID",
 			id:       45.67,
-			expected: "46", // formatRequestID uses %.0f for floats
+			expected: "46", 			expected: "46", // formatRequestID uses %.0f for floats.
 		},
 		{
 			name:     "boolean ID",
@@ -513,7 +506,7 @@ func TestFormatRequestID(t *testing.T) {
 	}
 }
 
-// TestHandleToolsResource tests the handleToolsResource function
+// TestHandleToolsResource tests the handleToolsResource function.
 func TestHandleToolsResource(t *testing.T) {
 	server := NewWisdomServer()
 	if err := server.wisdom.Initialize(); err != nil {
@@ -538,7 +531,7 @@ func TestHandleToolsResource(t *testing.T) {
 		t.Fatalf("handleToolsResource returned error: %v", resp.Error)
 	}
 
-	// Check response structure
+		// Check response structure.
 	result, ok := resp.Result.(map[string]interface{})
 	if !ok {
 		t.Fatalf("Response result is not map[string]interface{}: %T", resp.Result)
@@ -546,7 +539,7 @@ func TestHandleToolsResource(t *testing.T) {
 
 	contents, ok := result["contents"].([]interface{})
 	if !ok {
-		// Try []map[string]interface{} as well
+				// Try []map[string]interface{} as well.
 		if contentsMap, ok := result["contents"].([]map[string]interface{}); ok {
 			if len(contentsMap) == 0 {
 				t.Error("Response contents is empty")
@@ -561,7 +554,7 @@ func TestHandleToolsResource(t *testing.T) {
 	}
 }
 
-// TestHandleAdvisorResource tests the HandleAdvisorResource function
+// TestHandleAdvisorResource tests the HandleAdvisorResource function.
 func TestHandleAdvisorResource(t *testing.T) {
 	server := NewWisdomServer()
 	if err := server.wisdom.Initialize(); err != nil {
@@ -624,17 +617,16 @@ func TestHandleAdvisorResource(t *testing.T) {
 				if resp.Error != nil {
 					t.Errorf("HandleAdvisorResource returned error: %v", resp.Error)
 				}
-				// Verify response structure - HandleAdvisorResource returns a resource response
-				// with contents containing the advisor data as JSON text
+								// with contents containing the advisor data as JSON text.
 				result, ok := resp.Result.(map[string]interface{})
 				if !ok {
 					t.Fatalf("Response result is not map[string]interface{}: %T", resp.Result)
 				}
-				// Check that contents exist
+								// Check that contents exist.
 				contentsValue := result["contents"]
 				var contentMap map[string]interface{}
 
-				// Try []map[string]interface{} first (actual type)
+								// Try []map[string]interface{} first (actual type).
 				if contents, ok := contentsValue.([]map[string]interface{}); ok {
 					if len(contents) == 0 {
 						t.Error("Response contents is empty")
@@ -665,7 +657,7 @@ func TestHandleAdvisorResource(t *testing.T) {
 	}
 }
 
-// TestHandleToolCall_UnknownTool tests HandleToolCall with an unknown tool name
+// TestHandleToolCall_UnknownTool tests HandleToolCall with an unknown tool name.
 func TestHandleToolCall_UnknownTool(t *testing.T) {
 	server := NewWisdomServer()
 	if err := server.wisdom.Initialize(); err != nil {
@@ -674,7 +666,7 @@ func TestHandleToolCall_UnknownTool(t *testing.T) {
 
 	handlers := NewWisdomHandlers(server.wisdom, nil, server.appLogger)
 
-	// Test with unknown tool name
+		// Test with unknown tool name.
 	result, err := handlers.HandleToolCall("unknown_tool", map[string]interface{}{})
 	if err == nil {
 		t.Error("HandleToolCall should return error for unknown tool")

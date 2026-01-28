@@ -9,7 +9,7 @@ import (
 	"github.com/davidl71/devwisdom-go/internal/wisdom"
 )
 
-// runConsult handles the consult command
+// runConsult handles the consult command.
 func (a *App) runConsult(args []string) error {
 	fs := flag.NewFlagSet("consult", flag.ExitOnError)
 	metric := fs.String("metric", "", "Metric name (e.g., security, testing)")
@@ -23,18 +23,18 @@ func (a *App) runConsult(args []string) error {
 		return err
 	}
 
-	// Validate that at least one of metric, tool, or stage is provided
+	// Validate that at least one of metric, tool, or stage is provided.
 	if *metric == "" && *tool == "" && *stage == "" {
 		return fmt.Errorf("must provide at least one of --metric, --tool, or --stage: use 'devwisdom consult --help' for usage examples")
 	}
 
-	// Initialize wisdom engine
+	// Initialize wisdom engine.
 	engine := wisdom.NewEngine()
 	if err := engine.Initialize(); err != nil {
 		return fmt.Errorf("failed to initialize wisdom engine (check sources.json configuration): %w", err)
 	}
 
-	// Determine advisor
+	// Determine advisor.
 	var advisorInfo *wisdom.AdvisorInfo
 	var err error
 	advisorRegistry := engine.GetAdvisors()
@@ -56,13 +56,13 @@ func (a *App) runConsult(args []string) error {
 		}
 	}
 
-	// Get quote from advisor's source
+	// Get quote from advisor's source.
 	aeonLevel := wisdom.GetAeonLevel(*score)
 
-	// Try to get quote from advisor's source
+	// Try to get quote from advisor's source.
 	source, exists := engine.GetSource(advisorInfo.Advisor)
 	if !exists {
-		// Fallback: try to get quote from any source
+		// Fallback: try to get quote from any source.
 		sources := engine.ListSources()
 		if len(sources) == 0 {
 			return fmt.Errorf("no wisdom sources available: ensure sources.json exists and contains valid source definitions. Use 'devwisdom sources' to verify")
@@ -73,7 +73,7 @@ func (a *App) runConsult(args []string) error {
 			return fmt.Errorf("failed to get wisdom quote (source: %q, score: %.1f): %w", sources[0], *score, err)
 		}
 
-		// Output
+		// Output.
 		if *quiet {
 			fmt.Println(quote.Quote)
 			return nil
@@ -93,7 +93,7 @@ func (a *App) runConsult(args []string) error {
 			return encoder.Encode(result)
 		}
 
-		// Human-readable output
+		// Human-readable output.
 		if advisorInfo.Icon != "" {
 			fmt.Printf("%s ", advisorInfo.Icon)
 		}
@@ -108,10 +108,10 @@ func (a *App) runConsult(args []string) error {
 		return nil
 	}
 
-	// Get quote from advisor's source
+	// Get quote from advisor's source.
 	quote := source.GetQuote(aeonLevel)
 
-	// Output
+	// Output.
 	if *quiet {
 		fmt.Println(quote.Quote)
 		return nil
@@ -141,7 +141,7 @@ func (a *App) runConsult(args []string) error {
 		return encoder.Encode(result)
 	}
 
-	// Human-readable output
+	// Human-readable output.
 	if advisorInfo.Icon != "" {
 		fmt.Printf("%s ", advisorInfo.Icon)
 	}
