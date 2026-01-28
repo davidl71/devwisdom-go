@@ -411,23 +411,35 @@ func (s *WisdomServerSDK) convertResourceResponse(resp *JSONRPCResponse, uri str
 	}
 
 	if result, ok := resp.Result.(map[string]interface{}); ok {
-		if contents, ok := result["contents"].([]interface{}); ok && len(contents) > 0 {
-			// Convert first content item
-			if contentMap, ok := contents[0].(map[string]interface{}); ok {
-				return &mcp.ReadResourceResult{
-					Contents: []*mcp.ResourceContents{
-						{
-							URI:      getString(contentMap, "uri", uri),
-							MIMEType: getString(contentMap, "mimeType", "application/json"),
-							Text:     getString(contentMap, "text", ""),
-						},
-					},
-				}, nil
+		contentsValue := result["contents"]
+		var contentMap map[string]interface{}
+
+		// Try []map[string]interface{} first (actual type from newResourceResponse)
+		if contents, ok := contentsValue.([]map[string]interface{}); ok && len(contents) > 0 {
+			contentMap = contents[0]
+		} else if contents, ok := contentsValue.([]interface{}); ok && len(contents) > 0 {
+			// Fallback to []interface{}
+			var ok2 bool
+			contentMap, ok2 = contents[0].(map[string]interface{})
+			if !ok2 {
+				return nil, fmt.Errorf("unexpected response format: content item is not map[string]interface{}")
 			}
+		} else {
+			return nil, fmt.Errorf("unexpected response format: contents is not []map[string]interface{} or []interface{}")
 		}
+
+		return &mcp.ReadResourceResult{
+			Contents: []*mcp.ResourceContents{
+				{
+					URI:      getString(contentMap, "uri", uri),
+					MIMEType: getString(contentMap, "mimeType", "application/json"),
+					Text:     getString(contentMap, "text", ""),
+				},
+			},
+		}, nil
 	}
 
-	return nil, fmt.Errorf("unexpected response format")
+	return nil, fmt.Errorf("unexpected response format: result is not map[string]interface{}")
 }
 
 // getString safely extracts a string value from a map.

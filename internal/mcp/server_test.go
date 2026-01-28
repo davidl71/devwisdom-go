@@ -403,13 +403,23 @@ func TestHandleToolsList(t *testing.T) {
 		t.Fatalf("Response result is not map[string]interface{}: %T", resp.Result)
 	}
 
-	tools, ok := result["tools"].([]interface{})
-	if !ok {
-		t.Fatalf("Response tools is not []interface{}: %T", result["tools"])
+	// Tools can be []Tool or []interface{} depending on JSON marshaling
+	toolsValue := result["tools"]
+	if toolsValue == nil {
+		t.Fatal("Response tools is nil")
 	}
 
-	if len(tools) == 0 {
-		t.Error("Response tools is empty")
+	// Try []Tool first (actual type)
+	if tools, ok := toolsValue.([]Tool); ok {
+		if len(tools) == 0 {
+			t.Error("Response tools is empty")
+		}
+	} else if tools, ok := toolsValue.([]interface{}); ok {
+		if len(tools) == 0 {
+			t.Error("Response tools is empty")
+		}
+	} else {
+		t.Fatalf("Response tools is not []Tool or []interface{}: %T", toolsValue)
 	}
 }
 
@@ -439,13 +449,23 @@ func TestHandleResourcesList(t *testing.T) {
 		t.Fatalf("Response result is not map[string]interface{}: %T", resp.Result)
 	}
 
-	resources, ok := result["resources"].([]interface{})
-	if !ok {
-		t.Fatalf("Response resources is not []interface{}: %T", result["resources"])
+	// Resources can be []Resource or []interface{} depending on JSON marshaling
+	resourcesValue := result["resources"]
+	if resourcesValue == nil {
+		t.Fatal("Response resources is nil")
 	}
 
-	if len(resources) == 0 {
-		t.Error("Response resources is empty")
+	// Try []Resource first (actual type)
+	if resources, ok := resourcesValue.([]Resource); ok {
+		if len(resources) == 0 {
+			t.Error("Response resources is empty")
+		}
+	} else if resources, ok := resourcesValue.([]interface{}); ok {
+		if len(resources) == 0 {
+			t.Error("Response resources is empty")
+		}
+	} else {
+		t.Fatalf("Response resources is not []Resource or []interface{}: %T", resourcesValue)
 	}
 }
 
@@ -538,5 +558,131 @@ func TestHandleToolsResource(t *testing.T) {
 
 	if len(contents) == 0 {
 		t.Error("Response contents is empty")
+	}
+}
+
+// TestHandleAdvisorResource tests the HandleAdvisorResource function
+func TestHandleAdvisorResource(t *testing.T) {
+	server := NewWisdomServer()
+	if err := server.wisdom.Initialize(); err != nil {
+		t.Fatalf("Initialize failed: %v", err)
+	}
+
+	handlers := NewWisdomHandlers(server.wisdom, nil, server.appLogger)
+
+	tests := []struct {
+		name      string
+		advisorID string
+		wantError bool
+	}{
+		{
+			name:      "valid metric advisor",
+			advisorID: "security",
+			wantError: false,
+		},
+		{
+			name:      "valid tool advisor",
+			advisorID: "project_scorecard",
+			wantError: false,
+		},
+		{
+			name:      "valid stage advisor",
+			advisorID: "daily_checkin",
+			wantError: false,
+		},
+		{
+			name:      "invalid advisor",
+			advisorID: "nonexistent_advisor",
+			wantError: true,
+		},
+		{
+			name:      "empty advisor ID",
+			advisorID: "",
+			wantError: true,
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			req := &JSONRPCRequest{
+				JSONRPC: "2.0",
+				ID:      1,
+				Method:  "resources/read",
+				Params:  json.RawMessage(`{"uri": "wisdom://advisor/` + tt.advisorID + `"}`),
+			}
+
+			resp := handlers.HandleAdvisorResource(req, tt.advisorID)
+			if resp == nil {
+				t.Fatal("HandleAdvisorResource returned nil response")
+			}
+
+			if tt.wantError {
+				if resp.Error == nil {
+					t.Error("HandleAdvisorResource should return error for invalid advisor")
+				}
+			} else {
+				if resp.Error != nil {
+					t.Errorf("HandleAdvisorResource returned error: %v", resp.Error)
+				}
+				// Verify response structure - HandleAdvisorResource returns a resource response
+				// with contents containing the advisor data as JSON text
+				result, ok := resp.Result.(map[string]interface{})
+				if !ok {
+					t.Fatalf("Response result is not map[string]interface{}: %T", resp.Result)
+				}
+				// Check that contents exist
+				contentsValue := result["contents"]
+				var contentMap map[string]interface{}
+
+				// Try []map[string]interface{} first (actual type)
+				if contents, ok := contentsValue.([]map[string]interface{}); ok {
+					if len(contents) == 0 {
+						t.Error("Response contents is empty")
+					}
+					contentMap = contents[0]
+				} else if contents, ok := contentsValue.([]interface{}); ok {
+					if len(contents) == 0 {
+						t.Error("Response contents is empty")
+					}
+					var ok2 bool
+					contentMap, ok2 = contents[0].(map[string]interface{})
+					if !ok2 {
+						t.Fatalf("First content item is not map[string]interface{}: %T", contents[0])
+					}
+				} else {
+					t.Fatalf("Response contents is not []map[string]interface{} or []interface{}: %T", contentsValue)
+				}
+				uri, ok := contentMap["uri"].(string)
+				if !ok {
+					t.Fatalf("Content URI is not string: %T", contentMap["uri"])
+				}
+				expectedURI := "wisdom://advisor/" + tt.advisorID
+				if uri != expectedURI {
+					t.Errorf("Content URI = %q, want %q", uri, expectedURI)
+				}
+			}
+		})
+	}
+}
+
+// TestHandleToolCall_UnknownTool tests HandleToolCall with an unknown tool name
+func TestHandleToolCall_UnknownTool(t *testing.T) {
+	server := NewWisdomServer()
+	if err := server.wisdom.Initialize(); err != nil {
+		t.Fatalf("Initialize failed: %v", err)
+	}
+
+	handlers := NewWisdomHandlers(server.wisdom, nil, server.appLogger)
+
+	// Test with unknown tool name
+	result, err := handlers.HandleToolCall("unknown_tool", map[string]interface{}{})
+	if err == nil {
+		t.Error("HandleToolCall should return error for unknown tool")
+	}
+	if result != nil {
+		t.Error("HandleToolCall should return nil result for unknown tool")
+	}
+	if err != nil && !strings.Contains(err.Error(), "unknown tool") {
+		t.Errorf("Error message should mention 'unknown tool', got: %v", err)
 	}
 }
