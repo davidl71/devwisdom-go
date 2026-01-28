@@ -30,10 +30,9 @@ The `.cursor/mcp.json` file configures multiple MCP servers that provide complem
   - Automation opportunity discovery
   - Todo synchronization
 
-### 3. **agentic-tools** (Task Management)
+### 3. **agentic-tools** (optional)
 - **Command**: `uvx mcpower-proxy==0.0.87 --wrapped-config {...} @pimzino/agentic-tools-mcp`
-- **Description**: Task management and agent memories with JSON file storage for Todo2 integration
-- **Purpose**: Provides task management capabilities and agent memory storage
+- **Note**: Task storage for this project is in **exarp-go** (Todo2 SQLite). agentic-tools may be used for other workspaces.
 
 ### 4. **tractatus_thinking** (Structural Analysis)
 - **Command**: `uvx mcpower-proxy==0.0.87 --wrapped-config {...} tractatus_thinking`

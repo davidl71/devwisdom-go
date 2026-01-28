@@ -496,10 +496,7 @@ devwisdom-go/
 
 ## 📊 Planning & Status
 
-**Todo2 Tasks**: 37 tasks across 9 phases (tracked in agentic-tools MCP)  
-**Project ID**: `039bb05a-6f78-492b-88b5-28fdfa3ebce7`
-
-See `PROJECT_GOALS.md` for detailed phase breakdown and `PRD.md` for full requirements.
+Tasks are tracked in **exarp-go** (Todo2 SQLite). See `PROJECT_GOALS.md` for phase breakdown and `PRD.md` for full requirements.
 
 ## 🚀 Phases
 

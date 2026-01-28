@@ -3,8 +3,8 @@
 ## Project Configuration
 
 - **Project Root**: `/Users/davidl/Projects/devwisdom-go`
-- **Project ID**: `039bb05a-6f78-492b-88b5-28fdfa3ebce7` (agentic-tools MCP)
 - **Repository**: <https://github.com/davidl71/devwisdom-go>
+- **Tasks**: Tracked in exarp-go (Todo2 SQLite)
 - **Type**: Standalone Go MCP Server
 
 **IMPORTANT**: When generating project scorecards, reports, or performing project-wide operations, ensure the project root is set to `/Users/davidl/Projects/devwisdom-go`. Use `PROJECT_ROOT` environment variable or ensure tools detect this directory as the project root.
@@ -147,7 +147,7 @@ make lint
 
 ## Task Management
 
-- Tasks tracked in agentic-tools MCP (Project ID: 039bb05a-6f78-492b-88b5-28fdfa3ebce7)
+- Tasks tracked in exarp-go (Todo2 SQLite)
 - Use PROJECT_GOALS.md for phase alignment
 - Follow TODO.md for task breakdown
 

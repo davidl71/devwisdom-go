@@ -98,7 +98,7 @@ Breakdown:
 
 ## Project ID
 
-All tasks are tracked in project: `bfec727f-93a6-42e5-bfe6-66e01b495ddf` (devwisdom-go)
+Tasks are tracked in exarp-go (Todo2 SQLite).
 
 ---
 
