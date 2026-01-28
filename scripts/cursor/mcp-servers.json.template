@@ -1,0 +1,36 @@
+{
+  "mcpServers": {
+    "devwisdom": {
+      "command": "PROJECTS_BASE/devwisdom-go/run_devwisdom.sh",
+      "args": [],
+      "env": {
+        "PROJECT_ROOT": "{{PROJECT_ROOT}}"
+      },
+      "description": "DevWisdom Go MCP Server - Wisdom quotes, trusted advisors, and inspirational guidance"
+    },
+    "exarp-go": {
+      "command": "PROJECTS_BASE/exarp-go/run_server.sh",
+      "args": [],
+      "env": {
+        "PROJECT_ROOT": "{{PROJECT_ROOT}}"
+      },
+      "description": "Crew Role: Executor - Go-based MCP server - 24 tools, 15 prompts, 6 resources"
+    },
+    "tractatus_thinking": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "tractatus_thinking"
+      ],
+      "description": "Crew Role: Analyst - Tractatus Thinking MCP Server - Structured reasoning, logical analysis, and problem decomposition"
+    },
+    "context7": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "@upstash/context7-mcp"
+      ],
+      "description": "Crew Role: Researcher - Context7 MCP Server - Advanced context management and documentation retrieval"
+    }
+  }
+}

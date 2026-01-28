@@ -1,4 +1,4 @@
-.PHONY: build build-cli build-all run test clean install install-cli fmt lint lint-fix docs bench bench-cpu bench-mem bench-profile pprof-cpu pprof-mem pprof-web-cpu pprof-web-mem build-windows build-linux build-darwin build-all-platforms build-release clean-dist
+.PHONY: build build-cli build-all run test clean install install-cli fmt lint lint-fix docs bench bench-cpu bench-mem bench-profile pprof-cpu pprof-mem pprof-web-cpu pprof-web-mem build-windows build-linux build-darwin build-all-platforms build-release clean-dist install-mcp-config
 
 # Build binary (MCP server)
 build:
@@ -166,3 +166,7 @@ build-release: clean-dist build-all-platforms
 # Clean distribution directory
 clean-dist:
 	rm -rf $(DIST_DIR)
+
+# Install shared Cursor MCP config to ~/.cursor/mcp.json (single source: scripts/cursor/)
+install-mcp-config:
+	@./scripts/cursor/install-mcp-config.sh
