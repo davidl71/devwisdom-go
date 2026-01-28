@@ -157,6 +157,24 @@ func TestRegisterTool(t *testing.T) {
 }
 ```
 
+### Count Synchronization (CRITICAL)
+
+**⚠️ ALWAYS KEEP COUNTS IN SYNC BETWEEN IMPLEMENTATION, COMMENTS, AND TESTS ⚠️**
+
+When registering or changing items (tools, resources, prompts):
+
+1. **Count items in implementation** - Count actual items being registered
+2. **Update comments** - Update any comments that mention the count
+3. **Update test expectations** - Update test assertions that check counts (e.g. `len(tools)`, `want N`)
+4. **Update expected lists** - Add or remove items in test expected lists
+
+**Checklist when adding/removing items:**
+- ✅ Count items in implementation code
+- ✅ Update comment with new count if present
+- ✅ Update test count assertion
+- ✅ Add/remove item from test expected lists where applicable
+- ✅ Re-run tests and fix any count mismatches
+
 ## MCP Server Specific Guidelines
 
 ### Framework-Agnostic Design
@@ -283,6 +301,10 @@ func (s *Server) RegisterTool(name string, handler ToolHandler) error {
 - **Interface-based** framework interaction
 - **Easy to swap** frameworks via configuration
 
+## Makefile Usage
+
+**Use Makefile targets instead of direct `go build` / `go test` / `golangci-lint`.** See project `.cursorrules` for the full list of targets (`make build`, `make test`, `make lint`, etc.).
+
 ## AI Enforcement Checklist
 
 **Before generating Go code, ensure:**
@@ -297,5 +319,7 @@ func (s *Server) RegisterTool(name string, handler ToolHandler) error {
 - ✅ Uses idiomatic Go patterns
 - ✅ No goroutine leaks
 - ✅ Proper resource cleanup
+- ✅ Uses Makefile targets instead of direct commands (see .cursorrules)
+- ✅ Keeps tool/resource/prompt counts in sync with comments and tests when adding/removing items
 
 **These practices are mandatory for professional Go development.**

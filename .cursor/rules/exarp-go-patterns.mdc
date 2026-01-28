@@ -7,7 +7,7 @@ alwaysApply: true
 
 **⚠️ Apply these proven patterns from exarp-go to devwisdom-go ⚠️**
 
-**Reference:** See `docs/EXARP_GO_LESSONS.md` and `docs/EXARP_GO_IMPROVEMENT_TASKS.md` for complete documentation.
+**Reference:** See `docs/EXARP_GO_LESSONS.md` and `docs/EXARP_GO_IMPROVEMENT_TASKS.md` for complete documentation. For recent exarp-go Go rule changes (count sync, Makefile, graph/DB patterns), see `docs/EXARP_GO_GO_PATTERNS_LEARNINGS.md`.
 
 ## Framework-Agnostic Architecture
 
