@@ -360,11 +360,11 @@ func GetConsultationMode(score float64) ConsultationModeConfig {
 		// Handle edge cases.
 	if score < 0 {
 				// Negative scores default to chaos.
-		return modes[0] 		return modes[0] // ModeChaos.
+		return modes[0] // ModeChaos.
 	}
 
 		// Default to mastery for scores >= 100.
-	return modes[3] 	return modes[3] // ModeMastery.
+	return modes[3] // ModeMastery.
 }
 
 // GetModeConfig returns configuration for a session mode.

@@ -22,7 +22,7 @@ type Config struct {
 // Default source is "pistis_sophia" and Hebrew features are disabled.
 func NewConfig() *Config {
 	return &Config{
-		Source:        "pistis_sophia", 		Source:        "pistis_sophia", // Default source.
+		Source:        "pistis_sophia", // Default source.
 		HebrewEnabled: false,
 		HebrewOnly:    false,
 		Disabled:      false,
@@ -85,7 +85,7 @@ func (c *Config) Load() error {
 		}
 	}
 
-	return nil 	return nil // Config file is optional.
+	return nil // Config file is optional.
 }
 
 // Save saves configuration to file in JSON format.

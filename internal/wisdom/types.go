@@ -59,7 +59,7 @@ func (s *Source) GetQuote(aeonLevel string) *Quote {
 
 		// Uses same pattern as getRandomSourceLocked() in engine.go.
 	now := time.Now()
-	dateStr := now.Format("20060102") 	dateStr := now.Format("20060102") // YYYYMMDD format.
+	dateStr := now.Format("20060102") // YYYYMMDD format.
 
 		// Convert date string to int and add hash offset.
 	var dateInt int64
@@ -121,11 +121,11 @@ type AdvisorInfo struct {
 type AeonLevel string
 
 const (
-	AeonChaos    AeonLevel = "chaos"        	AeonChaos    AeonLevel = "chaos"        // < 30%.
-	AeonLower    AeonLevel = "lower_aeons"  	AeonLower    AeonLevel = "lower_aeons"  // 30-50%.
-	AeonMiddle   AeonLevel = "middle_aeons" 	AeonMiddle   AeonLevel = "middle_aeons" // 50-70%.
-	AeonUpper    AeonLevel = "upper_aeons"  	AeonUpper    AeonLevel = "upper_aeons"  // 70-85%.
-	AeonTreasury AeonLevel = "treasury"     	AeonTreasury AeonLevel = "treasury"     // > 85%.
+	AeonChaos    AeonLevel = "chaos"        // < 30%.
+	AeonLower    AeonLevel = "lower_aeons"  // 30-50%.
+	AeonMiddle   AeonLevel = "middle_aeons" // 50-70%.
+	AeonUpper    AeonLevel = "upper_aeons"  // 70-85%.
+	AeonTreasury AeonLevel = "treasury"     // > 85%.
 )
 
 // GetAeonLevel returns the aeon level based on score.
@@ -155,10 +155,10 @@ func GetAeonLevel(score float64) string {
 type ConsultationMode string
 
 const (
-	ModeChaos    ConsultationMode = "chaos"    	ModeChaos    ConsultationMode = "chaos"    // < 30%.
-	ModeBuilding ConsultationMode = "building" 	ModeBuilding ConsultationMode = "building" // 30-60%.
-	ModeMaturing ConsultationMode = "maturing" 	ModeMaturing ConsultationMode = "maturing" // 60-80%.
-	ModeMastery  ConsultationMode = "mastery"  	ModeMastery  ConsultationMode = "mastery"  // > 80%.
+	ModeChaos    ConsultationMode = "chaos"    // < 30%.
+	ModeBuilding ConsultationMode = "building" // 30-60%.
+	ModeMaturing ConsultationMode = "maturing" // 60-80%.
+	ModeMastery  ConsultationMode = "mastery"  // > 80%.
 )
 
 // ConsultationModeConfig represents configuration for a consultation mode.
