@@ -190,7 +190,7 @@ func (s *WisdomServerSDK) registerTools() {
 	for _, tool := range sdkTools {
 		handler, ok := handlerMap[tool.Name]
 		if !ok {
-			continue 			continue // Skip if handler not found (shouldn't happen).
+			continue // Skip if handler not found (shouldn't happen).
 		}
 		wrappedHandler := wrapToolHandler(handler)
 		s.server.AddTool(tool, wrappedHandler)
@@ -280,7 +280,7 @@ func (s *WisdomServerSDK) registerAllResources(handlers *WisdomHandlers) error {
 		// Extract days (int parameter with default value 7).
 	extractDays := func(suffix string) (int, error) {
 		if suffix == "" {
-			return 7, nil 			return 7, nil // Use default if empty.
+			return 7, nil // Use default if empty.
 		}
 		days, err := strconv.Atoi(suffix)
 		if err != nil {
@@ -288,10 +288,10 @@ func (s *WisdomServerSDK) registerAllResources(handlers *WisdomHandlers) error {
 		}
 		return days, nil
 	}
-	consultationsTemplateHandler := s.createResourceTemplateHandlerInt(
+		consultationsTemplateHandler := s.createResourceTemplateHandlerInt(
 		"wisdom://consultations/",
 		extractDays,
-		7, 		7, // default value.
+		7, // default value.
 		handlers.HandleConsultationsResource,
 	)
 	s.server.AddResourceTemplate(consultationsTemplate, consultationsTemplateHandler)

@@ -72,7 +72,7 @@ func getServerVersion() string {
 type WisdomServer struct {
 	wisdom      *wisdom.Engine
 	logger      *logging.ConsultationLogger
-	appLogger   *mcplogging.Logger 	appLogger   *mcplogging.Logger // Structured logger for application logging.
+	appLogger   *mcplogging.Logger // Structured logger for application logging.
 	initialized bool
 }
 
@@ -114,7 +114,7 @@ func (s *WisdomServer) Run(ctx context.Context, stdin io.Reader, stdout io.Write
 	decoder := json.NewDecoder(stdin)
 	encoder := json.NewEncoder(stdout)
 		// Some clients have issues parsing indented JSON over stdio.
-	encoder.SetIndent("", "") 	encoder.SetIndent("", "") // Explicitly set to compact (no indentation).
+	encoder.SetIndent("", "") // Explicitly set to compact (no indentation).
 
 		// Process messages.
 	for {
@@ -222,7 +222,7 @@ func (s *WisdomServer) handleInitialize(req *JSONRPCRequest) *JSONRPCResponse {
 	s.initialized = true
 
 	result := InitializeResult{
-		ProtocolVersion: "2024-11-05", 		ProtocolVersion: "2024-11-05", // MCP protocol version.
+		ProtocolVersion: "2024-11-05", // MCP protocol version.
 		Capabilities: ServerCapabilities{
 			Tools:     &ToolsCapability{},
 			Resources: &ResourcesCapability{},

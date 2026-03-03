@@ -16,4 +16,4 @@ require (
 	google.golang.org/protobuf v1.36.11 // indirect
 )
 
-replace github.com/davidl71/mcp-go-core => /Users/davidl/Projects/mcp-go-core
+replace github.com/davidl71/mcp-go-core => ../mcp-go-core

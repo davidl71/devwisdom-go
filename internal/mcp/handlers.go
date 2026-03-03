@@ -239,8 +239,8 @@ func (h *WisdomHandlers) handleGetConsultationLog(params map[string]interface{})
 		"days": 7,
 	})
 
-		// Extract days parameter (ApplyDefaults ensures it's set).
-	days := 7 	days := 7 // fallback.
+	// Extract days parameter (ApplyDefaults ensures it's set).
+	days := 7 // fallback.
 	if d, ok := params["days"].(float64); ok {
 		days = int(d)
 	} else if d, ok := params["days"].(int); ok {
