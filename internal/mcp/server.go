@@ -26,6 +26,7 @@ import (
 
 	mcpconfig "github.com/davidl71/mcp-go-core/pkg/mcp/config"
 	mcplogging "github.com/davidl71/mcp-go-core/pkg/mcp/logging"
+	"github.com/davidl71/mcp-go-core/pkg/mcp/protocol"
 )
 
 // Version is the devwisdom-go MCP server version (default).
@@ -143,7 +144,7 @@ func (s *WisdomServer) Run(ctx context.Context, stdin io.Reader, stdout io.Write
 		}
 
 				// Log request start and measure duration.
-		requestID := formatRequestID(req.ID)
+		requestID := protocol.FormatRequestID(req.ID)
 		startTime := time.Now()
 		s.appLogger.LogRequest(requestID, req.Method)
 
@@ -166,27 +167,8 @@ func (s *WisdomServer) Run(ctx context.Context, stdin io.Reader, stdout io.Write
 }
 
 // formatRequestID converts a JSON-RPC request ID to a string for logging.
-func formatRequestID(id interface{}) string {
-	if id == nil {
-		return "null"
-	}
-	switch v := id.(type) {
-	case string:
-		return v
-	case float64:
-				// JSON numbers are decoded as float64.
-		if v == float64(int64(v)) {
-			return fmt.Sprintf("%d", int64(v))
-		}
-		return fmt.Sprintf("%.0f", v)
-	case int:
-		return fmt.Sprintf("%d", v)
-	case int64:
-		return fmt.Sprintf("%d", v)
-	default:
-		return fmt.Sprintf("%v", id)
-	}
-}
+// Deprecated: use protocol.FormatRequestID from mcp-go-core instead.
+var formatRequestID = protocol.FormatRequestID
 
 // handleRequest processes a JSON-RPC request.
 func (s *WisdomServer) handleRequest(req *JSONRPCRequest) *JSONRPCResponse {
@@ -248,7 +230,7 @@ func (s *WisdomServer) handleToolsList(req *JSONRPCRequest) *JSONRPCResponse {
 // handleToolCall processes a tool call request.
 func (s *WisdomServer) handleToolCall(req *JSONRPCRequest) *JSONRPCResponse {
 	var params ToolCallParams
-	requestID := formatRequestID(req.ID)
+	requestID := protocol.FormatRequestID(req.ID)
 
 	if err := json.Unmarshal(req.Params, &params); err != nil {
 		s.appLogger.LogError(requestID, "Tool call params parse", err)
@@ -285,7 +267,7 @@ func (s *WisdomServer) handleResourcesList(req *JSONRPCRequest) *JSONRPCResponse
 // handleResourceRead reads a resource.
 func (s *WisdomServer) handleResourceRead(req *JSONRPCRequest) *JSONRPCResponse {
 	var params ResourceReadParams
-	requestID := formatRequestID(req.ID)
+	requestID := protocol.FormatRequestID(req.ID)
 
 	if err := json.Unmarshal(req.Params, &params); err != nil {
 		s.appLogger.LogError(requestID, "Resource read params parse", err)

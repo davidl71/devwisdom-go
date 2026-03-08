@@ -14,8 +14,8 @@ import (
 	"github.com/davidl71/devwisdom-go/internal/wisdom"
 
 	mcpconfig "github.com/davidl71/mcp-go-core/pkg/mcp/config"
+	gosdk "github.com/davidl71/mcp-go-core/pkg/mcp/framework/adapters/gosdk"
 	mcplogging "github.com/davidl71/mcp-go-core/pkg/mcp/logging"
-	mcpresponse "github.com/davidl71/mcp-go-core/pkg/mcp/response"
 	"github.com/modelcontextprotocol/go-sdk/mcp"
 )
 
@@ -118,53 +118,26 @@ func newErrorResult(message string) *mcp.CallToolResult {
 }
 
 
-// - Standardized response formatting using mcp-go-core utilities.
+// wrapToolHandler wraps a map-based handler using mcp-go-core WrapMapToolHandler
+// and adapts the result to the SDK CallToolResult format.
 func wrapToolHandler(handler ToolHandlerFunc) func(context.Context, *mcp.CallToolRequest) (*mcp.CallToolResult, error) {
+	wrapped := gosdk.WrapMapToolHandler(func(ctx context.Context, params map[string]interface{}) (interface{}, error) {
+		return handler(params)
+	})
 	return func(ctx context.Context, req *mcp.CallToolRequest) (*mcp.CallToolResult, error) {
-				// Extract and unmarshal arguments.
-		args := make(map[string]interface{})
+		args := json.RawMessage{}
 		if req.Params != nil && len(req.Params.Arguments) > 0 {
-			if err := json.Unmarshal(req.Params.Arguments, &args); err != nil {
-				return newErrorResult(fmt.Sprintf("Failed to parse arguments: %v", err)), nil
-			}
+			args = req.Params.Arguments
 		}
-
-				// Call the actual handler.
-		result, err := handler(args)
+		contents, err := wrapped(ctx, args)
 		if err != nil {
 			return newErrorResult(fmt.Sprintf("Tool execution error: %v", err)), nil
 		}
-
-				// Convert result to map[string]interface{} for response.FormatResult().
-		resultMap, err := mcpresponse.ConvertToMap(result)
-		if err != nil {
-			return newErrorResult(fmt.Sprintf("Failed to convert result to map: %v", err)), nil
+		out := make([]mcp.Content, len(contents))
+		for i, c := range contents {
+			out[i] = &mcp.TextContent{Text: c.Text}
 		}
-
-				// Extract output_path from args if present.
-		outputPath := ""
-		if path, ok := args["output_path"].(string); ok && path != "" {
-			outputPath = path
-		}
-
-				// Use mcp-go-core response formatter for standardized formatting.
-		textContents, err := mcpresponse.FormatResult(resultMap, outputPath)
-		if err != nil {
-			return newErrorResult(fmt.Sprintf("Failed to format result: %v", err)), nil
-		}
-
-				// Convert []types.TextContent to []mcp.Content ([]mcp.TextContent).
-		contents := make([]mcp.Content, len(textContents))
-		for i, tc := range textContents {
-			contents[i] = &mcp.TextContent{
-				Text: tc.Text,
-			}
-		}
-
-				// Return success result with formatted content.
-		return &mcp.CallToolResult{
-			Content: contents,
-		}, nil
+		return &mcp.CallToolResult{Content: out}, nil
 	}
 }
 
