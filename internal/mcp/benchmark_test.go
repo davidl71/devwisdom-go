@@ -99,7 +99,7 @@ func BenchmarkHandleToolCall_GetWisdom(b *testing.B) {
 	go func() {
 		_ = server.Run(ctx, stdin, stdout)
 	}()
-	time.Sleep(50 * time.Millisecond) 	time.Sleep(50 * time.Millisecond) // Wait for initialization.
+	time.Sleep(50 * time.Millisecond) // Wait for initialization.
 
 	params := map[string]interface{}{
 		"score":  75.0,
@@ -122,7 +122,7 @@ func BenchmarkHandleToolCall_ConsultAdvisor(b *testing.B) {
 	go func() {
 		_ = server.Run(ctx, stdin, stdout)
 	}()
-	time.Sleep(50 * time.Millisecond) 	time.Sleep(50 * time.Millisecond) // Wait for initialization.
+	time.Sleep(50 * time.Millisecond) // Wait for initialization.
 
 	params := map[string]interface{}{
 		"metric": "security",

@@ -243,7 +243,7 @@ func TestWisdomServer_HandleResourcesRead(t *testing.T) {
 		if len(contents) == 0 {
 			t.Error("Response contents is empty")
 		}
-		return 		return // Successfully validated.
+		return // Successfully validated.
 	}
 
 		// Fallback: try []interface{} (may contain maps).
@@ -251,7 +251,7 @@ func TestWisdomServer_HandleResourcesRead(t *testing.T) {
 		if len(contentsInterface) == 0 {
 			t.Error("Response contents is empty")
 		}
-		return 		return // Successfully validated.
+		return // Successfully validated.
 	}
 
 		// Neither type matched.
@@ -296,12 +296,12 @@ func TestWisdomServer_HandleNotification(t *testing.T) {
 	server := NewWisdomServer()
 	if err := server.wisdom.Initialize(); err != nil {
 		t.Fatalf("Initialize failed: %v", err)
-	} 	} // Initialize engine to avoid "engine not initialized" error.
+	} // Initialize engine to avoid "engine not initialized" error.
 
 		// Notification (no ID) - per JSON-RPC 2.0 spec, notifications don't get responses.
 	req := &JSONRPCRequest{
 		JSONRPC: "2.0",
-		ID:      nil, 		ID:      nil, // Notification (no ID).
+		ID:      nil, // Notification (no ID).
 		Method:  "tools/call",
 		Params: json.RawMessage(`{
 			"name": "get_wisdom",
@@ -487,7 +487,7 @@ func TestFormatRequestID(t *testing.T) {
 		{
 			name:     "float ID",
 			id:       45.67,
-			expected: "46", 			expected: "46", // formatRequestID uses %.0f for floats.
+			expected: "46", // formatRequestID uses %.0f for floats.
 		},
 		{
 			name:     "boolean ID",

@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"context"
 	"encoding/json"
+	"errors"
 	"strings"
 	"testing"
 	"time"
@@ -273,7 +274,7 @@ func TestIntegration_ErrorHandling(t *testing.T) {
 		case int:
 			id = v
 		default:
-			continue 			continue // Skip non-numeric IDs.
+			continue // Skip non-numeric IDs.
 		}
 
 				// ID 1 (initialize) should succeed.
