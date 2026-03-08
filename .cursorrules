@@ -148,6 +148,7 @@ make lint
 ## Task Management
 
 - Tasks tracked in exarp-go (Todo2 SQLite)
+- **Task creation: ALWAYS use exarp-go** — `exarp-go task create` or exarp-go `task_workflow` action=create. **Never use Todo2 MCP create_todos.**
 - Use PROJECT_GOALS.md for phase alignment
 - Follow TODO.md for task breakdown
 
